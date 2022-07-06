@@ -19,8 +19,11 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NeoWeatherApiService {
+    @GET("weather?q=london&appid=$API_KEY")
+    suspend fun getCurrentWeather(): CurrentWeatherModel
+
     @GET("forecast?q=london&appid=$API_KEY")
-    suspend fun getWeather(): NeoWeatherModel
+    suspend fun getForecastWeather(): ForecastWeatherModel
 }
 
 object NeoWeatherApi {
