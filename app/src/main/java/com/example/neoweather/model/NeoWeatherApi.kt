@@ -18,7 +18,11 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NeoWeatherApiService {
-    @GET("forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m")
+    @GET("forecast?latitude=52.52&longitude=13.41&current_weather=true" +
+            "&hourly=temperature_2m&hourly=weathercode&timezone=UTC" +
+            "&daily=temperature_2m_max&daily=temperature_2m_min&daily=precipitation_sum" +
+            "&daily=rain_sum&daily=weathercode&daily=sunrise&daily=sunset" +
+            "&daily=winddirection_10m_dominant&daily=windspeed_10m_max")
     suspend fun getWeather(): NeoWeatherModel
 }
 

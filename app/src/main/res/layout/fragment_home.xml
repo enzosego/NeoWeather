@@ -16,29 +16,41 @@
         tools:context="com.example.neoweather.view.HomeFragment">
 
         <TextView
-            android:id="@+id/city_name"
+            android:id="@+id/weather_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:padding="16dp"
+            android:text="@{viewModel.codeMapping[viewModel.currentWeather.weatherCode]}"
+            tools:text="Cloudy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/temp" />
+
+        <TextView
+            android:id="@+id/temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:padding="16dp"
-            android:text="@{viewModel.parseToString(viewModel.weatherData.currentWeather.temperature)}"
-            tools:text="Hello World!"
+            android:text="@{viewModel.parseToString(viewModel.currentWeather.temperature)}"
+            tools:text="36C"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/country_name"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:padding="16dp"
-            android:text="@{viewModel.weatherData.currentWeather.time}"
-            tools:text="Hello World!"
+            android:text="@{viewModel.currentWeather.time}"
+            tools:text="12:00"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/city_name" />
+            app:layout_constraintTop_toBottomOf="@id/temp" />
 
         <ImageView
             android:id="@+id/status_image"
