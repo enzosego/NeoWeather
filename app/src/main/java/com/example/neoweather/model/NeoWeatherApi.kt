@@ -6,8 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
-private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-private const val API_KEY = "a63f2c379197334015f2d7a78700d620"
+private const val BASE_URL = "https://api.open-meteo.com/v1/"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -19,11 +18,8 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NeoWeatherApiService {
-    @GET("weather?q=london&appid=$API_KEY")
-    suspend fun getCurrentWeather(): CurrentWeatherModel
-
-    @GET("forecast?q=london&appid=$API_KEY")
-    suspend fun getForecastWeather(): ForecastWeatherModel
+    @GET("forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m")
+    suspend fun getWeather(): NeoWeatherModel
 }
 
 object NeoWeatherApi {
