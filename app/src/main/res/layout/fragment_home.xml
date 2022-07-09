@@ -52,14 +52,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/temp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/hourly_forecast_recycler_view"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:padding="8dp"
-            app:hourlyData="@{viewModel.hourlyForecast}"
-            app:layout_constraintTop_toBottomOf="@id/time"/>
+            app:layout_constraintTop_toBottomOf="@id/time">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/hourly_forecast_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:padding="8dp"
+                    app:hourlyData="@{viewModel.hourlyForecast}"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/daily_forecast_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:padding="8dp"
+                    app:dailyData="@{viewModel.dailyForecast}"
+                    app:layout_constraintTop_toBottomOf="@id/hourly_forecast_recycler_view"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
         <ImageView
             android:id="@+id/status_image"

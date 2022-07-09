@@ -20,7 +20,7 @@ class HourlyForecastAdapter : ListAdapter<HourData, HourlyForecastAdapter.ItemHo
         }
     }
 
-    object DiffCallback : DiffUtil.ItemCallback<HourData>() {
+    private object DiffCallback : DiffUtil.ItemCallback<HourData>() {
         override fun areItemsTheSame(oldItem: HourData, newItem: HourData):
                 Boolean = oldItem.time == newItem.time
 

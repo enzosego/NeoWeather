@@ -22,9 +22,14 @@ class HomeFragment : Fragment() {
         val binding = FragmentHomeBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
+
         binding.hourlyForecastRecyclerView.adapter = HourlyForecastAdapter()
         binding.hourlyForecastRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
+        binding.dailyForecastRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.viewModel = viewModel
 

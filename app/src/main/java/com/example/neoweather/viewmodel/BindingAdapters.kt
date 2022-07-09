@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.R
+import com.example.neoweather.view.DailyForecastAdapter
 import com.example.neoweather.view.HourlyForecastAdapter
 
 @BindingAdapter("apiStatus")
@@ -25,7 +26,13 @@ fun bindStatus(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
 }
 
 @BindingAdapter("hourlyData")
-fun bindHourList(recyclerView: RecyclerView, tempList: List<HourData>?) {
+fun bindHourList(recyclerView: RecyclerView, hourData: List<HourData>?) {
     val adapter = recyclerView.adapter as HourlyForecastAdapter
-    adapter.submitList(tempList)
+    adapter.submitList(hourData)
+}
+
+@BindingAdapter("dailyData")
+fun bindDayList(recyclerView: RecyclerView, dayData: List<DayData>?) {
+    val adapter = recyclerView.adapter as DailyForecastAdapter
+    adapter.submitList(dayData)
 }
