@@ -10,7 +10,7 @@ data class NeoWeatherModel(
 
 data class CurrentWeather(
     val temperature: Float,
-    @Json(name = "windspeed") val windSpeed: Float,
+    @Json(name = "windspeed") val windSpeed: Double,
     @Json(name = "winddirection") val windDirection: Int,
     @Json(name = "weathercode") val weatherCode: Int,
     val time: String
@@ -18,7 +18,7 @@ data class CurrentWeather(
 
 data class HourlyForecast(
     val time: List<String>,
-    @Json(name = "temperature_2m") val hourlyTemp: List<Float>,
+    @Json(name = "temperature_2m") val hourlyTemp: List<Double>,
     @Json(name = "weathercode") val weatherCode: List<Int>
 )
 

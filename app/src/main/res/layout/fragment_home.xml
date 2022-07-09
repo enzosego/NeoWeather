@@ -20,37 +20,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="32sp"
-            android:padding="16dp"
+            android:padding="10dp"
             android:text="@{viewModel.codeMapping[viewModel.currentWeather.weatherCode]}"
+            android:layout_marginTop="80dp"
             tools:text="Cloudy"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/temp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
-            android:padding="16dp"
+            android:padding="10dp"
             android:text="@{viewModel.parseToString(viewModel.currentWeather.temperature)}"
             tools:text="36C"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/weather_main" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            android:padding="16dp"
+            android:padding="10dp"
             android:text="@{viewModel.currentWeather.time}"
             tools:text="12:00"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/temp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hourly_forecast_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="8dp"
+            app:hourlyData="@{viewModel.hourlyForecast}"
+            app:layout_constraintTop_toBottomOf="@id/time"/>
 
         <ImageView
             android:id="@+id/status_image"

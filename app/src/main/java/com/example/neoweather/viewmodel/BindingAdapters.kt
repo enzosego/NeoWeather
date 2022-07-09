@@ -3,7 +3,9 @@ package com.example.neoweather.viewmodel
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.R
+import com.example.neoweather.view.HourlyForecastAdapter
 
 @BindingAdapter("apiStatus")
 fun bindStatus(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
@@ -20,4 +22,10 @@ fun bindStatus(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
             statusImageView.setImageResource(R.drawable.ic_connection_error)
         }
     }
+}
+
+@BindingAdapter("hourlyData")
+fun bindHourList(recyclerView: RecyclerView, tempList: List<HourData>?) {
+    val adapter = recyclerView.adapter as HourlyForecastAdapter
+    adapter.submitList(tempList)
 }

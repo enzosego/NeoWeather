@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.open-meteo.com/v1/"
 
@@ -18,12 +19,13 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NeoWeatherApiService {
-    @GET("forecast?latitude=52.52&longitude=13.41&current_weather=true" +
-            "&hourly=temperature_2m&hourly=weathercode&timezone=UTC" +
-            "&daily=temperature_2m_max&daily=temperature_2m_min&daily=precipitation_sum" +
-            "&daily=rain_sum&daily=weathercode&daily=sunrise&daily=sunset" +
-            "&daily=winddirection_10m_dominant&daily=windspeed_10m_max")
-    suspend fun getWeather(): NeoWeatherModel
+    @GET("forecast?current_weather=true&hourly=temperature_2m,weathercode&timezone=UTC" +
+            "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum," +
+            "rain_sum,weathercode,sunrise,sunset,winddirection_10m_dominant,windspeed_10m_max")
+    suspend fun getWeather(
+        @Query("latitude") lat: Double,
+        @Query("longitude") long: Double
+    ): NeoWeatherModel
 }
 
 object NeoWeatherApi {
