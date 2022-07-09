@@ -1,4 +1,4 @@
-package com.example.neoweather.model
+package com.example.neoweather.model.weather
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -19,12 +19,13 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NeoWeatherApiService {
-    @GET("forecast?current_weather=true&hourly=temperature_2m,weathercode&timezone=UTC" +
+    @GET("forecast?current_weather=true&hourly=temperature_2m,weathercode" +
             "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum," +
             "rain_sum,weathercode,sunrise,sunset,winddirection_10m_dominant,windspeed_10m_max")
     suspend fun getWeather(
         @Query("latitude") lat: Double,
-        @Query("longitude") long: Double
+        @Query("longitude") long: Double,
+        @Query("timezone") timezone: String
     ): NeoWeatherModel
 }
 

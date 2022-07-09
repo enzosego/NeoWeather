@@ -5,6 +5,9 @@
         <variable
             name="viewModel"
             type="com.example.neoweather.viewmodel.NeoWeatherViewModel" />
+        <variable
+            name="weatherCodeMapping"
+            type="com.example.neoweather.model.WeatherCodeMapping" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="32sp"
             android:padding="10dp"
-            android:text="@{viewModel.codeMapping[viewModel.currentWeather.weatherCode]}"
+            android:text="@{weatherCodeMapping.mapping[viewModel.currentWeather.weatherCode]}"
             android:layout_marginTop="80dp"
             tools:text="Cloudy"
             app:layout_constraintTop_toTopOf="parent"

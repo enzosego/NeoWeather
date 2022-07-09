@@ -1,12 +1,16 @@
 package com.example.neoweather.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.neoweather.model.*
+import com.example.neoweather.model.geocoding.GeoCodingApi
+import com.example.neoweather.model.geocoding.GeoLocation
+import com.example.neoweather.model.weather.CurrentWeather
+import com.example.neoweather.model.weather.NeoWeatherApi
+import com.example.neoweather.model.weather.NeoWeatherModel
 import kotlinx.coroutines.launch
-import kotlin.reflect.full.memberProperties
 
 enum class NeoWeatherApiStatus { LOADING, DONE, ERROR }
 
@@ -24,7 +28,8 @@ class NeoWeatherViewModel : ViewModel() {
     private val _dailyForecast = MutableLiveData<List<DayData>>()
     val dailyForecast: LiveData<List<DayData>> = _dailyForecast
 
-    val codeMapping = WeatherCodeMapping.mapping
+    private val _currentLocation = MutableLiveData<GeoLocation>()
+    val currentLocation: LiveData<GeoLocation> = _currentLocation
 
     init {
         getWeatherData()
@@ -35,8 +40,14 @@ class NeoWeatherViewModel : ViewModel() {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
+                val newLocation = GeoCodingApi.retrofitService.getLocation("santa fe")
+                _currentLocation.value = newLocation.results[0]
+
                 val newWeatherInstance =
-                    NeoWeatherApi.retrofitService.getWeather(52.52, 13.41)
+                    NeoWeatherApi.retrofitService.getWeather(
+                        _currentLocation.value!!.latitude,
+                        _currentLocation.value!!.longitude,
+                        _currentLocation.value!!.timezone)
 
                 _currentWeather.postValue(newWeatherInstance.currentWeather)
                 mapHourlyForecastValues(newWeatherInstance)
@@ -44,6 +55,7 @@ class NeoWeatherViewModel : ViewModel() {
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
+                Log.d("error", e.toString())
                 _status.postValue(NeoWeatherApiStatus.ERROR)
                 _currentWeather.value = null
                 _hourlyForecast.value = null
