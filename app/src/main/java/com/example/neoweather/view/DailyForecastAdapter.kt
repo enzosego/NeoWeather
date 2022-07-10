@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.databinding.ItemDayBinding
 import com.example.neoweather.model.WeatherCodeMapping
 import com.example.neoweather.viewmodel.DayData
-import com.example.neoweather.viewmodel.HourData
 
 class DailyForecastAdapter : ListAdapter<DayData, DailyForecastAdapter.ItemDayViewHolder>(DiffCallback) {
 

@@ -24,7 +24,7 @@ object WeatherCodeMapping {
         77 to "Snow Grains",
         80 to "Slight Rain Showers",
         81 to "Moderate Rain Showers",
-        82 to "Heavy Rain Showers",
+        82 to "Violent Rain Showers",
         85 to "Slight Snow Showers",
         86 to "Heavy Snow Showers",
         95 to "Thunderstorm",

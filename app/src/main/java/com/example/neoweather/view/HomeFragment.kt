@@ -26,10 +26,11 @@ class HomeFragment : Fragment() {
         binding.hourlyForecastRecyclerView.adapter = HourlyForecastAdapter()
         binding.hourlyForecastRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.hourlyForecastRecyclerView.isNestedScrollingEnabled = false
 
         binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
-        binding.dailyForecastRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.dailyForecastRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false
 
         binding.viewModel = viewModel
 

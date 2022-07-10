@@ -9,7 +9,7 @@ data class NeoWeatherModel(
 )
 
 data class CurrentWeather(
-    val temperature: Float,
+    val temperature: Double,
     @Json(name = "windspeed") val windSpeed: Double,
     @Json(name = "winddirection") val windDirection: Int,
     @Json(name = "weathercode") val weatherCode: Int,
