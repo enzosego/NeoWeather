@@ -1,4 +1,4 @@
-package com.example.neoweather.view
+package com.example.neoweather.view.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,9 @@ import com.example.neoweather.databinding.ItemHourBinding
 import com.example.neoweather.model.WeatherCodeMapping
 import com.example.neoweather.viewmodel.HourData
 
-class HourlyForecastAdapter : ListAdapter<HourData, HourlyForecastAdapter.ItemHourViewHolder>(DiffCallback) {
+class HourlyForecastAdapter : ListAdapter<HourData, HourlyForecastAdapter.ItemHourViewHolder>(
+    DiffCallback
+) {
 
     class ItemHourViewHolder(private var binding: ItemHourBinding) :
         RecyclerView.ViewHolder(binding.root) {

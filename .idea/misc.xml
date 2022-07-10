@@ -5,10 +5,12 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15364583333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.18" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.12047101449275362" />
         <entry key="app/src/main/res/layout/hourly_forecast_item.xml" value="0.12047101449275362" />
         <entry key="app/src/main/res/layout/item_day.xml" value="0.18" />
         <entry key="app/src/main/res/layout/item_hour.xml" value="0.18" />
+        <entry key="app/src/main/res/menu/menu.xml" value="0.16770833333333332" />
       </map>
     </option>
   </component>

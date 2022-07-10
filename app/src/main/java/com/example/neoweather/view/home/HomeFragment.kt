@@ -1,4 +1,4 @@
-package com.example.neoweather.view
+package com.example.neoweather.view.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.neoweather.view
+package com.example.neoweather.view.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,9 @@ import com.example.neoweather.databinding.ItemDayBinding
 import com.example.neoweather.model.WeatherCodeMapping
 import com.example.neoweather.viewmodel.DayData
 
-class DailyForecastAdapter : ListAdapter<DayData, DailyForecastAdapter.ItemDayViewHolder>(DiffCallback) {
+class DailyForecastAdapter : ListAdapter<DayData, DailyForecastAdapter.ItemDayViewHolder>(
+    DiffCallback
+) {
 
     private object DiffCallback : DiffUtil.ItemCallback<DayData>() {
         override fun areItemsTheSame(oldItem: DayData, newItem: DayData):

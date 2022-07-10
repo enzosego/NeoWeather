@@ -5,8 +5,8 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.R
-import com.example.neoweather.view.DailyForecastAdapter
-import com.example.neoweather.view.HourlyForecastAdapter
+import com.example.neoweather.view.home.DailyForecastAdapter
+import com.example.neoweather.view.home.HourlyForecastAdapter
 
 @BindingAdapter("apiStatus")
 fun bindStatus(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
