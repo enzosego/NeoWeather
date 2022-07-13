@@ -5,7 +5,7 @@
     <data>
         <variable
             name="hourData"
-            type="com.example.neoweather.viewmodel.HourData" />
+            type="com.example.neoweather.model.database.hour.Hour" />
         <variable
             name="weatherCodeMapping"
             type="com.example.neoweather.model.WeatherCodeMapping" />

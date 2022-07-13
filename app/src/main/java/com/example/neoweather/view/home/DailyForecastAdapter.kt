@@ -7,27 +7,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.databinding.ItemDayBinding
 import com.example.neoweather.model.WeatherCodeMapping
-import com.example.neoweather.viewmodel.DayData
+import com.example.neoweather.model.database.day.Day
 
-class DailyForecastAdapter : ListAdapter<DayData, DailyForecastAdapter.ItemDayViewHolder>(
+class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
     DiffCallback
 ) {
 
-    private object DiffCallback : DiffUtil.ItemCallback<DayData>() {
-        override fun areItemsTheSame(oldItem: DayData, newItem: DayData):
+    private object DiffCallback : DiffUtil.ItemCallback<Day>() {
+        override fun areItemsTheSame(oldItem: Day, newItem: Day):
                 Boolean = oldItem.time == newItem.time
 
-        override fun areContentsTheSame(oldItem: DayData, newItem: DayData):
+        override fun areContentsTheSame(oldItem: Day, newItem: Day):
                 Boolean = oldItem.minTemp == newItem.minTemp
-    }
-
-    class ItemDayViewHolder(private var binding: ItemDayBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(dayData: DayData, weatherCodeMapping: WeatherCodeMapping) {
-            binding.dayData = dayData
-            binding.weatherCodeMapping = weatherCodeMapping
-            binding.executePendingBindings()
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDayViewHolder {
@@ -40,5 +31,14 @@ class DailyForecastAdapter : ListAdapter<DayData, DailyForecastAdapter.ItemDayVi
     override fun onBindViewHolder(holder: ItemDayViewHolder, position: Int) {
         val dayData = getItem(position)
         holder.bind(dayData, WeatherCodeMapping)
+    }
+}
+
+class ItemDayViewHolder(private var binding: ItemDayBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(dayData: Day, weatherCodeMapping: WeatherCodeMapping) {
+        binding.dayData = dayData
+        binding.weatherCodeMapping = weatherCodeMapping
+        binding.executePendingBindings()
     }
 }

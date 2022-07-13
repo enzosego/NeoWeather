@@ -1,4 +1,4 @@
-package com.example.neoweather.model.weather
+package com.example.neoweather.model.remote.weather
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

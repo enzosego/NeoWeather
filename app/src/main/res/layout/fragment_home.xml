@@ -26,44 +26,48 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-                <TextView
-                    android:id="@+id/weather_main"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/currentWeather"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="32sp"
-                    android:padding="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentTop="true"
-                    android:text="@{weatherCodeMapping.mapping[viewModel.currentWeather.weatherCode]}"
-                    tools:text="Cloudy"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/weather_main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="32sp"
+                        android:padding="10dp"
+                        android:layout_marginTop="80dp"
+                        app:status="@{viewModel.status}"
+                        app:currentWeather="@{viewModel.currentWeather}"
+                        tools:text="Cloudy"/>
 
-                <TextView
-                    android:id="@+id/temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="26sp"
-                    android:padding="10dp"
-                    android:layout_below="@id/weather_main"
-                    android:layout_centerHorizontal="true"
-                    android:text="@{viewModel.doubleToString(viewModel.currentWeather.temperature)}"
-                    tools:text="36C"/>
+                    <TextView
+                        android:id="@+id/temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="26sp"
+                        android:padding="10dp"
+                        app:status="@{viewModel.status}"
+                        app:currentWeather="@{viewModel.currentWeather}"
+                        tools:text="36C"/>
 
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:padding="10dp"
-                    android:layout_below="@+id/temp"
-                    android:layout_centerHorizontal="true"
-                    android:text="@{viewModel.currentWeather.time}"
-                    tools:text="12:00"/>
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:padding="10dp"
+                        app:status="@{viewModel.status}"
+                        app:currentWeather="@{viewModel.currentWeather}"
+                        tools:text="12:00"/>
+                </LinearLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/time"
+                    android:layout_below="@+id/currentWeather"
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -72,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:padding="8dp"
-                        app:hourlyData="@{viewModel.hourlyForecast}"/>
+                        app:hourlyData="@{viewModel.hourlyData}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/daily_forecast_recycler_view"
@@ -80,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:padding="8dp"
-                        app:dailyData="@{viewModel.dailyForecast}"/>
+                        app:dailyData="@{viewModel.dailyData}"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -92,7 +96,7 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_gravity="center"
-            app:apiStatus="@{viewModel.status}"/>
+            app:apiStatusImage="@{viewModel.status}"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

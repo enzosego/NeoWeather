@@ -1,18 +1,22 @@
 package com.example.neoweather.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.neoweather.model.geocoding.GeoCodingApi
-import com.example.neoweather.model.geocoding.GeoLocation
-import com.example.neoweather.model.weather.*
+import androidx.lifecycle.*
+import com.example.neoweather.model.database.day.Day
+import com.example.neoweather.model.database.day.DayDao
+import com.example.neoweather.model.database.hour.Hour
+import com.example.neoweather.model.database.hour.HourDao
+import com.example.neoweather.model.remote.geocoding.*
+import com.example.neoweather.model.remote.weather.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class NeoWeatherApiStatus { LOADING, DONE, ERROR }
 
-class NeoWeatherViewModel : ViewModel() {
+class NeoWeatherViewModel(
+    private val dayDao: DayDao,
+    private val hourDao: HourDao)
+    : ViewModel() {
 
     private val _status = MutableLiveData<NeoWeatherApiStatus>()
     val status: LiveData<NeoWeatherApiStatus> = _status
@@ -20,14 +24,14 @@ class NeoWeatherViewModel : ViewModel() {
     private val _currentWeather = MutableLiveData<CurrentWeather>()
     val currentWeather: LiveData<CurrentWeather> = _currentWeather
 
-    private val _hourlyForecast = MutableLiveData<List<HourData>>()
-    val hourlyForecast: LiveData<List<HourData>> = _hourlyForecast
-
-    private val _dailyForecast = MutableLiveData<List<DayData>>()
-    val dailyForecast: LiveData<List<DayData>> = _dailyForecast
-
     private val _currentLocation = MutableLiveData<GeoLocation>()
-    val currentLocation: LiveData<GeoLocation> = _currentLocation
+    //val currentLocation: LiveData<GeoLocation> = _currentLocation
+
+    val hourlyData: LiveData<List<Hour>> =
+        hourDao.getAllHours().asLiveData()
+
+    val dailyData: LiveData<List<Day>> =
+        dayDao.getAllDays().asLiveData()
 
     init {
         getWeatherData()
@@ -48,74 +52,89 @@ class NeoWeatherViewModel : ViewModel() {
                         _currentLocation.value!!.timezone)
 
                 _currentWeather.postValue(newWeatherInstance.currentWeather)
-                mapHourlyForecastValues(newWeatherInstance)
-                mapDailyForecastValues(newWeatherInstance.dailyForecast)
+                updateHourlyData(newWeatherInstance.hourlyForecast)
+                updateDailyData(newWeatherInstance.dailyForecast)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
                 Log.d("error", e.toString())
                 _status.postValue(NeoWeatherApiStatus.ERROR)
                 _currentWeather.value = null
-                _hourlyForecast.value = null
-                _dailyForecast.value = null
             }
         }
     }
 
-    private fun mapHourlyForecastValues(newWeatherInstance: NeoWeatherModel) {
-        val newList = mutableListOf<HourData>()
-        with(newWeatherInstance.hourlyForecast) {
+    private fun updateHourlyData(hourlyForecast: HourlyForecast) {
+        with(hourlyForecast) {
             for (i in weatherCode.indices) {
-
-                val currentHour = hourSequenceToInt(newWeatherInstance.currentWeather.time)
-                val iteratedHour = hourSequenceToInt(time[i])
-
-                val currentDay = daySequenceToInt(newWeatherInstance.currentWeather.time)
-                val iteratedDay = daySequenceToInt(time[i])
-
-                if (currentDay == iteratedDay && currentHour >= iteratedHour)
-                    continue
-
-                val newHour = HourData(
-                    time[i].subSequence(11, 16).toString(),
-                    hourlyTemp[i].toString(),
-                    weatherCode[i]
+                val newHour = Hour(
+                    time = time[i].subSequence(11, 16).toString(),
+                    temp = hourlyTemp[i].toString(),
+                    weatherCode = weatherCode[i]
                 )
-                newList.add(newHour)
-                if (newList.size == 24)
-                    break
+                if (hourlyData.value.isNullOrEmpty())
+                    insertHour(newHour)
+                else
+                    updateHour(newHour)
             }
         }
-        _hourlyForecast.value = newList
     }
 
-    private fun mapDailyForecastValues(dailyForecast: DailyForecast) {
-        val newList = mutableListOf<DayData>()
+    private fun updateDailyData(dailyForecast: DailyForecast) {
         with(dailyForecast) {
             for (i in time.indices) {
-                val newDay = DayData(
-                    time[i],
-                    sunrise[i],
-                    sunset[i],
-                    maxTemp[i].toString(),
-                    minTemp[i].toString(),
-                    precipitationSum[i].toString(),
-                    rainSum[i].toString(),
-                    windDirectionDominant[i].toString(),
-                    windSpeedMax[i].toString(),
-                    weatherCode[i]
+                val newDay = Day(
+                    time = time[i],
+                    sunrise = sunrise[i],
+                    sunset = sunset[i],
+                    maxTemp = maxTemp[i].toString(),
+                    minTemp = minTemp[i].toString(),
+                    precipitationSum = precipitationSum[i].toString(),
+                    rainSum = rainSum[i].toString(),
+                    windDirectionDominant = windDirectionDominant[i].toString(),
+                    windSpeedMax = windSpeedMax[i].toString(),
+                    weatherCode = weatherCode[i]
                 )
-                newList.add(newDay)
+                if (dailyData.value.isNullOrEmpty())
+                    insertDay(newDay)
+                else
+                    updateDay(newDay)
             }
         }
-        _dailyForecast.value = newList
     }
 
-    private fun hourSequenceToInt(input: String): Int =
-        input.subSequence(11, 13).toString().toInt()
+    private fun insertHour(hour: Hour) {
+        viewModelScope.launch(Dispatchers.IO) {
+            hourDao.insert(hour)
+        }
+    }
 
-    private fun daySequenceToInt(input: String): Int =
-        input.subSequence(8, 10).toString().toInt()
+    private fun updateHour(hour: Hour) {
+        viewModelScope.launch(Dispatchers.IO) {
+            hourDao.update(hour)
+        }
+    }
 
-    fun doubleToString(value: Double): String = value.toString()
+    private fun insertDay(day: Day) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dayDao.insert(day)
+        }
+    }
+
+    private fun updateDay(day: Day) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dayDao.update(day)
+        }
+    }
+}
+
+class NeoWeatherViewModelFactory(private val dayDao: DayDao,private val hourDao: HourDao)
+    : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NeoWeatherViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return NeoWeatherViewModel(dayDao, hourDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

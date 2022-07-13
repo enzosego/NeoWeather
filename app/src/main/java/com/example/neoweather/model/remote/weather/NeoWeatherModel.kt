@@ -1,4 +1,4 @@
-package com.example.neoweather.model.weather
+package com.example.neoweather.model.remote.weather
 
 import com.squareup.moshi.Json
 
