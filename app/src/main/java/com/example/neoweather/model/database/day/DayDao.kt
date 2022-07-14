@@ -9,9 +9,6 @@ interface DayDao {
     @Query("SELECT * FROM day")
     fun getAllDays(): Flow<List<Day>>
 
-    @Insert
-    suspend fun insert(day: Day)
-
-    @Update
-    suspend fun update(day: Day)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(list: List<Day>)
 }

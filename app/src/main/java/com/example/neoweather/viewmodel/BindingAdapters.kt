@@ -7,9 +7,9 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.R
 import com.example.neoweather.model.WeatherCodeMapping
+import com.example.neoweather.model.database.current.CurrentWeather
 import com.example.neoweather.model.database.day.Day
 import com.example.neoweather.model.database.hour.Hour
-import com.example.neoweather.model.remote.weather.CurrentWeather
 import com.example.neoweather.view.home.DailyForecastAdapter
 import com.example.neoweather.view.home.HourlyForecastAdapter
 
@@ -30,23 +30,22 @@ fun bindStatusImage(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
     }
 }
 
-@BindingAdapter(value = ["bind:status", "bind:currentWeather"], requireAll = true)
+@BindingAdapter("currentWeather")
 fun bindDescription(textView: TextView,
-                    status: NeoWeatherApiStatus?,
                     currentWeather: CurrentWeather?) {
     textView.text =
-        when(status) {
-            NeoWeatherApiStatus.DONE -> {
+        when (currentWeather) {
+            null ->
+                ""
+            else ->
                 when(textView.id) {
                     R.id.weather_main ->
-                        WeatherCodeMapping.mapping[currentWeather?.weatherCode]
+                        WeatherCodeMapping.mapping[currentWeather.weatherCode]
                     R.id.temp ->
-                        currentWeather?.temperature.toString()
+                        currentWeather.temperature.toString()
                     else ->
-                        currentWeather?.time
+                        currentWeather.time
                 }
-            }
-            else -> ""
         }
 }
 

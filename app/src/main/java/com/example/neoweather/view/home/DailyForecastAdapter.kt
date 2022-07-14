@@ -15,10 +15,11 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
 
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {
         override fun areItemsTheSame(oldItem: Day, newItem: Day):
-                Boolean = oldItem.time == newItem.time
+                Boolean = oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Day, newItem: Day):
                 Boolean = oldItem.minTemp == newItem.minTemp
+                && oldItem.maxTemp == newItem.maxTemp
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDayViewHolder {

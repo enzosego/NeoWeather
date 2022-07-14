@@ -9,9 +9,6 @@ interface HourDao {
     @Query("SELECT * FROM hour")
     fun getAllHours(): Flow<List<Hour>>
 
-    @Insert
-    suspend fun insert(hour: Hour)
-
-    @Update
-    suspend fun update(hour: Hour)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(list: List<Hour>)
 }

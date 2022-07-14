@@ -13,12 +13,15 @@ class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
     DiffCallback
 ) {
 
+    private val listSizeLimit = 24
+
     private object DiffCallback : DiffUtil.ItemCallback<Hour>() {
         override fun areItemsTheSame(oldItem: Hour, newItem: Hour):
-                Boolean = oldItem.time == newItem.time
+                Boolean = oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Hour, newItem: Hour):
                 Boolean = oldItem.temp == newItem.temp
+                && oldItem.time == newItem.time
 
     }
 
@@ -33,6 +36,12 @@ class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
         val hourData = getItem(position)
         holder.bind(hourData, WeatherCodeMapping)
     }
+
+    override fun getItemCount(): Int =
+        if (currentList.isNotEmpty())
+            listSizeLimit
+        else
+            0
 }
 
 class ItemHourViewHolder(private var binding: ItemHourBinding) :
