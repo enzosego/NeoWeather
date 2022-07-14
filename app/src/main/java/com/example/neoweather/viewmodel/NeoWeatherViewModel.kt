@@ -2,7 +2,7 @@ package com.example.neoweather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.neoweather.model.database.NeoWeatherDatabase
+import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.repository.NeoWeatherRepository
 import kotlinx.coroutines.launch
 

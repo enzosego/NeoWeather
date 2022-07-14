@@ -5,10 +5,10 @@
     <data>
         <variable
             name="dayData"
-            type="com.example.neoweather.model.database.day.Day" />
+            type="com.example.neoweather.data.model.day.Day" />
         <variable
             name="weatherCodeMapping"
-            type="com.example.neoweather.model.WeatherCodeMapping" />
+            type="com.example.neoweather.util.WeatherCodeMapping" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

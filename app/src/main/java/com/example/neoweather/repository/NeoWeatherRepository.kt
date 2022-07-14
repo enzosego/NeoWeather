@@ -2,14 +2,14 @@ package com.example.neoweather.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.example.neoweather.model.database.NeoWeatherDatabase
-import com.example.neoweather.model.database.current.CurrentWeather
-import com.example.neoweather.model.database.day.Day
-import com.example.neoweather.model.database.hour.Hour
-import com.example.neoweather.model.remote.geocoding.GeoCodingApi
-import com.example.neoweather.model.remote.weather.NeoWeatherApi
-import com.example.neoweather.model.remote.weather.NeoWeatherModel
-import com.example.neoweather.model.remote.weather.asDatabaseModel
+import com.example.neoweather.data.NeoWeatherDatabase
+import com.example.neoweather.data.model.current.CurrentWeather
+import com.example.neoweather.data.model.day.Day
+import com.example.neoweather.data.model.hour.Hour
+import com.example.neoweather.remote.geocoding.GeoCodingApi
+import com.example.neoweather.remote.weather.NeoWeatherApi
+import com.example.neoweather.remote.weather.model.NeoWeatherModel
+import com.example.neoweather.remote.weather.model.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
