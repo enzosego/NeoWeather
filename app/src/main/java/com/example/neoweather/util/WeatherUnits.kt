@@ -10,7 +10,7 @@ object WeatherUnits {
             "${temp.roundToInt()}°"
 
     fun getHourFromTime(time: String): String =
-        time.subSequence(11, 16).toString()
+        time.subSequence(11, 13).toString()
 
     fun getDayFromTime(time: String): String =
         time.takeLast(2)

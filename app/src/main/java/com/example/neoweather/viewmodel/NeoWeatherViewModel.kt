@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.repository.NeoWeatherRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 enum class NeoWeatherApiStatus { LOADING, DONE, ERROR }
@@ -18,9 +19,9 @@ class NeoWeatherViewModel(application: Application)
     private val neoWeatherRepository =
         NeoWeatherRepository(NeoWeatherDatabase.getDatabase(application))
 
-    val dailyData = neoWeatherRepository.dailyData
+    val dayList = neoWeatherRepository.dailyData
 
-    val hourlyData = neoWeatherRepository.hourlyData
+    val hourList = neoWeatherRepository.hourlyData
 
     val currentWeather = neoWeatherRepository.currentWeather
 
@@ -43,10 +44,20 @@ class NeoWeatherViewModel(application: Application)
             }
         }
     }
+
+    fun updateTempUnit(newValue: Boolean) {
+        val updatedPreferences = preferences.value!!.copy(
+            isFahrenheitEnabled = newValue
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            neoWeatherRepository.updatePreferences(updatedPreferences)
+        }
+    }
 }
 
 class NeoWeatherViewModelFactory(private val application: Application)
     : ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NeoWeatherViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -53,7 +53,7 @@ class ItemDayViewHolder(private var binding: ItemDayBinding, private val prefere
         binding.maxTemp =
             WeatherUnits.getTempUnit(
                 dayData.maxTemp,
-                preferences?.isFahrenheitEnabled ?: true)
+                preferences?.isFahrenheitEnabled ?: false)
 
         binding.weatherDescription =
             WeatherCodeMapping.description[dayData.weatherCode]

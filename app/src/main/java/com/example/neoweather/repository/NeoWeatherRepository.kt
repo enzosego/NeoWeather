@@ -8,7 +8,6 @@ import com.example.neoweather.data.model.current.CurrentWeather
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.preferences.Preferences
-import com.example.neoweather.data.model.preferences.PreferencesDao
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.weather.NeoWeatherApi
 import com.example.neoweather.remote.weather.model.NeoWeatherModel
@@ -69,6 +68,12 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             )
         withContext(Dispatchers.IO) {
             database.preferencesDao.insert(initialPreferences)
+        }
+    }
+
+    suspend fun updatePreferences(preferences: Preferences) {
+        withContext(Dispatchers.IO) {
+            database.preferencesDao.update(preferences)
         }
     }
 }

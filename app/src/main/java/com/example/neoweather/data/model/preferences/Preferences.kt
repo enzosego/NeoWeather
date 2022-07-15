@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class Preferences(
     @PrimaryKey
     val id: Int,
-    @ColumnInfo
+    @ColumnInfo(name = "is_fahrenheit_enabled")
     val isFahrenheitEnabled: Boolean,
-    @ColumnInfo
+    @ColumnInfo(name = "is_inches_enabled")
     val isInchesEnabled: Boolean,
-    @ColumnInfo
+    @ColumnInfo(name = "is_miles_per_hour_enabled")
     val isMilesPerHourEnabled: Boolean,
 )

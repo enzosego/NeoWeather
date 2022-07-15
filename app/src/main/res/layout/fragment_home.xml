@@ -75,7 +75,7 @@
                         android:layout_marginTop="20dp"
                         android:padding="8dp"
                         app:preferences="@{viewModel.preferences}"
-                        app:hourlyData="@{viewModel.hourlyData}"/>
+                        app:hourList="@{viewModel.hourList}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/daily_forecast_recycler_view"
@@ -84,7 +84,7 @@
                         android:layout_marginTop="30dp"
                         android:padding="8dp"
                         app:preferences="@{viewModel.preferences}"
-                        app:dailyData="@{viewModel.dailyData}"/>
+                        app:dayList="@{viewModel.dayList}"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

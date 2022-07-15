@@ -62,7 +62,7 @@ class ItemHourViewHolder(private var binding: ItemHourBinding, private val prefe
         binding.temperature =
             WeatherUnits.getTempUnit(
                 hourData.temp,
-                preferences?.isFahrenheitEnabled ?: true)
+                preferences?.isFahrenheitEnabled ?: false)
 
         binding.weatherCode =
             WeatherCodeMapping.description[hourData.weatherCode]

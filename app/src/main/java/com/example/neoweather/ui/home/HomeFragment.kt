@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.databinding.FragmentHomeBinding
@@ -13,13 +14,11 @@ import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: NeoWeatherViewModel by lazy {
+    private val viewModel: NeoWeatherViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        ViewModelProvider(
-            this,
-            NeoWeatherViewModelFactory(activity.application))[NeoWeatherViewModel::class.java]
+        NeoWeatherViewModelFactory(activity.application)
     }
 
     override fun onCreateView(

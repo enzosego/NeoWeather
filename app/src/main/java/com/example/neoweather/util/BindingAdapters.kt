@@ -46,29 +46,29 @@ fun bindDescription(textView: TextView,
                     R.id.temp ->
                         WeatherUnits.getTempUnit(
                             currentWeather.temperature,
-                            preferences!!.isFahrenheitEnabled)
+                            preferences?.isFahrenheitEnabled ?: false)
                     else ->
                         WeatherUnits.getHourFromTime(currentWeather.time)
                 }
         }
 }
 
-@BindingAdapter(value = ["bind:hourlyData", "bind:preferences"], requireAll = true)
+@BindingAdapter(value = ["bind:hourList", "bind:preferences"], requireAll = true)
 fun bindHourList(recyclerView: RecyclerView,
-                 hourData: List<Hour>?,
+                 hourList: List<Hour>?,
                  preferences: Preferences?) {
 
     val adapter = recyclerView.adapter as HourlyForecastAdapter
-    adapter.submitList(hourData)
+    adapter.submitList(hourList)
     adapter.submitPreferences(preferences)
 }
 
-@BindingAdapter(value = ["bind:dailyData", "bind:preferences"], requireAll = true)
+@BindingAdapter(value = ["bind:dayList", "bind:preferences"], requireAll = true)
 fun bindDayList(recyclerView: RecyclerView,
-                dayData: List<Day>?,
+                dayList: List<Day>?,
                 preferences: Preferences?) {
 
     val adapter = recyclerView.adapter as DailyForecastAdapter
-    adapter.submitList(dayData)
+    adapter.submitList(dayList)
     adapter.submitPreferences(preferences)
 }
