@@ -11,7 +11,7 @@ data class Hour(
     @ColumnInfo
     val time: String,
     @ColumnInfo
-    val temp: String,
+    val temp: Double,
     @ColumnInfo
     val weatherCode: Int,
 )

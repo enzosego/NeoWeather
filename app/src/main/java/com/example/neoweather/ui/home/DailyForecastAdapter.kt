@@ -8,10 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.databinding.ItemDayBinding
 import com.example.neoweather.util.WeatherCodeMapping
 import com.example.neoweather.data.model.day.Day
+import com.example.neoweather.data.model.preferences.Preferences
+import com.example.neoweather.util.WeatherUnits
 
 class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
     DiffCallback
 ) {
+
+    private var preferences: Preferences? = null
 
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {
         override fun areItemsTheSame(oldItem: Day, newItem: Day):
@@ -25,21 +29,35 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDayViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return ItemDayViewHolder(
-            ItemDayBinding.inflate(layoutInflater, parent, false)
+            ItemDayBinding.inflate(layoutInflater, parent, false),
+            preferences
         )
     }
 
     override fun onBindViewHolder(holder: ItemDayViewHolder, position: Int) {
         val dayData = getItem(position)
-        holder.bind(dayData, WeatherCodeMapping)
+        holder.bind(dayData)
+    }
+
+    fun submitPreferences(newPreferences: Preferences?) {
+        preferences = newPreferences
     }
 }
 
-class ItemDayViewHolder(private var binding: ItemDayBinding) :
+class ItemDayViewHolder(private var binding: ItemDayBinding, private val preferences: Preferences?) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(dayData: Day, weatherCodeMapping: WeatherCodeMapping) {
-        binding.dayData = dayData
-        binding.weatherCodeMapping = weatherCodeMapping
+    fun bind(dayData: Day) {
+        binding.time =
+            WeatherUnits.getDayFromTime(dayData.time)
+
+        binding.maxTemp =
+            WeatherUnits.getTempUnit(
+                dayData.maxTemp,
+                preferences?.isFahrenheitEnabled ?: true)
+
+        binding.weatherDescription =
+            WeatherCodeMapping.description[dayData.weatherCode]
+
         binding.executePendingBindings()
     }
 }

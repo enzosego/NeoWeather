@@ -4,8 +4,8 @@ import androidx.room.*
 
 @Entity(tableName = "current_data")
 class CurrentWeather(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Int,
     @ColumnInfo
     val time: String,
     @ColumnInfo

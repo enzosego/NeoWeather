@@ -15,17 +15,17 @@ data class Day(
     @ColumnInfo
     val sunset: String,
     @ColumnInfo(name = "max_temp")
-    val maxTemp: String,
+    val maxTemp: Double,
     @ColumnInfo(name = "min_temp")
-    val minTemp: String,
+    val minTemp: Double,
     @ColumnInfo(name = "precipitation_sum")
-    val precipitationSum: String,
+    val precipitationSum: Double,
     @ColumnInfo(name = "rain_sum")
-    val rainSum: String,
+    val rainSum: Double,
     @ColumnInfo(name = "wind_direction_max")
-    val windDirectionDominant: String,
+    val windDirectionDominant: Double,
     @ColumnInfo(name = "wind_speed_max")
-    val windSpeedMax: String,
+    val windSpeedMax: Double,
     @ColumnInfo(name = "weather_code")
     val weatherCode: Int,
 )

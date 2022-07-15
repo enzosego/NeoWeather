@@ -1,7 +1,7 @@
 package com.example.neoweather.util
 
 object WeatherCodeMapping {
-    val mapping = mapOf(
+    val description = mapOf(
         0 to "Clear Sky",
         1 to "Mainly Clear",
         2 to "Partly Cloudy",

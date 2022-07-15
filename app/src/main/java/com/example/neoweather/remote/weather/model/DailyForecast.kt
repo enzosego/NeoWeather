@@ -32,12 +32,12 @@ fun DailyForecast.asDatabaseModel(): List<Day> {
             time = time[i],
             sunrise = sunrise[i],
             sunset = sunset[i],
-            maxTemp = maxTemp[i].toString(),
-            minTemp = minTemp[i].toString(),
-            precipitationSum = precipitationSum[i].toString(),
-            rainSum = rainSum[i].toString(),
-            windDirectionDominant = windDirectionDominant[i].toString(),
-            windSpeedMax = windSpeedMax[i].toString(),
+            maxTemp = maxTemp[i],
+            minTemp = minTemp[i],
+            precipitationSum = precipitationSum[i],
+            rainSum = rainSum[i],
+            windDirectionDominant = windDirectionDominant[i],
+            windSpeedMax = windSpeedMax[i],
             weatherCode = weatherCode[i]
         )
         dayList.add(newDay)

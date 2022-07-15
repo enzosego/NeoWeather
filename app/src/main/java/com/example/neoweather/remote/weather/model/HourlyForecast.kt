@@ -26,8 +26,8 @@ fun HourlyForecast.asDatabaseModel(): List<Hour> {
 
         val newHour = Hour(
             id = i,
-            time = time[i].subSequence(11, 16).toString(),
-            temp = temp[i].toString(),
+            time = time[i],
+            temp = temp[i],
             weatherCode = weatherCode[i]
         )
         hourList.add(newHour)

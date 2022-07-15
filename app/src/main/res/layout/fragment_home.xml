@@ -49,6 +49,7 @@
                         android:textSize="26sp"
                         android:padding="10dp"
                         app:currentWeather="@{viewModel.currentWeather}"
+                        app:preferences="@{viewModel.preferences}"
                         tools:text="36C"/>
 
                     <TextView
@@ -73,6 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:padding="8dp"
+                        app:preferences="@{viewModel.preferences}"
                         app:hourlyData="@{viewModel.hourlyData}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -81,6 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:padding="8dp"
+                        app:preferences="@{viewModel.preferences}"
                         app:dailyData="@{viewModel.dailyData}"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

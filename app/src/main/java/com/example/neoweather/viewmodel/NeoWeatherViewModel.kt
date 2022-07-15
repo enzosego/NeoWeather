@@ -1,6 +1,7 @@
 package com.example.neoweather.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.repository.NeoWeatherRepository
@@ -22,6 +23,8 @@ class NeoWeatherViewModel(application: Application)
     val hourlyData = neoWeatherRepository.hourlyData
 
     val currentWeather = neoWeatherRepository.currentWeather
+
+    val preferences = neoWeatherRepository.preferences
 
     init {
         refreshDataFromRepository()

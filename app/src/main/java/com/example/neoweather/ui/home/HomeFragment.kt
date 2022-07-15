@@ -37,7 +37,8 @@ class HomeFragment : Fragment() {
         binding.hourlyForecastRecyclerView.isNestedScrollingEnabled = false
 
         binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
-        binding.dailyForecastRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.dailyForecastRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
         binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false
 
         binding.viewModel = viewModel

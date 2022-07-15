@@ -4,11 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="dayData"
-            type="com.example.neoweather.data.model.day.Day" />
+            name="weatherDescription"
+            type="String" />
         <variable
-            name="weatherCodeMapping"
-            type="com.example.neoweather.util.WeatherCodeMapping" />
+            name="maxTemp"
+            type="String" />
+        <variable
+            name="time"
+            type="String" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -31,7 +34,7 @@
                 android:padding="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="18sp"
-                android:text="@{weatherCodeMapping.mapping[dayData.weatherCode]}"
+                android:text="@{weatherDescription}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Cloudy" />
@@ -45,7 +48,7 @@
                 android:padding="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="14sp"
-                android:text="@{dayData.maxTemp}"
+                android:text="@{maxTemp}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weather_main"
                 tools:text="36C" />
@@ -59,7 +62,7 @@
                 android:padding="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="14sp"
-                android:text="@{dayData.time}"
+                android:text="@{time}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/temp"
                 tools:text="22:00" />
