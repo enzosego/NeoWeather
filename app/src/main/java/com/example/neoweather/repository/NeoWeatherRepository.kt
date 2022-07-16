@@ -1,12 +1,12 @@
 package com.example.neoweather.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.data.model.current.CurrentWeather
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
+import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.weather.NeoWeatherApi
@@ -29,16 +29,19 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     val preferences: LiveData<Preferences> =
         database.preferencesDao.getPreferences().asLiveData()
 
+    val place: LiveData<Place> =
+        database.placeDao.getPlaceInfo().asLiveData()
 
-    suspend fun refreshDatabase() {
-        val newLocation = GeoCodingApi.retrofitService.getLocation("santa fe")
+    suspend fun refreshDatabase(locationInfo: Map<String, Double>) {
+        val newLocation = GeoCodingApi.retrofitService
+            .getLocation(place.value?.name ?: "london")
             .results[0]
 
         val newWeatherInstance =
             NeoWeatherApi.retrofitService.getWeather(
-                newLocation.latitude,
-                newLocation.longitude,
-                newLocation.timezone)
+                locationInfo["latitude"] ?: newLocation.latitude,
+                locationInfo["longitude"] ?: newLocation.longitude,
+                "America/Argentina/Cordoba")
         gatherAllData(newWeatherInstance)
     }
 
@@ -54,7 +57,6 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             database.dayDao.insertAll(newDayList)
             database.hourDao.insertAll(newHourList)
             database.currentWeatherDao.insert(newCurrentWeather)
-            Log.d("ERROR", "checking")
         }
     }
 
@@ -74,6 +76,12 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     suspend fun updatePreferences(preferences: Preferences) {
         withContext(Dispatchers.IO) {
             database.preferencesDao.update(preferences)
+        }
+    }
+
+    suspend fun updatePlace(place: Place) {
+        withContext(Dispatchers.IO) {
+            database.placeDao.insert(place)
         }
     }
 }

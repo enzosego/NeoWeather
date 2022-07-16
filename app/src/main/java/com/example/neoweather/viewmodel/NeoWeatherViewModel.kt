@@ -27,19 +27,18 @@ class NeoWeatherViewModel(application: Application)
 
     val preferences = neoWeatherRepository.preferences
 
-    init {
-        refreshDataFromRepository()
-    }
+    val placeInfo = neoWeatherRepository.place
 
-    private fun refreshDataFromRepository() {
+    fun refreshDataFromRepository(locationInfo: Map<String, Double>) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
-                neoWeatherRepository.refreshDatabase()
+                neoWeatherRepository.refreshDatabase(locationInfo)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
+                Log.d("DEBUG", e.toString())
                 _status.postValue(NeoWeatherApiStatus.ERROR)
             }
         }

@@ -10,17 +10,27 @@ import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.day.DayDao
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.hour.HourDao
+import com.example.neoweather.data.model.place.Place
+import com.example.neoweather.data.model.place.PlaceDao
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.data.model.preferences.PreferencesDao
 
-@Database(entities = [Day::class, Hour::class, CurrentWeather::class, Preferences::class]
-    , version = 1, exportSchema = false)
+@Database(
+    entities = [
+        Day::class,
+        Hour::class,
+        CurrentWeather::class,
+        Preferences::class,
+        Place::class],
+    version = 1,
+    exportSchema = false)
 abstract class NeoWeatherDatabase : RoomDatabase() {
 
     abstract val dayDao: DayDao
     abstract val hourDao: HourDao
     abstract val currentWeatherDao: CurrentWeatherDao
     abstract val preferencesDao: PreferencesDao
+    abstract val placeDao: PlaceDao
 
     companion object {
         @Volatile

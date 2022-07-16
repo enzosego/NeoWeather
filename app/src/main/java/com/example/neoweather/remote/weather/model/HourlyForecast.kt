@@ -23,9 +23,10 @@ fun HourlyForecast.asDatabaseModel(): List<Hour> {
     var startIndex: Int? = null
 
     for (i in weatherCode.indices) {
-        if (getHour(time[i]) < currentHour || getDay(time[i]) < currentDay)
+        if ((getHour(time[i]) < currentHour || getDay(time[i]) < currentDay)
+            && startIndex == null)
             continue
-        else if (startIndex == null)
+        else
             startIndex = i
 
         val newHour = Hour(
