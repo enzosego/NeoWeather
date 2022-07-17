@@ -3,7 +3,7 @@ package com.example.neoweather.data.model.current
 import androidx.room.*
 
 @Entity(tableName = "current_data")
-class CurrentWeather(
+data class CurrentWeather(
     @PrimaryKey
     val id: Int,
     @ColumnInfo

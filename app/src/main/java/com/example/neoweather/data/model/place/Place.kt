@@ -1,12 +1,13 @@
 package com.example.neoweather.data.model.place
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.example.neoweather.util.Utils.getTimeDiffInMinutes
+import java.time.Instant
+import java.util.*
 
 @Entity(tableName = "place")
 data class Place(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     val id: Int,
     @ColumnInfo
     val name: String,
@@ -14,10 +15,15 @@ data class Place(
     val latitude: Double,
     @ColumnInfo
     val longitude: Double,
+    @ColumnInfo
+    val country: String,
     @ColumnInfo(name = "country_code")
     val countryCode: String,
     @ColumnInfo
-    val country: String,
-    @ColumnInfo
-    val timezone: String
+    val timezone: String,
+    @ColumnInfo(name = "last_update_time")
+    val lastUpdateTime: Long
 )
+
+fun Place.isItTimeToUpdate(): Boolean =
+    getTimeDiffInMinutes(lastUpdateTime) >= 30

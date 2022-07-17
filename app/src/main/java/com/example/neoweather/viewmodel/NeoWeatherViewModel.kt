@@ -4,11 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.NeoWeatherDatabase
+import com.example.neoweather.data.model.place.isItTimeToUpdate
 import com.example.neoweather.repository.NeoWeatherRepository
+import com.example.neoweather.util.Utils.NeoWeatherApiStatus
+import com.example.neoweather.util.Utils.TAG
+import com.example.neoweather.util.Utils.getTimeDiffInMinutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-enum class NeoWeatherApiStatus { LOADING, DONE, ERROR }
 
 class NeoWeatherViewModel(application: Application)
     : ViewModel() {
@@ -28,6 +30,11 @@ class NeoWeatherViewModel(application: Application)
     val preferences = neoWeatherRepository.preferences
 
     val placeInfo = neoWeatherRepository.place
+
+    fun clickToLog() {
+        Log.d(TAG, "Minutes past: ${getTimeDiffInMinutes(placeInfo.value!!.lastUpdateTime)}")
+        Log.d("DEBUG", placeInfo.value!!.isItTimeToUpdate().toString())
+    }
 
     fun refreshDataFromRepository(locationInfo: Map<String, Double>) {
         viewModelScope.launch {

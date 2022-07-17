@@ -21,16 +21,17 @@ import com.example.neoweather.data.model.preferences.PreferencesDao
         Hour::class,
         CurrentWeather::class,
         Preferences::class,
-        Place::class],
+        Place::class
+    ],
     version = 1,
     exportSchema = false)
 abstract class NeoWeatherDatabase : RoomDatabase() {
 
+    abstract val placeDao: PlaceDao
     abstract val dayDao: DayDao
     abstract val hourDao: HourDao
     abstract val currentWeatherDao: CurrentWeatherDao
     abstract val preferencesDao: PreferencesDao
-    abstract val placeDao: PlaceDao
 
     companion object {
         @Volatile

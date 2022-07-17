@@ -9,10 +9,12 @@ import com.example.neoweather.R
 import com.example.neoweather.data.model.current.CurrentWeather
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
+import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.ui.home.DailyForecastAdapter
 import com.example.neoweather.ui.home.HourlyForecastAdapter
-import com.example.neoweather.viewmodel.NeoWeatherApiStatus
+import com.example.neoweather.util.Utils.NeoWeatherApiStatus
+
 
 @BindingAdapter("apiStatusImage")
 fun bindStatusImage(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
@@ -31,7 +33,9 @@ fun bindStatusImage(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
     }
 }
 
-@BindingAdapter(value = ["bind:currentWeather", "bind:preferences"], requireAll = false)
+@BindingAdapter(
+    value = ["bind:currentWeather", "bind:preferences"],
+    requireAll = false)
 fun bindDescription(textView: TextView,
                     currentWeather: CurrentWeather?,
                     preferences: Preferences?) {
@@ -41,15 +45,22 @@ fun bindDescription(textView: TextView,
                 ""
             else ->
                 when(textView.id) {
-                    R.id.weather_main ->
+                    R.id.weather_description ->
                         WeatherCodeMapping.description[currentWeather.weatherCode]
-                    R.id.temp ->
+                    else ->
                         WeatherUnits.getTempUnit(
                             currentWeather.temperature,
                             preferences?.isFahrenheitEnabled ?: false)
-                    else ->
-                        WeatherUnits.getHourFromTime(currentWeather.time)
                 }
+        }
+}
+
+@BindingAdapter("placeName")
+fun bindPlaceName(textview: TextView, placeInfo: Place?) {
+    textview.text =
+        when (placeInfo) {
+            null -> ""
+            else -> placeInfo.name
         }
 }
 

@@ -5,12 +5,10 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -67,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            Log.d("DEBUG", location.latitude.toString())
             viewModel.refreshDataFromRepository(
                 mapOf(
                     "latitude" to location.latitude,

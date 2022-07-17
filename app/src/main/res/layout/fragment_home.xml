@@ -31,9 +31,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:onClick="@{() -> viewModel.clickToLog()}"
                     android:gravity="center">
                     <TextView
-                        android:id="@+id/weather_main"
+                        android:id="@+id/weather_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="32sp"
@@ -50,16 +51,16 @@
                         android:padding="10dp"
                         app:currentWeather="@{viewModel.currentWeather}"
                         app:preferences="@{viewModel.preferences}"
-                        tools:text="36C"/>
+                        tools:text="26°"/>
 
                     <TextView
-                        android:id="@+id/time"
+                        android:id="@+id/place_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="22sp"
                         android:padding="10dp"
-                        app:currentWeather="@{viewModel.currentWeather}"
-                        tools:text="12:00"/>
+                        app:placeName="@{viewModel.placeInfo}"
+                        tools:text="London"/>
                 </LinearLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

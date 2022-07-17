@@ -26,7 +26,7 @@ fun HourlyForecast.asDatabaseModel(): List<Hour> {
         if ((getHour(time[i]) < currentHour || getDay(time[i]) < currentDay)
             && startIndex == null)
             continue
-        else
+        else if (startIndex == null)
             startIndex = i
 
         val newHour = Hour(
