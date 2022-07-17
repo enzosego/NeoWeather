@@ -11,8 +11,10 @@ import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.preferences.Preferences
+import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.ui.home.DailyForecastAdapter
 import com.example.neoweather.ui.home.HourlyForecastAdapter
+import com.example.neoweather.ui.search.SearchListAdapter
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 
 
@@ -65,9 +67,10 @@ fun bindPlaceName(textview: TextView, placeInfo: Place?) {
 }
 
 @BindingAdapter(value = ["bind:hourList", "bind:preferences"], requireAll = true)
-fun bindHourList(recyclerView: RecyclerView,
-                 hourList: List<Hour>?,
-                 preferences: Preferences?) {
+fun bindHourList(
+    recyclerView: RecyclerView,
+    hourList: List<Hour>?,
+    preferences: Preferences?) {
 
     val adapter = recyclerView.adapter as HourlyForecastAdapter
     adapter.submitList(hourList)
@@ -75,11 +78,18 @@ fun bindHourList(recyclerView: RecyclerView,
 }
 
 @BindingAdapter(value = ["bind:dayList", "bind:preferences"], requireAll = true)
-fun bindDayList(recyclerView: RecyclerView,
-                dayList: List<Day>?,
-                preferences: Preferences?) {
+fun bindDayList(
+    recyclerView: RecyclerView,
+    dayList: List<Day>?,
+    preferences: Preferences?) {
 
     val adapter = recyclerView.adapter as DailyForecastAdapter
     adapter.submitList(dayList)
     adapter.submitPreferences(preferences)
+}
+
+@BindingAdapter("searchList")
+fun bindSearchList(recyclerView: RecyclerView, dayList: List<GeoLocation>?,) {
+    val adapter = recyclerView.adapter as SearchListAdapter
+    adapter.submitList(dayList)
 }

@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.data.model.place.isItTimeToUpdate
+import com.example.neoweather.remote.geocoding.GeoCodingApi
+import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 import com.example.neoweather.util.Utils.TAG
@@ -20,6 +22,9 @@ class NeoWeatherViewModel(application: Application)
 
     private val neoWeatherRepository =
         NeoWeatherRepository(NeoWeatherDatabase.getDatabase(application))
+
+    private val _locationList = MutableLiveData<List<GeoLocation>>()
+    val locationList: LiveData<List<GeoLocation>> = _locationList
 
     val dayList = neoWeatherRepository.dailyData
 
@@ -57,6 +62,14 @@ class NeoWeatherViewModel(application: Application)
         )
         viewModelScope.launch(Dispatchers.IO) {
             neoWeatherRepository.updatePreferences(updatedPreferences)
+        }
+    }
+
+    fun updateSearchList(cityName: String) {
+        viewModelScope.launch {
+            val newList = GeoCodingApi.retrofitService.getLocation(cityName)
+                .results
+            _locationList.postValue(newList)
         }
     }
 }

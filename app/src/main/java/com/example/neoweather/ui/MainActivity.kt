@@ -10,10 +10,11 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
-import com.example.neoweather.util.PermissionRequester
+import com.example.neoweather.util.Utils.PermissionRequester
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private lateinit var settingsIcon: MenuItem
+
+    private lateinit var searchIcon: MenuItem
 
     private val viewModel: NeoWeatherViewModel by viewModels {
         NeoWeatherViewModelFactory(this.application)
@@ -92,20 +95,30 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu, menu)
 
         settingsIcon = menu.findItem(R.id.settings_icon)
+        searchIcon = menu.findItem(R.id.search_icon)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            settingsIcon.isVisible =
-                when(destination.id) {
-                    R.id.homeFragment -> true
-                    else -> false
-                }
+            setIconVisibility(settingsIcon, destination)
+            setIconVisibility(searchIcon, destination)
         }
         return super.onCreateOptionsMenu(menu)
     }
 
+    private fun setIconVisibility(icon: MenuItem, destination: NavDestination) {
+        icon.isVisible =
+            when(destination.id) {
+                R.id.homeFragment -> true
+                else -> false
+            }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings_icon)
-            navController.navigate(R.id.action_homeFragment_to_settingsFragment)
+        when (item.itemId) {
+            R.id.search_icon ->
+                navController.navigate(R.id.action_homeFragment_to_searchFragment)
+            else ->
+                navController.navigate(R.id.action_homeFragment_to_settingsFragment)
+        }
         return super.onOptionsItemSelected(item)
     }
 

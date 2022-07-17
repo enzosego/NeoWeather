@@ -1,4 +1,4 @@
-package com.example.neoweather.ui.home
+package com.example.neoweather.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.neoweather.databinding.FragmentHomeBinding
+import com.example.neoweather.databinding.FragmentSearchBinding
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 
-class HomeFragment : Fragment() {
+class SearchFragment : Fragment() {
 
     private val viewModel: NeoWeatherViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) {
@@ -25,21 +25,20 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentHomeBinding.inflate(inflater)
+        val binding = FragmentSearchBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
 
-        binding.hourlyForecastRecyclerView.adapter = HourlyForecastAdapter()
-        binding.hourlyForecastRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.hourlyForecastRecyclerView.isNestedScrollingEnabled = false
-
-        binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
-        binding.dailyForecastRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext())
-        binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false
-
         binding.viewModel = viewModel
+
+        binding.searchListRecyclerView.adapter = SearchListAdapter()
+        binding.searchListRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        binding.confirmSearchButton.setOnClickListener {
+            if (!binding.searchInputField.text.isNullOrEmpty())
+                viewModel.updateSearchList(binding.searchInputField.text.toString())
+        }
 
         return binding.root
     }
