@@ -11,6 +11,7 @@ import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.place.isItTimeToUpdate
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.GeoCodingApi
+import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.remote.geocoding.asDatabaseModel
 import com.example.neoweather.remote.reverse_geocoding.ReverseGeoCodingApi
 import com.example.neoweather.remote.weather.NeoWeatherApi
@@ -37,23 +38,31 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     val place: LiveData<Place> =
         database.placeDao.getPlace().asLiveData()
 
-    suspend fun refreshDatabase(locationInfo: Map<String, Double>) {
+    suspend fun refreshDatabase(location: GeoLocation?) {
         if (place.value?.lastUpdateTime != null
-            && !place.value!!.isItTimeToUpdate())
+            && !place.value!!.isItTimeToUpdate()
+            && (location?.name ?: "").isEmpty())
             return
 
+        /*
+        TODO: Fix timezone bug -
+         If you select a location from different timezone than your phone the times for
+         the hourly data will be wrong
+         */
         val newWeatherInstance =
             NeoWeatherApi.retrofitService.getWeather(
-                (locationInfo["latitude"] ?: place.value?.latitude)
+                lat = (location?.latitude ?: place.value?.latitude)
                     ?: 31.64,
-                (locationInfo["longitude"] ?: place.value?.longitude)
+                long = (location?.longitude ?: place.value?.longitude)
                     ?: 60.70,
-                place.value?.timezone ?: "America/Argentina/Cordoba")
+                timezone = (location?.timezone?.ifEmpty { place.value?.timezone } )
+                    ?: "America/Argentina/Cordoba")
+        Log.d(TAG, "Updating data!")
 
         gatherAllData(newWeatherInstance)
 
-        if (locationInfo.isNotEmpty())
-            gatherPlaceData(locationInfo)
+        if (location != null)
+            refreshPlaceData(location)
     }
 
     private suspend fun gatherAllData(newWeatherInstance: NeoWeatherModel) {
@@ -90,18 +99,18 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun gatherPlaceData(locationInfo: Map<String, Double>) {
-        Log.d(TAG, "Updating data!")
+    private suspend fun refreshPlaceData(location: GeoLocation) {
         withContext(Dispatchers.IO) {
-            val address = ReverseGeoCodingApi.retrofitService
-                .getLocationName(
-                    locationInfo["latitude"]!!,
-                    locationInfo["longitude"]!!
-                ).address
-            val placeName = address.city.ifEmpty { address.state }
+            val placeName = location.name.ifEmpty {
+                val address = ReverseGeoCodingApi.retrofitService
+                    .getLocationName(
+                        location.latitude,
+                        location.longitude
+                    ).address
+                address.city.ifEmpty { address.state }
+            }
 
-            val placeInfo = GeoCodingApi.retrofitService
-                .getLocation(place.value?.name ?: placeName)
+            val placeInfo = GeoCodingApi.retrofitService.getLocation(placeName)
                 .results[0]
 
             updatePlace(placeInfo.asDatabaseModel())

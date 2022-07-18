@@ -14,6 +14,11 @@ data class HourlyForecast(
     val weatherCode: List<Int>
 )
 
+/*
+TODO: Fix timezone bug -
+ If you select a location from different timezone than your phone the times for
+ the hourly data will be wrong
+ */
 fun HourlyForecast.asDatabaseModel(): List<Hour> {
     val hourList = mutableListOf<Hour>()
     val currentHour = Calendar.getInstance()

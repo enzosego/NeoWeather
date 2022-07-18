@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSearchBinding
+import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 
@@ -31,7 +34,11 @@ class SearchFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        binding.searchListRecyclerView.adapter = SearchListAdapter()
+        binding.searchListRecyclerView.adapter =
+            SearchListAdapter(LocationListener { location ->
+                viewModel.onLocationClicked(location)
+                findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+            })
         binding.searchListRecyclerView.layoutManager =
             LinearLayoutManager(requireContext())
 

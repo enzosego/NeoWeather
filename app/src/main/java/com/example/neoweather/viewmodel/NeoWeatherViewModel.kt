@@ -41,16 +41,16 @@ class NeoWeatherViewModel(application: Application)
         Log.d("DEBUG", placeInfo.value!!.isItTimeToUpdate().toString())
     }
 
-    fun refreshDataFromRepository(locationInfo: Map<String, Double>) {
+    fun refreshDataFromRepository(location: GeoLocation?) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
-                neoWeatherRepository.refreshDatabase(locationInfo)
+                neoWeatherRepository.refreshDatabase(location)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
-                Log.d("DEBUG", e.toString())
+                Log.d(TAG, e.toString())
                 _status.postValue(NeoWeatherApiStatus.ERROR)
             }
         }
@@ -71,6 +71,10 @@ class NeoWeatherViewModel(application: Application)
                 .results
             _locationList.postValue(newList)
         }
+    }
+
+    fun onLocationClicked(location: GeoLocation) {
+        refreshDataFromRepository(location)
     }
 }
 

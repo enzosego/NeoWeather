@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
+import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.util.Utils.PermissionRequester
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
@@ -63,15 +64,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshData() {
         if (!isGpsEnabled())
-            viewModel.refreshDataFromRepository(mapOf())
+            viewModel.refreshDataFromRepository(null)
 
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
             viewModel.refreshDataFromRepository(
-                mapOf(
-                    "latitude" to location.latitude,
-                    "longitude" to location.longitude
+                GeoLocation(
+                    name = "",
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    country = "",
+                    countryCode = "",
+                    timezone = ""
                 )
             )
         }

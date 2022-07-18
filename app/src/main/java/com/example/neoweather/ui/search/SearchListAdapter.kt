@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.databinding.ItemLocationBinding
 import com.example.neoweather.remote.geocoding.GeoLocation
 
-class SearchListAdapter : ListAdapter<GeoLocation, ItemLocationViewHolder>(
-    DiffCallback
-) {
+class SearchListAdapter(private val clickListener: LocationListener)
+    : ListAdapter<GeoLocation, ItemLocationViewHolder>(DiffCallback) {
 
     private val listSizeLimit = 6
 
@@ -31,7 +30,8 @@ class SearchListAdapter : ListAdapter<GeoLocation, ItemLocationViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ItemLocationViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val location = getItem(position)
+        holder.bind(location, clickListener)
     }
 
     override fun getItemCount(): Int =
@@ -42,8 +42,13 @@ class SearchListAdapter : ListAdapter<GeoLocation, ItemLocationViewHolder>(
 
 class ItemLocationViewHolder(private var binding: ItemLocationBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(geoLocation: GeoLocation) {
-        binding.geoLocation = geoLocation
+    fun bind(geoLocation: GeoLocation, clickListener: LocationListener) {
+        binding.location = geoLocation
+        binding.clickListener = clickListener
         binding.executePendingBindings()
     }
+}
+
+class LocationListener(val clickListener: (location: GeoLocation) -> Unit) {
+    fun onClick(location: GeoLocation) = clickListener(location)
 }
