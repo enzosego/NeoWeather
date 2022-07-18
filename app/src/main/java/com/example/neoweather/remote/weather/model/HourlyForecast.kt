@@ -1,7 +1,5 @@
 package com.example.neoweather.remote.weather.model
 
-import android.util.Log
-import androidx.databinding.adapters.TimePickerBindingAdapter.getHour
 import com.example.neoweather.data.model.hour.Hour
 import com.squareup.moshi.Json
 import java.util.*
@@ -14,14 +12,9 @@ data class HourlyForecast(
     val weatherCode: List<Int>
 )
 
-/*
-TODO: Fix timezone bug -
- If you select a location from different timezone than your phone the times for
- the hourly data will be wrong
- */
-fun HourlyForecast.asDatabaseModel(): List<Hour> {
+fun HourlyForecast.asDatabaseModel(timezone: String): List<Hour> {
     val hourList = mutableListOf<Hour>()
-    val currentHour = Calendar.getInstance()
+    val currentHour = Calendar.getInstance(TimeZone.getTimeZone(timezone))
         .get(Calendar.HOUR_OF_DAY)
     val currentDay  = Calendar.getInstance()
         .get(Calendar.DAY_OF_MONTH)

@@ -49,7 +49,7 @@ object Utils {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        val retrofit = Retrofit.Builder()
+        val retrofit: Retrofit = Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(baseUrl)
             .build()

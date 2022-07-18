@@ -5,4 +5,7 @@
     <string name="fahrenheit">F°</string>
     <string name="celsius">C°</string>
     <string name="temp_unit_toggle_text">Temp Unit</string>
+    <string name="api_status_text">There was an error while fetching the weather data \n
+    Click here to search your location manually</string>
+    <string name="status_image_description">Network status</string>
 </resources>

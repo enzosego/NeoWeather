@@ -13,6 +13,7 @@ import com.example.neoweather.util.Utils.TAG
 import com.example.neoweather.util.Utils.getTimeDiffInMinutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NeoWeatherViewModel(application: Application)
     : ViewModel() {
@@ -36,11 +37,6 @@ class NeoWeatherViewModel(application: Application)
 
     val placeInfo = neoWeatherRepository.place
 
-    fun clickToLog() {
-        Log.d(TAG, "Minutes past: ${getTimeDiffInMinutes(placeInfo.value!!.lastUpdateTime)}")
-        Log.d("DEBUG", placeInfo.value!!.isItTimeToUpdate().toString())
-    }
-
     fun refreshDataFromRepository(location: GeoLocation?) {
         viewModelScope.launch {
             try {
@@ -50,7 +46,7 @@ class NeoWeatherViewModel(application: Application)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
-                Log.d(TAG, e.toString())
+                Log.d(TAG, "Error: $e")
                 _status.postValue(NeoWeatherApiStatus.ERROR)
             }
         }
@@ -74,6 +70,7 @@ class NeoWeatherViewModel(application: Application)
     }
 
     fun onLocationClicked(location: GeoLocation) {
+        _locationList.postValue(listOf())
         refreshDataFromRepository(location)
     }
 }

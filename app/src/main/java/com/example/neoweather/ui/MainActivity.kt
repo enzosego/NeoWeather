@@ -5,6 +5,7 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
 import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.util.Utils.PermissionRequester
+import com.example.neoweather.util.Utils.TAG
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -62,10 +64,19 @@ class MainActivity : AppCompatActivity() {
         requestLocationPermission()
     }
 
-    private fun refreshData() {
-        if (!isGpsEnabled())
-            viewModel.refreshDataFromRepository(null)
+    private fun requestLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            locationPermissionRequester.request {
+                refreshData()
+            }
+    }
 
+    private fun refreshData() {
+        if (!isGpsEnabled()) {
+            Log.d(TAG, "Initiating preferences!")
+            viewModel.refreshDataFromRepository(null)
+            return
+        }
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
@@ -80,13 +91,6 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-    }
-
-    private fun requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            locationPermissionRequester.request {
-                refreshData()
-            }
     }
 
     private fun isGpsEnabled(): Boolean {
@@ -121,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.search_icon ->
                 navController.navigate(R.id.action_homeFragment_to_searchFragment)
-            else ->
+            R.id.settings_icon ->
                 navController.navigate(R.id.action_homeFragment_to_settingsFragment)
         }
         return super.onOptionsItemSelected(item)

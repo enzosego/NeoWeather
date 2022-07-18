@@ -1,5 +1,6 @@
 package com.example.neoweather.repository
 
+import android.text.format.Time.getCurrentTimezone
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
@@ -39,48 +40,45 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         database.placeDao.getPlace().asLiveData()
 
     suspend fun refreshDatabase(location: GeoLocation?) {
+        initiatePreferences()
+        if (place.value == null && location == null)
+            return
         if (place.value?.lastUpdateTime != null
             && !place.value!!.isItTimeToUpdate()
             && (location?.name ?: "").isEmpty())
             return
 
-        /*
-        TODO: Fix timezone bug -
-         If you select a location from different timezone than your phone the times for
-         the hourly data will be wrong
-         */
+        val placeTimezone = (location?.timezone?.ifEmpty { place.value?.timezone })
+            ?: getCurrentTimezone()
         val newWeatherInstance =
             NeoWeatherApi.retrofitService.getWeather(
-                lat = (location?.latitude ?: place.value?.latitude)
-                    ?: 31.64,
-                long = (location?.longitude ?: place.value?.longitude)
-                    ?: 60.70,
-                timezone = (location?.timezone?.ifEmpty { place.value?.timezone } )
-                    ?: "America/Argentina/Cordoba")
-        Log.d(TAG, "Updating data!")
+                lat = (location?.latitude ?: place.value?.latitude)!!,
+                long = (location?.longitude ?: place.value?.longitude)!!,
+                placeTimezone
+            )
 
-        gatherAllData(newWeatherInstance)
-
+        gatherAllData(newWeatherInstance, placeTimezone)
         if (location != null)
-            refreshPlaceData(location)
+            insertNewPlace(location)
     }
 
-    private suspend fun gatherAllData(newWeatherInstance: NeoWeatherModel) {
-        val newDayList = newWeatherInstance.dailyForecast.asDatabaseModel()
-        val newHourList = newWeatherInstance.hourlyForecast.asDatabaseModel()
-        val newCurrentWeather = newWeatherInstance.currentWeather.asDatabaseModel()
-
+    private suspend fun gatherAllData(newWeatherInstance: NeoWeatherModel, placeTimezone: String) {
         withContext(Dispatchers.IO) {
-            if (preferences.value == null)
-                initiatePreferences()
-
-            database.dayDao.insertAll(newDayList)
-            database.hourDao.insertAll(newHourList)
-            database.currentWeatherDao.insert(newCurrentWeather)
+            database.dayDao.insertAll(
+                newWeatherInstance.dailyForecast.asDatabaseModel()
+            )
+            database.hourDao.insertAll(
+                newWeatherInstance.hourlyForecast.asDatabaseModel(placeTimezone)
+            )
+            database.currentWeatherDao.insert(
+                newWeatherInstance.currentWeather.asDatabaseModel()
+            )
         }
     }
 
     private suspend fun initiatePreferences() {
+        if (preferences.value != null)
+            return
         withContext(Dispatchers.IO) {
             database.preferencesDao.insert(
                 Preferences(
@@ -99,7 +97,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun refreshPlaceData(location: GeoLocation) {
+    private suspend fun insertNewPlace(location: GeoLocation) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
                 val address = ReverseGeoCodingApi.retrofitService
@@ -110,10 +108,10 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
                 address.city.ifEmpty { address.state }
             }
 
-            val placeInfo = GeoCodingApi.retrofitService.getLocation(placeName)
+            val newPlace = GeoCodingApi.retrofitService.getLocation(placeName)
                 .results[0]
 
-            updatePlace(placeInfo.asDatabaseModel())
+            updatePlace(newPlace.asDatabaseModel())
         }
     }
 

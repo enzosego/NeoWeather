@@ -11,19 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_input_field"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/search_input_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
             android:padding="8dp"
             android:hint="@string/search"
             android:layout_marginTop="8dp"
-            android:maxLines="1"
-            android:inputType="text"
+            app:startIconDrawable="@drawable/ic_action_location"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_input_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:maxLines="1"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/confirm_search_button"
@@ -31,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/search"
-            app:layout_constraintTop_toBottomOf="@id/search_input_field"
+            app:layout_constraintTop_toBottomOf="@id/search_input_holder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

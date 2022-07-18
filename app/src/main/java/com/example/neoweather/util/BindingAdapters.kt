@@ -3,6 +3,7 @@ package com.example.neoweather.util
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.R
@@ -18,20 +19,49 @@ import com.example.neoweather.ui.search.SearchListAdapter
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 
 
-@BindingAdapter("apiStatusImage")
-fun bindStatusImage(statusImageView: ImageView, status: NeoWeatherApiStatus?) {
+@BindingAdapter(value = ["apiStatusImage", "placeInfo"], requireAll = true)
+fun bindStatusImage(
+    statusImage: ImageView,
+    status: NeoWeatherApiStatus?,
+    placeInfo: Place?) {
+
     when(status) {
         NeoWeatherApiStatus.LOADING -> {
-            statusImageView.visibility = View.VISIBLE
-            statusImageView.setImageResource(R.drawable.loading_animation)
+            statusImage.setImageResource(R.drawable.loading_animation)
+            statusImage.visibility = View.VISIBLE
         }
-        NeoWeatherApiStatus.DONE -> {
-            statusImageView.visibility = View.GONE
+        NeoWeatherApiStatus.ERROR -> {
+            statusImage.setImageResource(R.drawable.ic_connection_error)
+            statusImage.visibility = View.VISIBLE
         }
+        NeoWeatherApiStatus.DONE -> statusImage.visibility = View.GONE
         else -> {
-            statusImageView.visibility = View.VISIBLE
-            statusImageView.setImageResource(R.drawable.ic_connection_error)
+            when (placeInfo) {
+                null -> {
+                    statusImage.setImageResource(R.drawable.ic_connection_error)
+                    statusImage.visibility = View.VISIBLE
+                }
+                else -> statusImage.visibility = View.GONE
+            }
         }
+    }
+}
+
+@BindingAdapter(value = ["apiStatusText", "placeInfo"], requireAll = true)
+fun bindTextStatus(
+    textView: TextView,
+    status: NeoWeatherApiStatus?,
+    placeInfo: Place?) {
+
+    textView.visibility = when (status) {
+        NeoWeatherApiStatus.ERROR -> View.VISIBLE
+        null -> {
+            when (placeInfo) {
+                null -> View.VISIBLE
+                else -> View.GONE
+            }
+        }
+        else -> View.GONE
     }
 }
 

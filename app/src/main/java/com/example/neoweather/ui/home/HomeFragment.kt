@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
@@ -40,6 +42,10 @@ class HomeFragment : Fragment() {
         binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false
 
         binding.viewModel = viewModel
+
+        binding.apiStatusHolder.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
 
         return binding.root
     }
