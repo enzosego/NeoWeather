@@ -1,6 +1,7 @@
 package com.example.neoweather.remote.weather.model
 
 import com.example.neoweather.data.model.day.Day
+import com.example.neoweather.data.model.day.DaysEntity
 import com.squareup.moshi.Json
 
 data class DailyForecast(
@@ -23,24 +24,26 @@ data class DailyForecast(
     val weatherCode: List<Int>
 )
 
-fun DailyForecast.asDatabaseModel(): List<Day> {
+fun DailyForecast.asDatabaseModel(placeId: Int): DaysEntity {
     val dayList = mutableListOf<Day>()
 
     for (i in time.indices) {
         val newDay = Day(
-            id = i,
             time = time[i],
             sunrise = sunrise[i],
             sunset = sunset[i],
             maxTemp = maxTemp[i],
             minTemp = minTemp[i],
-            precipitationSum = precipitationSum[i],
-            rainSum = rainSum[i],
-            windDirectionDominant = windDirectionDominant[i],
-            windSpeedMax = windSpeedMax[i],
+            precipitationSum = precipitationSum.getOrNull(i) ?: 0.0,
+            rainSum = rainSum.getOrNull(i) ?: 0.0,
+            windDirectionDominant = windDirectionDominant.getOrNull(i) ?: 0.0,
+            windSpeedMax = windSpeedMax.getOrNull(i) ?: 0.0,
             weatherCode = weatherCode[i]
         )
         dayList.add(newDay)
     }
-    return dayList
+    return DaysEntity(
+        id = placeId,
+        dayList = dayList
+    )
 }

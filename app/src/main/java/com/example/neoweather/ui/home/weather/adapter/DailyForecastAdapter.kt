@@ -1,4 +1,4 @@
-package com.example.neoweather.ui.home
+package com.example.neoweather.ui.home.weather.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,9 +17,13 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
 
     private var preferences: Preferences? = null
 
+    fun submitPreferences(newPreferences: Preferences?) {
+        preferences = newPreferences
+    }
+
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {
         override fun areItemsTheSame(oldItem: Day, newItem: Day):
-                Boolean = oldItem.id == newItem.id
+                Boolean = oldItem.time == newItem.time
 
         override fun areContentsTheSame(oldItem: Day, newItem: Day):
                 Boolean = oldItem.minTemp == newItem.minTemp
@@ -38,14 +42,12 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
         val dayData = getItem(position)
         holder.bind(dayData)
     }
-
-    fun submitPreferences(newPreferences: Preferences?) {
-        preferences = newPreferences
-    }
 }
 
-class ItemDayViewHolder(private var binding: ItemDayBinding, private val preferences: Preferences?) :
-    RecyclerView.ViewHolder(binding.root) {
+class ItemDayViewHolder(
+    private var binding: ItemDayBinding,
+    private val preferences: Preferences?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(dayData: Day) {
         binding.time =
             WeatherUnits.getDayFromTime(dayData.time)
@@ -53,7 +55,7 @@ class ItemDayViewHolder(private var binding: ItemDayBinding, private val prefere
         binding.maxTemp =
             WeatherUnits.getTempUnit(
                 dayData.maxTemp,
-                preferences?.isFahrenheitEnabled ?: false)
+                isFahrenheitEnabled = preferences?.isFahrenheitEnabled ?: false)
 
         binding.weatherDescription =
             WeatherCodeMapping.description[dayData.weatherCode]

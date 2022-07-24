@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.neoweather.viewmodel.NeoWeatherViewModel" />
+        <variable
+            name="position"
+            type="int" />
+        <variable
+            name="weatherCodeMapping"
+            type="com.example.neoweather.util.WeatherCodeMapping" />
+        <variable
+            name="weatherUnits"
+            type="com.example.neoweather.util.WeatherUnits" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context="com.example.neoweather.ui.home.weather.WeatherFragment">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/currentWeather"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/weather_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="32sp"
+                        android:padding="10dp"
+                        android:layout_marginTop="80dp"
+                        android:text="@{weatherCodeMapping.description[viewModel.currentWeather[position].weatherCode]}"
+                        tools:text="Cloudy"/>
+
+                    <TextView
+                        android:id="@+id/temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="26sp"
+                        android:padding="10dp"
+                        android:text="@{weatherUnits.getTempUnit(viewModel.currentWeather[position].temperature, viewModel.preferences.isFahrenheitEnabled)}"
+                        tools:text="26°"/>
+
+                    <TextView
+                        android:id="@+id/place_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:padding="10dp"
+                        android:text="@{viewModel.placesList[position].name}"
+                        tools:text="London"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/currentWeather"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/hourly_forecast_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:padding="8dp"
+                        app:preferences="@{viewModel.preferences}"
+                        app:hourList="@{viewModel.hourlyData[position].hourList}"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/daily_forecast_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:padding="8dp"
+                        app:preferences="@{viewModel.preferences}"
+                        app:dayList="@{viewModel.dailyData[position].dayList}"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

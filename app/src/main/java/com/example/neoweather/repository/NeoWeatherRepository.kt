@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.data.model.current.CurrentWeather
-import com.example.neoweather.data.model.day.Day
-import com.example.neoweather.data.model.hour.Hour
+import com.example.neoweather.data.model.day.DaysEntity
+import com.example.neoweather.data.model.hour.HoursEntity
 import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.place.isItTimeToUpdate
 import com.example.neoweather.data.model.preferences.Preferences
@@ -24,59 +24,76 @@ import kotlinx.coroutines.withContext
 
 class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
 
-    val hourlyData: LiveData<List<Hour>> =
-        database.hourDao.getAllHours().asLiveData()
+    val placesList: LiveData<List<Place>> =
+        database.placeDao.getAllPlaces().asLiveData()
 
-    val dailyData: LiveData<List<Day>> =
-        database.dayDao.getAllDays().asLiveData()
+    var hourlyDataList: LiveData<List<HoursEntity>> =
+        database.hoursDao.getAllEntities().asLiveData()
+
+    var dailyDataList: LiveData<List<DaysEntity>> =
+        database.daysDao.getAllEntities().asLiveData()
+
+    var currentWeatherList: LiveData<List<CurrentWeather>> =
+        database.currentWeatherDao.getAllEntities().asLiveData()
 
     val preferences: LiveData<Preferences> =
         database.preferencesDao.getPreferences().asLiveData()
 
-    val currentWeather: LiveData<CurrentWeather> =
-        database.currentWeatherDao.getCurrentWeather().asLiveData()
-
-    val place: LiveData<Place> =
-        database.placeDao.getPlace().asLiveData()
-
-    suspend fun refreshDatabase(location: GeoLocation?) {
-        initiatePreferences()
-        if (place.value == null && location == null)
+    suspend fun refreshPlaceData(location: GeoLocation?, placeId: Int?) {
+        /*
+        if (placeId != null
+            && !placesList.value.isNullOrEmpty()
+            && !placesList.value!![placeId].isItTimeToUpdate())
             return
-        if (place.value?.lastUpdateTime != null
-            && !place.value!!.isItTimeToUpdate()
-            && (location?.name ?: "").isEmpty())
-            return
+         */
 
-        val placeTimezone = (location?.timezone?.ifEmpty { place.value?.timezone })
-            ?: getCurrentTimezone()
+        val placeTimezone =
+            (location?.timezone ?: "")
+                .ifEmpty {
+                    if (placesList.value.isNullOrEmpty())
+                        getCurrentTimezone()
+                    else
+                        placesList.value!![placeId!!].timezone
+                }
+
         val newWeatherInstance =
             NeoWeatherApi.retrofitService.getWeather(
-                lat = (location?.latitude ?: place.value?.latitude)!!,
-                long = (location?.longitude ?: place.value?.longitude)!!,
-                placeTimezone
+                lat = location?.latitude ?: placesList.value!![placeId!!].latitude,
+                long = location?.longitude ?: placesList.value!![placeId!!].longitude,
+                timezone = placeTimezone
             )
+        val newPlaceId = getNewPlaceId()
 
-        gatherAllData(newWeatherInstance, placeTimezone)
-        if (location != null)
-            insertNewPlace(location)
+        if (placesList.value.isNullOrEmpty() && location != null)
+            insertNewPlace(location, 0)
+        else if (location != null && placeId == null)
+            insertNewPlace(location, newPlaceId)
+
+        insertWeatherData(
+            newWeatherInstance,
+            placeTimezone,
+            placeId ?: newPlaceId)
     }
 
-    private suspend fun gatherAllData(newWeatherInstance: NeoWeatherModel, placeTimezone: String) {
+    private suspend fun insertWeatherData(
+        newWeatherInstance: NeoWeatherModel,
+        placeTimezone: String,
+        placeId: Int
+    ) {
         withContext(Dispatchers.IO) {
-            database.dayDao.insertAll(
-                newWeatherInstance.dailyForecast.asDatabaseModel()
+            database.daysDao.insert(
+                newWeatherInstance.dailyForecast.asDatabaseModel(placeId)
             )
-            database.hourDao.insertAll(
-                newWeatherInstance.hourlyForecast.asDatabaseModel(placeTimezone)
+            database.hoursDao.insert(
+                newWeatherInstance.hourlyForecast.asDatabaseModel(placeTimezone, placeId)
             )
             database.currentWeatherDao.insert(
-                newWeatherInstance.currentWeather.asDatabaseModel()
+                newWeatherInstance.currentWeather.asDatabaseModel(placeId)
             )
         }
     }
 
-    private suspend fun initiatePreferences() {
+    suspend fun initiatePreferences() {
         if (preferences.value != null)
             return
         withContext(Dispatchers.IO) {
@@ -97,7 +114,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun insertNewPlace(location: GeoLocation) {
+    private suspend fun insertNewPlace(location: GeoLocation, id: Int) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
                 val address = ReverseGeoCodingApi.retrofitService
@@ -111,7 +128,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             val newPlace = GeoCodingApi.retrofitService.getLocation(placeName)
                 .results[0]
 
-            updatePlace(newPlace.asDatabaseModel())
+            updatePlace(newPlace.asDatabaseModel(id))
         }
     }
 
@@ -120,4 +137,10 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             database.placeDao.insert(place)
         }
     }
+
+    private fun getNewPlaceId(): Int =
+        if (placesList.value.isNullOrEmpty())
+            0
+        else
+            placesList.value!!.size
 }

@@ -73,14 +73,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshData() {
         if (!isGpsEnabled()) {
-            Log.d(TAG, "Initiating preferences!")
-            viewModel.refreshDataFromRepository(null)
             return
         }
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.refreshDataFromRepository(
+            viewModel.refreshPlaceData(
                 GeoLocation(
                     name = "",
                     latitude = location.latitude,
@@ -88,7 +86,8 @@ class MainActivity : AppCompatActivity() {
                     country = "",
                     countryCode = "",
                     timezone = ""
-                )
+                ),
+                placeId = 0
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.example.neoweather.ui.home
+package com.example.neoweather.ui.home.weather.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -19,13 +19,17 @@ class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
 
     private var preferences: Preferences? = null
 
+    fun submitPreferences(newPreferences: Preferences?) {
+        preferences = newPreferences
+    }
+
     private object DiffCallback : DiffUtil.ItemCallback<Hour>() {
         override fun areItemsTheSame(oldItem: Hour, newItem: Hour):
-                Boolean = oldItem.id == newItem.id
+                Boolean = oldItem.time == newItem.time
 
         override fun areContentsTheSame(oldItem: Hour, newItem: Hour):
                 Boolean = oldItem.temp == newItem.temp
-                && oldItem.time == newItem.time
+                && oldItem.weatherCode == newItem.weatherCode
 
     }
 
@@ -47,14 +51,12 @@ class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
             listSizeLimit
         else
             0
-
-    fun submitPreferences(newPreferences: Preferences?) {
-        preferences = newPreferences
-    }
 }
 
-class ItemHourViewHolder(private var binding: ItemHourBinding, private val preferences: Preferences?) :
-    RecyclerView.ViewHolder(binding.root) {
+class ItemHourViewHolder(
+    private var binding: ItemHourBinding,
+    private val preferences: Preferences?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(hourData: Hour) {
         binding.time =
             WeatherUnits.getHourFromTime(hourData.time)
@@ -62,7 +64,7 @@ class ItemHourViewHolder(private var binding: ItemHourBinding, private val prefe
         binding.temperature =
             WeatherUnits.getTempUnit(
                 hourData.temp,
-                preferences?.isFahrenheitEnabled ?: false)
+                isFahrenheitEnabled = preferences?.isFahrenheitEnabled ?: false)
 
         binding.weatherCode =
             WeatherCodeMapping.description[hourData.weatherCode]

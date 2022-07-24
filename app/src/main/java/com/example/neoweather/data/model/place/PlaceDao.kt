@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface PlaceDao {
 
     @Query("SELECT * FROM place")
-    fun getPlace(): Flow<Place>
+    fun getAllPlaces(): Flow<List<Place>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(place: Place)

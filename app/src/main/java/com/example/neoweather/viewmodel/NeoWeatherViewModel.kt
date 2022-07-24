@@ -4,16 +4,14 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.NeoWeatherDatabase
-import com.example.neoweather.data.model.place.isItTimeToUpdate
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 import com.example.neoweather.util.Utils.TAG
-import com.example.neoweather.util.Utils.getTimeDiffInMinutes
+import com.example.neoweather.util.WeatherUnits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class NeoWeatherViewModel(application: Application)
     : ViewModel() {
@@ -27,22 +25,28 @@ class NeoWeatherViewModel(application: Application)
     private val _locationList = MutableLiveData<List<GeoLocation>>()
     val locationList: LiveData<List<GeoLocation>> = _locationList
 
-    val dayList = neoWeatherRepository.dailyData
+    val dailyData = neoWeatherRepository.dailyDataList
 
-    val hourList = neoWeatherRepository.hourlyData
+    val hourlyData = neoWeatherRepository.hourlyDataList
 
-    val currentWeather = neoWeatherRepository.currentWeather
+    val currentWeather = neoWeatherRepository.currentWeatherList
 
     val preferences = neoWeatherRepository.preferences
 
-    val placeInfo = neoWeatherRepository.place
+    val placesList = neoWeatherRepository.placesList
 
-    fun refreshDataFromRepository(location: GeoLocation?) {
+    init {
+        viewModelScope.launch {
+            neoWeatherRepository.initiatePreferences()
+        }
+    }
+
+    fun refreshPlaceData(location: GeoLocation?, placeId: Int?) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
-                neoWeatherRepository.refreshDatabase(location)
+                neoWeatherRepository.refreshPlaceData(location, placeId)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
@@ -71,7 +75,7 @@ class NeoWeatherViewModel(application: Application)
 
     fun onLocationClicked(location: GeoLocation) {
         _locationList.postValue(listOf())
-        refreshDataFromRepository(location)
+        refreshPlaceData(location, null)
     }
 }
 

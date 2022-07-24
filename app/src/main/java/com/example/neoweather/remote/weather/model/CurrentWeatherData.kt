@@ -14,9 +14,9 @@ data class CurrentWeatherData(
     val weatherCode: Int
 )
 
-fun CurrentWeatherData.asDatabaseModel(): CurrentWeather =
+fun CurrentWeatherData.asDatabaseModel(newId: Int): CurrentWeather =
     CurrentWeather(
-        id = 1,
+        id = newId,
         weatherCode = weatherCode,
         time = time,
         temperature = temperature,

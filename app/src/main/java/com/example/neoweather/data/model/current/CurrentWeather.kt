@@ -1,8 +1,10 @@
 package com.example.neoweather.data.model.current
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(tableName = "current_data")
+@Entity(tableName = "current_weather")
 data class CurrentWeather(
     @PrimaryKey
     val id: Int,

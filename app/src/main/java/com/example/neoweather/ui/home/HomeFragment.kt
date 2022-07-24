@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentHomeBinding
+import com.example.neoweather.ui.home.weather.adapter.WeatherTabAdapter
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(){
 
     private val viewModel: NeoWeatherViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) {
@@ -22,26 +22,20 @@ class HomeFragment : Fragment() {
         NeoWeatherViewModelFactory(activity.application)
     }
 
+    private lateinit var binding: FragmentHomeBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentHomeBinding.inflate(inflater)
+        binding = FragmentHomeBinding.inflate(layoutInflater)
 
         binding.lifecycleOwner = this
 
-        binding.hourlyForecastRecyclerView.adapter = HourlyForecastAdapter()
-        binding.hourlyForecastRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.hourlyForecastRecyclerView.isNestedScrollingEnabled = false
-
-        binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
-        binding.dailyForecastRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext())
-        binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false
-
         binding.viewModel = viewModel
+
+        binding.homeViewPager.adapter = WeatherTabAdapter(requireActivity())
 
         binding.apiStatusHolder.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)

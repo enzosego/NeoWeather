@@ -18,9 +18,9 @@ data class GeoLocation(
     val timezone: String
 )
 
-fun GeoLocation.asDatabaseModel(): Place =
+fun GeoLocation.asDatabaseModel(placeId: Int): Place =
     Place(
-        id = 1,
+        id = placeId,
         name = name,
         latitude = latitude,
         longitude = longitude,
