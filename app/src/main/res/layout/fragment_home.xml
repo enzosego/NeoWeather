@@ -5,6 +5,9 @@
         <variable
             name="viewModel"
             type="com.example.neoweather.viewmodel.NeoWeatherViewModel" />
+        <variable
+            name="currentItemNum"
+            type="int" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout

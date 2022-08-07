@@ -50,18 +50,17 @@ class WeatherTabFragment(private val position: Int) : Fragment() {
         binding.weatherCodeMapping = WeatherCodeMapping
         binding.weatherUnits = WeatherUnits
 
-        viewModel.refreshPlaceData(null, position)
-
         return binding.root
     }
 
     companion object {
         private var POSITION_ARG = "position_arg"
         @JvmStatic
-        fun newInstance(position: Int) = WeatherTabFragment(position).apply {
-            arguments = Bundle().apply {
-                putInt(POSITION_ARG, position)
-            }
+        fun newInstance(position: Int) =
+            WeatherTabFragment(position).apply {
+                arguments = Bundle().apply {
+                    putInt(POSITION_ARG, position)
+                }
         }
     }
 }

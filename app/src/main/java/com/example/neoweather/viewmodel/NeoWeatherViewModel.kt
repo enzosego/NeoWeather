@@ -9,7 +9,6 @@ import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 import com.example.neoweather.util.Utils.TAG
-import com.example.neoweather.util.WeatherUnits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,6 +23,9 @@ class NeoWeatherViewModel(application: Application)
 
     private val _locationList = MutableLiveData<List<GeoLocation>>()
     val locationList: LiveData<List<GeoLocation>> = _locationList
+
+    private val _currentTabNum = MutableLiveData(0)
+    val currentTabNum: LiveData<Int> = _currentTabNum
 
     val dailyData = neoWeatherRepository.dailyDataList
 
@@ -76,6 +78,16 @@ class NeoWeatherViewModel(application: Application)
     fun onLocationClicked(location: GeoLocation) {
         _locationList.postValue(listOf())
         refreshPlaceData(location, null)
+    }
+
+    fun updateCurrentTabNum(newTabNum: Int) {
+        _currentTabNum.postValue(newTabNum)
+    }
+
+    fun deletePlace(placeId: Int) {
+        viewModelScope.launch {
+            neoWeatherRepository.deletePlace(placeId)
+        }
     }
 }
 
