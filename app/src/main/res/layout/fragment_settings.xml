@@ -10,43 +10,132 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/units_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@+id/temp_unit_toggle"
-            app:layout_constraintBottom_toBottomOf="@+id/temp_unit_toggle"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/temp_unit_toggle_text"/>
-        
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/temp_unit_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:padding="4dp"
-            app:singleSelection="true"
+            android:text="@string/units_title_text"
+            android:textSize="26sp"
+            tools:text="@string/units_title_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" >
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <Button
-                android:id="@+id/fahrenheit_button"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            app:layout_constraintTop_toBottomOf="@id/units_title">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/celsius"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:textSize="22sp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/temp_unit_toggle"
+                app:layout_constraintBottom_toBottomOf="@+id/temp_unit_toggle"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/temp_unit_toggle_text"/>
 
-            <Button
-                android:id="@+id/celsius_button"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/temp_unit_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fahrenheit"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:layout_marginEnd="8dp"
+                android:padding="4dp"
+                app:singleSelection="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" >
 
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                <Button
+                    android:id="@+id/celsius_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/celsius"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                    android:id="@+id/fahrenheit_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fahrenheit"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/speed_unit_toggle"
+                app:layout_constraintBottom_toBottomOf="@+id/speed_unit_toggle"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/speed_unit_toggle_text"/>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/speed_unit_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:padding="4dp"
+                app:singleSelection="true"
+                app:layout_constraintTop_toBottomOf="@id/temp_unit_toggle"
+                app:layout_constraintEnd_toEndOf="parent" >
+
+                <Button
+                    android:id="@+id/kilometers_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/kph"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                    android:id="@+id/miles_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mph"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/rain_unit_toggle"
+                app:layout_constraintBottom_toBottomOf="@+id/rain_unit_toggle"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/rain_unit"/>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/rain_unit_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:padding="4dp"
+                app:singleSelection="true"
+                app:layout_constraintTop_toBottomOf="@id/speed_unit_toggle"
+                app:layout_constraintEnd_toEndOf="parent" >
+
+                <Button
+                    android:id="@+id/millimeters_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/millimeters"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                    android:id="@+id/inches_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inches"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

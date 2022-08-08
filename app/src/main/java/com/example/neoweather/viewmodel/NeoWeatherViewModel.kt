@@ -27,6 +27,9 @@ class NeoWeatherViewModel(application: Application)
     private val _currentTabNum = MutableLiveData(0)
     val currentTabNum: LiveData<Int> = _currentTabNum
 
+    private val _previousPlaceListSize = MutableLiveData<Int>()
+    val previousPlaceListSize: LiveData<Int> = _previousPlaceListSize
+
     val dailyData = neoWeatherRepository.dailyDataList
 
     val hourlyData = neoWeatherRepository.hourlyDataList
@@ -67,6 +70,24 @@ class NeoWeatherViewModel(application: Application)
         }
     }
 
+    fun updateSpeedUnit(newValue: Boolean) {
+        val updatedPreferences = preferences.value!!.copy(
+            isMilesPerHourEnabled = newValue
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            neoWeatherRepository.updatePreferences(updatedPreferences)
+        }
+    }
+
+    fun updateRainUnit(newValue: Boolean) {
+        val updatedPreferences = preferences.value!!.copy(
+            isInchesEnabled = newValue
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            neoWeatherRepository.updatePreferences(updatedPreferences)
+        }
+    }
+
     fun updateSearchList(cityName: String) {
         viewModelScope.launch {
             val newList = GeoCodingApi.retrofitService.getLocation(cityName)
@@ -77,7 +98,13 @@ class NeoWeatherViewModel(application: Application)
 
     fun onLocationClicked(location: GeoLocation) {
         _locationList.postValue(listOf())
+        _previousPlaceListSize.postValue(placesList.value!!.size)
+        updatePreviousListSize()
         refreshPlaceData(location, null)
+    }
+
+    fun updatePreviousListSize() {
+        _previousPlaceListSize.postValue(placesList.value!!.size)
     }
 
     fun updateCurrentTabNum(newTabNum: Int) {

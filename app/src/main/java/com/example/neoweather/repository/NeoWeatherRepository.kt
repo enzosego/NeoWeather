@@ -162,7 +162,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     private suspend fun updateIds(placeId: Int) {
         var i = placeId
         withContext(Dispatchers.IO) {
-            while (i < placesList.value!!.size) {
+            while (i <= placesList.value!!.size) {
                 database.placeDao.updateId(i, i-1)
                 database.hoursDao.updateId(i, i-1)
                 database.daysDao.updateId(i, i-1)

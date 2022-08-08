@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.neoweather.databinding.FragmentSettingsBinding
+import com.example.neoweather.util.Utils.OnUnitCheckedListener
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 
@@ -33,37 +34,66 @@ class SettingsFragment : Fragment() {
         binding.viewModel = viewModel
 
         bindTempUnitToggle()
+        bindSpeedUnitToggle()
+        bindRainUnitToggle()
 
         return binding.root
     }
 
     private fun bindTempUnitToggle() {
-        var currentTempUnit =
+        val selectedButtonId =
             when(viewModel.preferences.value!!.isFahrenheitEnabled) {
-                false -> binding.fahrenheitButton.id
-                else -> binding.celsiusButton.id
+                false -> binding.celsiusButton.id
+                else -> binding.fahrenheitButton.id
             }
-        binding.tempUnitToggle.check(currentTempUnit)
+        binding.tempUnitToggle.check(selectedButtonId)
 
-        binding.tempUnitToggle
-            .addOnButtonCheckedListener { group, checkedId, isChecked ->
-                if (isChecked) {
-                    when(checkedId) {
-                        binding.fahrenheitButton.id ->
-                            viewModel.updateTempUnit(false)
-                        else ->
-                            viewModel.updateTempUnit(true)
-                    }
-                } else {
-                    if (group.checkedButtonId == View.NO_ID) {
-                        currentTempUnit =
-                            when(viewModel.preferences.value!!.isFahrenheitEnabled) {
-                                false -> binding.fahrenheitButton.id
-                                else -> binding.celsiusButton.id
-                            }
-                        group.check(currentTempUnit)
-                    }
-                }
+        binding.tempUnitToggle.addOnButtonCheckedListener(
+            OnUnitCheckedListener(
+                action = { newValue -> viewModel.updateTempUnit(newValue) },
+                preferenceState = viewModel.preferences.value!!.isFahrenheitEnabled,
+                selectedButtonId = selectedButtonId,
+                firstOptionId = binding.celsiusButton.id,
+                secondOptionId = binding.fahrenheitButton.id
+            )
+        )
+    }
+
+    private fun bindSpeedUnitToggle() {
+        val selectedButtonId =
+            when(viewModel.preferences.value!!.isMilesPerHourEnabled) {
+                false -> binding.kilometersButton.id
+                else -> binding.milesButton.id
             }
+        binding.speedUnitToggle.check(selectedButtonId)
+
+        binding.speedUnitToggle.addOnButtonCheckedListener(
+            OnUnitCheckedListener(
+                action = { newValue -> viewModel.updateSpeedUnit(newValue) },
+                preferenceState = viewModel.preferences.value!!.isMilesPerHourEnabled,
+                selectedButtonId = selectedButtonId,
+                firstOptionId = binding.kilometersButton.id,
+                secondOptionId = binding.milesButton.id
+            )
+        )
+    }
+
+    private fun bindRainUnitToggle() {
+        val selectedButtonId =
+            when(viewModel.preferences.value!!.isInchesEnabled) {
+                false -> binding.millimetersButton.id
+                else -> binding.inchesButton.id
+            }
+        binding.rainUnitToggle.check(selectedButtonId)
+
+        binding.rainUnitToggle.addOnButtonCheckedListener(
+            OnUnitCheckedListener(
+                action = { newValue -> viewModel.updateRainUnit(newValue) },
+                preferenceState = viewModel.preferences.value!!.isInchesEnabled,
+                selectedButtonId = selectedButtonId,
+                firstOptionId = binding.millimetersButton.id,
+                secondOptionId = binding.inchesButton.id
+            )
+        )
     }
 }

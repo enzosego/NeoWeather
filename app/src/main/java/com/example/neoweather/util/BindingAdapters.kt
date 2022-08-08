@@ -3,7 +3,6 @@ package com.example.neoweather.util
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -73,6 +72,26 @@ fun bindTextStatus(
 fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
     val adapter = viewPager.adapter as WeatherTabAdapter
     adapter.submitList(placesList)
+}
+
+@BindingAdapter(value = ["previousPlaceListSize", "list", "syncPreviousSize"], requireAll = true)
+fun checkIfPlaceWasAdded(
+    viewPager: ViewPager2,
+    previousPlaceListSize: Int?,
+    list: List<Place>?,
+    syncPreviousSize: () -> Unit
+) {
+    if (list == null || previousPlaceListSize == null)
+        return
+    if (previousPlaceListSize == list.size)
+        return
+
+    viewPager.apply {
+        post {
+            setCurrentItem(list.size, true)
+        }
+    }
+    syncPreviousSize()
 }
 
 @BindingAdapter(value = ["hourList", "preferences"])
