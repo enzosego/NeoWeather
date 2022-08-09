@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 data class HoursEntity (
     @PrimaryKey
     val id: Int,
-    @ColumnInfo
+    @ColumnInfo(name = "hour_list")
     val hourList: List<Hour>
 )

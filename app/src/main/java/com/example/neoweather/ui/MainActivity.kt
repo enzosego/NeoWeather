@@ -5,7 +5,6 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -17,7 +16,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
 import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.util.Utils.PermissionRequester
-import com.example.neoweather.util.Utils.TAG
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -78,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.updateOrInsertPlace(
+            viewModel.insertOrUpdatePlace(
                 GeoLocation(
                     name = "",
                     latitude = location.latitude,

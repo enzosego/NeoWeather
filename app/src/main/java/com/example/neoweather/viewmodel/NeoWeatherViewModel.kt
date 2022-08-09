@@ -39,7 +39,7 @@ class NeoWeatherViewModel(application: Application)
 
     val placesList = neoWeatherRepository.placesList
 
-    fun updateOrInsertPlace(location: GeoLocation) {
+    fun insertOrUpdatePlace(location: GeoLocation) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
@@ -54,12 +54,12 @@ class NeoWeatherViewModel(application: Application)
         }
     }
 
-    fun refreshPlaceData(placeId: Int) {
+    fun refreshPlaceData(id: Int) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
-                neoWeatherRepository.refreshPlaceData(placeId)
+                neoWeatherRepository.refreshPlaceData(id)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
@@ -80,7 +80,7 @@ class NeoWeatherViewModel(application: Application)
 
     fun updateSpeedUnit(newValue: Boolean) {
         val updatedPreferences = preferences.value!!.copy(
-            isMilesPerHourEnabled = newValue
+            isMilesEnabled = newValue
         )
         viewModelScope.launch {
             neoWeatherRepository.updatePreferences(updatedPreferences)
@@ -108,7 +108,7 @@ class NeoWeatherViewModel(application: Application)
         _locationList.postValue(listOf())
         _previousPlaceListSize.postValue(placesList.value!!.size)
         updatePreviousListSize()
-        updateOrInsertPlace(location)
+        insertOrUpdatePlace(location)
     }
 
     fun updatePreviousListSize() {

@@ -13,7 +13,7 @@ data class HourlyForecast(
     val weatherCode: List<Int>
 )
 
-fun HourlyForecast.asDatabaseModel(timezone: String, newId: Int): HoursEntity {
+fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
     val hourList = mutableListOf<Hour>()
     val currentHour = Calendar.getInstance(TimeZone.getTimeZone(timezone))
         .get(Calendar.HOUR_OF_DAY)

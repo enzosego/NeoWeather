@@ -1,5 +1,6 @@
 package com.example.neoweather.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.neoweather.data.NeoWeatherDatabase
@@ -7,17 +8,18 @@ import com.example.neoweather.data.model.current.CurrentWeather
 import com.example.neoweather.data.model.day.DaysEntity
 import com.example.neoweather.data.model.hour.HoursEntity
 import com.example.neoweather.data.model.place.Place
-import com.example.neoweather.data.model.place.isItTimeToUpdate
 import com.example.neoweather.data.model.place.newLastUpdateTime
+import com.example.neoweather.data.model.place.notUpdateTime
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.remote.geocoding.asDatabaseModel
 import com.example.neoweather.remote.reverse_geocoding.ReverseGeoCodingApi
-import com.example.neoweather.remote.reverse_geocoding.getPlaceName
+import com.example.neoweather.remote.reverse_geocoding.getName
 import com.example.neoweather.remote.weather.NeoWeatherApi
 import com.example.neoweather.remote.weather.model.NeoWeatherModel
 import com.example.neoweather.remote.weather.model.asDatabaseModel
+import com.example.neoweather.util.Utils.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -38,49 +40,58 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     val preferences: LiveData<Preferences> =
         database.preferencesDao.getPreferences().asLiveData()
 
-    suspend fun refreshPlaceData(placeId: Int) {
-        if (!placesList.value!![placeId].isItTimeToUpdate())
+    suspend fun refreshPlaceData(id: Int) {
+        if (placesList.value!![id].notUpdateTime(30))
             return
 
-        val currentPlace = placesList.value!![placeId]
+        with(placesList.value!![id]) {
+            val weather = NeoWeatherApi.retrofitService
+                .getWeather(
+                    latitude,
+                    longitude,
+                    timezone
+                )
+            insertWeatherData(
+                weather,
+                timezone,
+                id
+            )
+            insertPlace(copy(lastUpdateTime = newLastUpdateTime()))
+        }
+    }
 
-        val newWeatherInstance = NeoWeatherApi.retrofitService.getWeather(
-            currentPlace.latitude,
-            currentPlace.longitude,
-            currentPlace.timezone
-        )
-        insertWeatherData(
-            newWeatherInstance,
-            currentPlace.timezone,
-            placeId)
-        insertPlace(currentPlace.copy(
-            lastUpdateTime = currentPlace.newLastUpdateTime())
-        )
+    private suspend fun insertWeatherData(
+        weather: NeoWeatherModel,
+        timezone: String,
+        id: Int
+    ) {
+        withContext(Dispatchers.IO) {
+            database.daysDao.insert(
+                weather.dailyForecast.asDatabaseModel(id)
+            )
+            database.hoursDao.insert(
+                weather.hourlyForecast.asDatabaseModel(id, timezone)
+            )
+            database.currentWeatherDao.insert(
+                weather.currentWeather.asDatabaseModel(id)
+            )
+        }
     }
 
     suspend fun updateOrInsertPlace(location: GeoLocation) {
-        initiatePreferences()
-
         if (location.name != "")
-            insertNewPlace(location)
+            insertNewPlace(location, false)
         else
-            getPlaceFromGpsLocation(location)
+            getPlaceFromGps(location)
     }
 
-    private suspend fun getPlaceFromGpsLocation(location: GeoLocation) {
+    private suspend fun getPlaceFromGps(location: GeoLocation) {
         withContext(Dispatchers.IO) {
-            val address = ReverseGeoCodingApi.retrofitService
-                .getLocationName(location.latitude, location.longitude)
-                .address
+            val places = database.placeDao.matchGpsLocation()
 
-            val places = database.placeDao
-                .getMatchingPlace(
-                    address.getPlaceName(),
-                    address.country
-                )
-
+            Log.d(TAG, places.toString())
             if (places.isEmpty())
-                insertNewPlace(location)
+                insertNewPlace(location, true)
             else
                 insertPlace(
                     places.first().copy(
@@ -91,60 +102,21 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun insertWeatherData(
-        newWeatherInstance: NeoWeatherModel,
-        placeTimezone: String,
-        placeId: Int
-    ) {
-        withContext(Dispatchers.IO) {
-            database.daysDao.insert(
-                newWeatherInstance.dailyForecast.asDatabaseModel(placeId)
-            )
-            database.hoursDao.insert(
-                newWeatherInstance.hourlyForecast.asDatabaseModel(placeTimezone, placeId)
-            )
-            database.currentWeatherDao.insert(
-                newWeatherInstance.currentWeather.asDatabaseModel(placeId)
-            )
-        }
-    }
-
-    private suspend fun initiatePreferences() {
-        if (preferences.value != null)
-            return
-        withContext(Dispatchers.IO) {
-            database.preferencesDao.insert(
-                Preferences(
-                    id = 1,
-                    isFahrenheitEnabled = false,
-                    isInchesEnabled = false,
-                    isMilesPerHourEnabled = false
-                )
-            )
-        }
-    }
-
-    suspend fun updatePreferences(preferences: Preferences) {
-        withContext(Dispatchers.IO) {
-            database.preferencesDao.update(preferences)
-        }
-    }
-
-    private suspend fun insertNewPlace(location: GeoLocation) {
+    private suspend fun insertNewPlace(location: GeoLocation, isGpsLocation: Boolean) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
-                val address = ReverseGeoCodingApi.retrofitService
+                ReverseGeoCodingApi.retrofitService
                     .getLocationName(
                         location.latitude,
-                        location.longitude
-                    ).address
-                address.getPlaceName()
+                        location.longitude)
+                    .address
+                    .getName()
             }
-            val newPlace = GeoCodingApi.retrofitService.getLocation(placeName)
+            val place = GeoCodingApi.retrofitService.getLocation(placeName)
                 .results[0]
-                .asDatabaseModel(getNewPlaceId())
+                .asDatabaseModel(getNewPlaceId(), isGpsLocation)
 
-            insertPlace(newPlace)
+            insertPlace(place)
         }
     }
 
@@ -180,4 +152,10 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
 
     private fun getNewPlaceId(): Int =
         placesList.value?.size ?: 0
+
+    suspend fun updatePreferences(preferences: Preferences) {
+        withContext(Dispatchers.IO) {
+            database.preferencesDao.update(preferences)
+        }
+    }
 }

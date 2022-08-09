@@ -12,6 +12,6 @@ data class Preferences(
     val isFahrenheitEnabled: Boolean,
     @ColumnInfo(name = "is_inches_enabled")
     val isInchesEnabled: Boolean,
-    @ColumnInfo(name = "is_miles_per_hour_enabled")
-    val isMilesPerHourEnabled: Boolean,
+    @ColumnInfo(name = "is_miles_enabled")
+    val isMilesEnabled: Boolean,
 )

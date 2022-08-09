@@ -22,11 +22,13 @@ data class Place(
     @ColumnInfo
     val timezone: String,
     @ColumnInfo(name = "last_update_time")
-    val lastUpdateTime: Long = 0
+    val lastUpdateTime: Long = 0,
+    @ColumnInfo(name = "is_gps_location")
+    val isGpsLocation: Boolean = false
 )
 
-fun Place.isItTimeToUpdate(): Boolean =
-    getTimeDiffInMinutes(lastUpdateTime) >= 30
+fun Place.notUpdateTime(intervalInMinutes: Int): Boolean =
+    getTimeDiffInMinutes(lastUpdateTime) < intervalInMinutes
 
 fun Place.newLastUpdateTime(): Long =
     Date.from(Instant.now()).time

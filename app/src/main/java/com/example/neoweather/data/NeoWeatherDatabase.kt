@@ -47,7 +47,7 @@ abstract class NeoWeatherDatabase : RoomDatabase() {
                     NeoWeatherDatabase::class.java,
                     "neoweather_database"
                 )
-                    .fallbackToDestructiveMigration()
+                    .createFromAsset("database/neo_weather.db")
                     .build()
                 INSTANCE = instance
                 //return instance

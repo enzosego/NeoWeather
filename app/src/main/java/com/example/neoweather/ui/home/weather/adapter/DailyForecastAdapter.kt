@@ -69,7 +69,7 @@ class ItemDayViewHolder(
         binding.windSpeed =
             WeatherUnits.formatSpeedUnit(
                 dayData.windSpeedMax,
-                preferences?.isMilesPerHourEnabled ?: false
+                preferences?.isMilesEnabled ?: false
             )
 
         binding.executePendingBindings()

@@ -61,7 +61,7 @@ class SettingsFragment : Fragment() {
 
     private fun bindSpeedUnitToggle() {
         val selectedButtonId =
-            when(viewModel.preferences.value!!.isMilesPerHourEnabled) {
+            when(viewModel.preferences.value!!.isMilesEnabled) {
                 false -> binding.kilometersButton.id
                 else -> binding.milesButton.id
             }
@@ -70,7 +70,7 @@ class SettingsFragment : Fragment() {
         binding.speedUnitToggle.addOnButtonCheckedListener(
             OnUnitCheckedListener(
                 action = { newValue -> viewModel.updateSpeedUnit(newValue) },
-                preferenceState = viewModel.preferences.value!!.isMilesPerHourEnabled,
+                preferenceState = viewModel.preferences.value!!.isMilesEnabled,
                 selectedButtonId = selectedButtonId,
                 firstOptionId = binding.kilometersButton.id,
                 secondOptionId = binding.milesButton.id

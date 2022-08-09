@@ -10,9 +10,8 @@ interface PlaceDao {
     fun getAllPlaces(): Flow<List<Place>>
 
     @Query("SELECT * FROM place " +
-            "WHERE :placeName = name " +
-            "AND :countryName = country")
-    fun getMatchingPlace(placeName: String, countryName: String): List<Place>
+            "WHERE 1 = is_gps_location")
+    fun matchGpsLocation(): List<Place>
 
     @Query("UPDATE place SET id = :newId " +
             "WHERE :oldId = id")

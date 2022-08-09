@@ -10,5 +10,5 @@ data class ReverseGeocodingAddress(
     val country: String
 )
 
-fun ReverseGeocodingAddress.getPlaceName(): String =
+fun ReverseGeocodingAddress.getName(): String =
     city.ifEmpty { state }
