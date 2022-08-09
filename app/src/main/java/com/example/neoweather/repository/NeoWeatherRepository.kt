@@ -1,7 +1,5 @@
 package com.example.neoweather.repository
 
-import android.text.format.Time.getCurrentTimezone
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.neoweather.data.NeoWeatherDatabase
@@ -10,19 +8,18 @@ import com.example.neoweather.data.model.day.DaysEntity
 import com.example.neoweather.data.model.hour.HoursEntity
 import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.place.isItTimeToUpdate
+import com.example.neoweather.data.model.place.newLastUpdateTime
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.remote.geocoding.asDatabaseModel
 import com.example.neoweather.remote.reverse_geocoding.ReverseGeoCodingApi
+import com.example.neoweather.remote.reverse_geocoding.getPlaceName
 import com.example.neoweather.remote.weather.NeoWeatherApi
 import com.example.neoweather.remote.weather.model.NeoWeatherModel
 import com.example.neoweather.remote.weather.model.asDatabaseModel
-import com.example.neoweather.util.Utils.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.util.*
 
 class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
 
@@ -41,27 +38,57 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     val preferences: LiveData<Preferences> =
         database.preferencesDao.getPreferences().asLiveData()
 
-    suspend fun refreshPlaceData(location: GeoLocation?, placeId: Int?) {
-        if (placeId != null
-            && !placesList.value.isNullOrEmpty()
-            && !placesList.value!![placeId].isItTimeToUpdate())
+    suspend fun refreshPlaceData(placeId: Int) {
+        if (!placesList.value!![placeId].isItTimeToUpdate())
             return
 
-        val placeTimezone = getPlaceTimezone(location, placeId)
+        val currentPlace = placesList.value!![placeId]
 
-        val newWeatherInstance =
-            NeoWeatherApi.retrofitService.getWeather(
-                lat = location?.latitude ?: placesList.value!![placeId!!].latitude,
-                long = location?.longitude ?: placesList.value!![placeId!!].longitude,
-                timezone = placeTimezone
-            )
-
-        updateOrInsertPlace(location, placeId)
-
+        val newWeatherInstance = NeoWeatherApi.retrofitService.getWeather(
+            currentPlace.latitude,
+            currentPlace.longitude,
+            currentPlace.timezone
+        )
         insertWeatherData(
             newWeatherInstance,
-            placeTimezone,
-            placeId ?: getNewPlaceId())
+            currentPlace.timezone,
+            placeId)
+        insertPlace(currentPlace.copy(
+            lastUpdateTime = currentPlace.newLastUpdateTime())
+        )
+    }
+
+    suspend fun updateOrInsertPlace(location: GeoLocation) {
+        initiatePreferences()
+
+        if (location.name != "")
+            insertNewPlace(location)
+        else
+            getPlaceFromGpsLocation(location)
+    }
+
+    private suspend fun getPlaceFromGpsLocation(location: GeoLocation) {
+        withContext(Dispatchers.IO) {
+            val address = ReverseGeoCodingApi.retrofitService
+                .getLocationName(location.latitude, location.longitude)
+                .address
+
+            val places = database.placeDao
+                .getMatchingPlace(
+                    address.getPlaceName(),
+                    address.country
+                )
+
+            if (places.isEmpty())
+                insertNewPlace(location)
+            else
+                insertPlace(
+                    places.first().copy(
+                        latitude = location.latitude,
+                        longitude = location.longitude
+                    )
+                )
+        }
     }
 
     private suspend fun insertWeatherData(
@@ -82,17 +109,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private fun getPlaceTimezone(location: GeoLocation?, placeId: Int?)
-            : String =
-        (location?.timezone ?: "")
-            .ifEmpty {
-                if (placesList.value.isNullOrEmpty())
-                    getCurrentTimezone()
-                else
-                    placesList.value!![placeId!!].timezone
-            }
-
-    suspend fun initiatePreferences() {
+    private suspend fun initiatePreferences() {
         if (preferences.value != null)
             return
         withContext(Dispatchers.IO) {
@@ -113,18 +130,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun updateOrInsertPlace(location: GeoLocation?, placeId: Int?) {
-        if (placesList.value.isNullOrEmpty() && location != null)
-            insertNewPlace(location, 0)
-        else if (location != null && placeId == null)
-            insertNewPlace(location, getNewPlaceId())
-        else
-            insertPlace(placesList.value!![placeId!!]
-                .copy(lastUpdateTime = Date.from(Instant.now()).time)
-            )
-    }
-
-    private suspend fun insertNewPlace(location: GeoLocation, id: Int) {
+    private suspend fun insertNewPlace(location: GeoLocation) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
                 val address = ReverseGeoCodingApi.retrofitService
@@ -132,11 +138,11 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
                         location.latitude,
                         location.longitude
                     ).address
-                address.city.ifEmpty { address.state }
+                address.getPlaceName()
             }
             val newPlace = GeoCodingApi.retrofitService.getLocation(placeName)
                 .results[0]
-                .asDatabaseModel(id)
+                .asDatabaseModel(getNewPlaceId())
 
             insertPlace(newPlace)
         }

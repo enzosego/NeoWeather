@@ -14,6 +14,24 @@ object WeatherUnits {
 
     fun getDayFromTime(time: String): String =
         time.takeLast(2)
+
+    fun formatPrecipitationSum(
+        precipitation: Double,
+        isInches: Boolean
+    ): String =
+        if (isInches)
+            "${(precipitation / 25.4).roundToInt()}in"
+        else
+            "${precipitation.roundToInt()}mm"
+
+    fun formatSpeedUnit(
+        speed: Double,
+        isMiles: Boolean
+    ): String =
+        if (isMiles)
+            "${Math.round((speed / 1.609) * 10.0) / 10.0}mph"
+        else
+            "${speed}km/h"
 }
 
 fun celsiusToFahrenheit(celsiusTemp: Double): String =

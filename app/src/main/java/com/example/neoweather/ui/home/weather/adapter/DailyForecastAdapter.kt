@@ -60,6 +60,18 @@ class ItemDayViewHolder(
         binding.weatherDescription =
             WeatherCodeMapping.description[dayData.weatherCode]
 
+        binding.precipitation =
+            WeatherUnits.formatPrecipitationSum(
+                dayData.precipitationSum,
+                preferences?.isInchesEnabled ?: false
+            )
+
+        binding.windSpeed =
+            WeatherUnits.formatSpeedUnit(
+                dayData.windSpeedMax,
+                preferences?.isMilesPerHourEnabled ?: false
+            )
+
         binding.executePendingBindings()
     }
 }

@@ -6,5 +6,9 @@ data class ReverseGeocodingModel(
 
 data class ReverseGeocodingAddress(
     val city: String = "",
-    val state: String
+    val state: String,
+    val country: String
 )
+
+fun ReverseGeocodingAddress.getPlaceName(): String =
+    city.ifEmpty { state }

@@ -13,20 +13,20 @@ data class HourlyForecast(
     val weatherCode: List<Int>
 )
 
-fun HourlyForecast.asDatabaseModel(timezone: String, placeId: Int): HoursEntity {
+fun HourlyForecast.asDatabaseModel(timezone: String, newId: Int): HoursEntity {
     val hourList = mutableListOf<Hour>()
     val currentHour = Calendar.getInstance(TimeZone.getTimeZone(timezone))
         .get(Calendar.HOUR_OF_DAY)
     val currentDay  = Calendar.getInstance()
         .get(Calendar.DAY_OF_MONTH)
-    var areOldHoursDiscarded = false
+    var arePastHoursDiscarded = false
 
     for (i in weatherCode.indices) {
         if ((getHour(time[i]) < currentHour || getDay(time[i]) < currentDay)
-            && !areOldHoursDiscarded)
+            && !arePastHoursDiscarded)
             continue
-        else
-            areOldHoursDiscarded = true
+        else if (!arePastHoursDiscarded)
+            arePastHoursDiscarded = true
 
         val newHour = Hour(
             time = time[i],
@@ -36,7 +36,7 @@ fun HourlyForecast.asDatabaseModel(timezone: String, placeId: Int): HoursEntity 
         hourList.add(newHour)
     }
     return HoursEntity(
-        id = placeId,
+        id = newId,
         hourList = hourList
     )
 }

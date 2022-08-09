@@ -9,7 +9,6 @@ import com.example.neoweather.remote.geocoding.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 import com.example.neoweather.util.Utils.TAG
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class NeoWeatherViewModel(application: Application)
@@ -40,18 +39,27 @@ class NeoWeatherViewModel(application: Application)
 
     val placesList = neoWeatherRepository.placesList
 
-    init {
-        viewModelScope.launch {
-            neoWeatherRepository.initiatePreferences()
-        }
-    }
-
-    fun refreshPlaceData(location: GeoLocation?, placeId: Int?) {
+    fun updateOrInsertPlace(location: GeoLocation) {
         viewModelScope.launch {
             try {
                 _status.postValue(NeoWeatherApiStatus.LOADING)
 
-                neoWeatherRepository.refreshPlaceData(location, placeId)
+                neoWeatherRepository.updateOrInsertPlace(location)
+
+                _status.postValue(NeoWeatherApiStatus.DONE)
+            } catch (e: Exception) {
+                Log.d(TAG, "Error: $e")
+                _status.postValue(NeoWeatherApiStatus.ERROR)
+            }
+        }
+    }
+
+    fun refreshPlaceData(placeId: Int) {
+        viewModelScope.launch {
+            try {
+                _status.postValue(NeoWeatherApiStatus.LOADING)
+
+                neoWeatherRepository.refreshPlaceData(placeId)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
@@ -65,7 +73,7 @@ class NeoWeatherViewModel(application: Application)
         val updatedPreferences = preferences.value!!.copy(
             isFahrenheitEnabled = newValue
         )
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             neoWeatherRepository.updatePreferences(updatedPreferences)
         }
     }
@@ -74,7 +82,7 @@ class NeoWeatherViewModel(application: Application)
         val updatedPreferences = preferences.value!!.copy(
             isMilesPerHourEnabled = newValue
         )
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             neoWeatherRepository.updatePreferences(updatedPreferences)
         }
     }
@@ -83,7 +91,7 @@ class NeoWeatherViewModel(application: Application)
         val updatedPreferences = preferences.value!!.copy(
             isInchesEnabled = newValue
         )
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             neoWeatherRepository.updatePreferences(updatedPreferences)
         }
     }
@@ -100,7 +108,7 @@ class NeoWeatherViewModel(application: Application)
         _locationList.postValue(listOf())
         _previousPlaceListSize.postValue(placesList.value!!.size)
         updatePreviousListSize()
-        refreshPlaceData(location, null)
+        updateOrInsertPlace(location)
     }
 
     fun updatePreviousListSize() {

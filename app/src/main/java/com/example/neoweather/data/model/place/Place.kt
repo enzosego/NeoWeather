@@ -22,8 +22,11 @@ data class Place(
     @ColumnInfo
     val timezone: String,
     @ColumnInfo(name = "last_update_time")
-    val lastUpdateTime: Long
+    val lastUpdateTime: Long = 0
 )
 
 fun Place.isItTimeToUpdate(): Boolean =
     getTimeDiffInMinutes(lastUpdateTime) >= 30
+
+fun Place.newLastUpdateTime(): Long =
+    Date.from(Instant.now()).time

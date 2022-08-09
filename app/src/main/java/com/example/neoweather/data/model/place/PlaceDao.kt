@@ -9,6 +9,11 @@ interface PlaceDao {
     @Query("SELECT * FROM place")
     fun getAllPlaces(): Flow<List<Place>>
 
+    @Query("SELECT * FROM place " +
+            "WHERE :placeName = name " +
+            "AND :countryName = country")
+    fun getMatchingPlace(placeName: String, countryName: String): List<Place>
+
     @Query("UPDATE place SET id = :newId " +
             "WHERE :oldId = id")
     fun updateId(oldId: Int, newId: Int)

@@ -2,7 +2,6 @@ package com.example.neoweather.util
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -18,14 +17,8 @@ import com.example.neoweather.ui.home.weather.adapter.WeatherTabAdapter
 import com.example.neoweather.ui.search.SearchListAdapter
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 
-@BindingAdapter(
-    value = ["apiStatusImage", "placeInfo"],
-    requireAll = true)
-fun bindStatusImage(
-    statusImage: ImageView,
-    status: NeoWeatherApiStatus?,
-    placeInfo: List<Place>?
-) {
+@BindingAdapter("apiStatusImage")
+fun bindStatusImage(statusImage: ImageView, status: NeoWeatherApiStatus?) {
     when(status) {
         NeoWeatherApiStatus.LOADING -> {
             statusImage.setImageResource(R.drawable.loading_animation)
@@ -35,36 +28,7 @@ fun bindStatusImage(
             statusImage.setImageResource(R.drawable.ic_connection_error)
             statusImage.visibility = View.VISIBLE
         }
-        NeoWeatherApiStatus.DONE -> statusImage.visibility = View.GONE
-        else -> {
-            when (placeInfo) {
-                null -> {
-                    statusImage.setImageResource(R.drawable.ic_connection_error)
-                    statusImage.visibility = View.VISIBLE
-                }
-                else -> statusImage.visibility = View.GONE
-            }
-        }
-    }
-}
-
-@BindingAdapter(
-    value = ["apiStatusText", "placeInfo"],
-    requireAll = true)
-fun bindTextStatus(
-    textView: TextView,
-    status: NeoWeatherApiStatus?,
-    placeInfo: List<Place>?
-) {
-    textView.visibility = when (status) {
-        NeoWeatherApiStatus.ERROR -> View.VISIBLE
-        null -> {
-            when (placeInfo) {
-                null -> View.VISIBLE
-                else -> View.GONE
-            }
-        }
-        else -> View.GONE
+        else -> statusImage.visibility = View.GONE
     }
 }
 
@@ -74,7 +38,9 @@ fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
     adapter.submitList(placesList)
 }
 
-@BindingAdapter(value = ["previousPlaceListSize", "list", "syncPreviousSize"], requireAll = true)
+@BindingAdapter(
+    value = ["previousPlaceListSize", "list", "syncPreviousSize"],
+    requireAll = true)
 fun checkIfPlaceWasAdded(
     viewPager: ViewPager2,
     previousPlaceListSize: Int?,
@@ -105,7 +71,9 @@ fun bindHourList(
     adapter.submitPreferences(preferences)
 }
 
-@BindingAdapter(value = ["dayList", "preferences"], requireAll = true)
+@BindingAdapter(
+    value = ["dayList", "preferences"],
+    requireAll = true)
 fun bindDayList(
     recyclerView: RecyclerView,
     dayList: List<Day>?,

@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.refreshPlaceData(
+            viewModel.updateOrInsertPlace(
                 GeoLocation(
                     name = "",
                     latitude = location.latitude,
@@ -86,8 +86,7 @@ class MainActivity : AppCompatActivity() {
                     country = "",
                     countryCode = "",
                     timezone = ""
-                ),
-                placeId = 0
+                )
             )
         }
     }

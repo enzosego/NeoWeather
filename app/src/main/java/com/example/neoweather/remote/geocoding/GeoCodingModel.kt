@@ -27,5 +27,4 @@ fun GeoLocation.asDatabaseModel(placeId: Int): Place =
         country = country,
         countryCode = countryCode,
         timezone = timezone,
-        lastUpdateTime = Date.from(Instant.now()).time
     )

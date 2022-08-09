@@ -38,14 +38,10 @@ class HomeFragment : Fragment(){
 
         binding.viewModel = viewModel
 
-        binding.apiStatusHolder.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
-        }
-
         val updateTabNum = object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 viewModel.updateCurrentTabNum(position)
-                viewModel.refreshPlaceData(null, position)
+                viewModel.refreshPlaceData(position)
                 Log.d(TAG, "Current position: $position")
             }
         }
