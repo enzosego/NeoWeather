@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.neoweather.data.NeoWeatherDatabase
-import com.example.neoweather.remote.geocoding.GeoCodingApi
-import com.example.neoweather.remote.geocoding.GeoLocation
+import com.example.neoweather.remote.geocoding.GeoCodingApiImpl
+import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 import com.example.neoweather.util.Utils.TAG
@@ -51,7 +51,6 @@ class NeoWeatherViewModel(application: Application)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
-                Log.d(TAG, "Error: $e")
                 _status.postValue(NeoWeatherApiStatus.ERROR)
             }
         }
@@ -101,7 +100,7 @@ class NeoWeatherViewModel(application: Application)
 
     fun updateSearchList(cityName: String) {
         viewModelScope.launch {
-            val newList = GeoCodingApi.retrofitService.getLocation(cityName)
+            val newList = GeoCodingApiImpl.create().getLocation(cityName)
                 .results
             _locationList.postValue(newList)
         }

@@ -40,7 +40,7 @@ class HomeFragment : Fragment(){
             override fun onPageSelected(position: Int) {
                 viewModel.updateCurrentTabNum(position)
                 viewModel.refreshPlaceData(position)
-                Log.d(TAG, "Current position: $position")
+                //Log.d(TAG, "Current position: $position")
             }
         }
         binding.homeViewPager.apply {

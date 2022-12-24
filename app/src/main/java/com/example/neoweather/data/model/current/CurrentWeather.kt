@@ -8,14 +8,14 @@ import androidx.room.PrimaryKey
 data class CurrentWeather(
     @PrimaryKey
     val id: Int,
-    @ColumnInfo
-    val time: String,
-    @ColumnInfo
+    @ColumnInfo(name = "temperature")
     val temperature: Double,
     @ColumnInfo(name = "wind_speed")
     val windSpeed: Double,
     @ColumnInfo(name = "wind_direction")
-    val windDirection: Int,
+    val windDirection: Double,
     @ColumnInfo(name = "weather_code")
     val weatherCode: Int,
+    @ColumnInfo(name = "time")
+    val time: String
 )

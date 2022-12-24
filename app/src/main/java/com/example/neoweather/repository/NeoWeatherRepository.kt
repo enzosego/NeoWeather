@@ -10,13 +10,13 @@ import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.place.newLastUpdateTime
 import com.example.neoweather.data.model.place.notUpdateTime
 import com.example.neoweather.data.model.preferences.Preferences
-import com.example.neoweather.remote.geocoding.GeoCodingApi
-import com.example.neoweather.remote.geocoding.GeoLocation
-import com.example.neoweather.remote.geocoding.asDatabaseModel
-import com.example.neoweather.remote.geocoding.isGpsLocation
-import com.example.neoweather.remote.reverse_geocoding.ReverseGeoCodingApi
-import com.example.neoweather.remote.reverse_geocoding.getName
-import com.example.neoweather.remote.weather.NeoWeatherApi
+import com.example.neoweather.remote.geocoding.*
+import com.example.neoweather.remote.geocoding.model.GeoLocation
+import com.example.neoweather.remote.geocoding.model.asDatabaseModel
+import com.example.neoweather.remote.geocoding.model.isGpsLocation
+import com.example.neoweather.remote.reverse_geocoding.ReverseGeoCodingApiImpl
+import com.example.neoweather.remote.reverse_geocoding.model.getName
+import com.example.neoweather.remote.weather.NeoWeatherApiImpl
 import com.example.neoweather.remote.weather.model.NeoWeatherModel
 import com.example.neoweather.remote.weather.model.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +44,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             return
 
         with(placesList.value!![id]) {
-            val weather = NeoWeatherApi.retrofitService
+            val weather = NeoWeatherApiImpl.create()
                 .getWeather(
                     latitude,
                     longitude,
@@ -103,14 +103,14 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     private suspend fun insertNewPlace(location: GeoLocation) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
-                ReverseGeoCodingApi.retrofitService
+                ReverseGeoCodingApiImpl.create()
                     .getLocationName(
                         location.latitude,
                         location.longitude)
                     .address
                     .getName()
             }
-            val place = GeoCodingApi.retrofitService.getLocation(placeName)
+            val place = GeoCodingApiImpl.create().getLocation(placeName)
                 .results[0]
                 .asDatabaseModel(getNewPlaceId(), location.isGpsLocation())
 

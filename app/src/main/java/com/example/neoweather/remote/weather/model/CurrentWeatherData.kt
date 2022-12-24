@@ -1,25 +1,27 @@
 package com.example.neoweather.remote.weather.model
 
 import com.example.neoweather.data.model.current.CurrentWeather
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CurrentWeatherData(
     val temperature: Double,
-    val time: String,
-    @Json(name = "windspeed")
+    @SerialName("windspeed")
     val windSpeed: Double,
-    @Json(name = "winddirection")
-    val windDirection: Int,
-    @Json(name = "weathercode")
-    val weatherCode: Int
+    @SerialName("winddirection")
+    val windDirection: Double,
+    @SerialName("weathercode")
+    val weatherCode: Int,
+    val time: String
 )
 
 fun CurrentWeatherData.asDatabaseModel(newId: Int): CurrentWeather =
     CurrentWeather(
         id = newId,
-        weatherCode = weatherCode,
-        time = time,
         temperature = temperature,
+        windSpeed = windSpeed,
         windDirection = windDirection,
-        windSpeed = windSpeed
+        weatherCode = weatherCode,
+        time = time
     )

@@ -1,9 +1,13 @@
-package com.example.neoweather.remote.reverse_geocoding
+package com.example.neoweather.remote.reverse_geocoding.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ReverseGeocodingModel(
     val address: ReverseGeocodingAddress
 )
 
+@Serializable
 data class ReverseGeocodingAddress(
     val city: String = "",
     val state: String,

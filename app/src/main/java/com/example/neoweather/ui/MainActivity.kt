@@ -14,7 +14,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
-import com.example.neoweather.remote.geocoding.GeoLocation
+import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.util.Utils.PermissionRequester
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory

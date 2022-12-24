@@ -1,12 +1,14 @@
 package com.example.neoweather.remote.weather.model
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class NeoWeatherModel(
-    @Json(name = "current_weather")
+    @SerialName("current_weather")
     val currentWeather: CurrentWeatherData,
-    @Json(name = "hourly")
+    @SerialName("hourly")
     val hourlyForecast: HourlyForecast,
-    @Json(name = "daily")
+    @SerialName("daily")
     val dailyForecast: DailyForecast
 )

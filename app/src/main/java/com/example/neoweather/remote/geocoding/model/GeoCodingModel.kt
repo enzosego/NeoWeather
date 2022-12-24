@@ -1,19 +1,22 @@
-package com.example.neoweather.remote.geocoding
+package com.example.neoweather.remote.geocoding.model
 
 import com.example.neoweather.data.model.place.Place
-import com.squareup.moshi.Json
-import java.time.Instant
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.*
 
+@Serializable
 data class GeoCodingModel(
     val results: List<GeoLocation>
 )
 
+@Serializable
 data class GeoLocation(
     val name: String,
     val latitude: Double,
     val longitude: Double,
-    @Json(name = "country_code") val countryCode: String,
+    @SerialName("country_code")
+    val countryCode: String,
     val country: String,
     val timezone: String
 )

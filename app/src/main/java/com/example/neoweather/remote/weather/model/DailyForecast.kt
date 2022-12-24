@@ -2,22 +2,24 @@ package com.example.neoweather.remote.weather.model
 
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.day.DaysEntity
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class DailyForecast(
     val time: List<String>,
-    @Json(name = "temperature_2m_max")
+    @SerialName("temperature_2m_max")
     val maxTemp: List<Double>,
-    @Json(name = "temperature_2m_min")
+    @SerialName("temperature_2m_min")
     val minTemp: List<Double>,
-    @Json(name = "precipitation_sum")
+    @SerialName("precipitation_sum")
     val precipitationSum: List<Double>,
-    @Json(name = "winddirection_10m_dominant")
+    @SerialName("weathercode")
+    val weatherCode: List<Int>,
+    @SerialName("winddirection_10m_dominant")
     val windDirectionDominant: List<Double>,
-    @Json(name = "windspeed_10m_max")
-    val windSpeedMax: List<Double>,
-    @Json(name = "weathercode")
-    val weatherCode: List<Int>
+    @SerialName("windspeed_10m_max")
+    val windSpeedMax: List<Double>
 )
 
 fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {

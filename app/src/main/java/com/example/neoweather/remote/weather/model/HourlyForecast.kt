@@ -2,14 +2,16 @@ package com.example.neoweather.remote.weather.model
 
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.hour.HoursEntity
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.util.*
 
+@Serializable
 data class HourlyForecast(
     val time: List<String>,
-    @Json(name = "temperature_2m")
+    @SerialName("temperature_2m")
     val temp: List<Double>,
-    @Json(name = "weathercode")
+    @SerialName("weathercode")
     val weatherCode: List<Int>
 )
 

@@ -2,7 +2,7 @@ package com.example.neoweather.ui.search.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.databinding.ItemLocationBinding
-import com.example.neoweather.remote.geocoding.GeoLocation
+import com.example.neoweather.remote.geocoding.model.GeoLocation
 
 class ItemLocationViewHolder(private var binding: ItemLocationBinding) :
     RecyclerView.ViewHolder(binding.root) {

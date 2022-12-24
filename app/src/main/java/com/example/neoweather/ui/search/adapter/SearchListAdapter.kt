@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.databinding.ItemLocationBinding
-import com.example.neoweather.remote.geocoding.GeoLocation
+import com.example.neoweather.remote.geocoding.model.GeoLocation
 
 class SearchListAdapter(private val clickListener: LocationListener)
     : ListAdapter<GeoLocation, ItemLocationViewHolder>(DiffCallback) {

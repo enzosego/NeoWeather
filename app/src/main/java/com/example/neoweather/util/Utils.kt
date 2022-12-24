@@ -4,10 +4,6 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.button.MaterialButtonToggleGroup
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.time.Instant
 import java.util.*
 
@@ -16,7 +12,7 @@ object Utils {
 
     enum class NeoWeatherApiStatus { LOADING, DONE, ERROR }
 
-    const val accessToken: String =
+    const val ACCESS_TOKEN: String =
         "pk.fdd7a17016391ba2f9c3084f67679b44"
 
     fun getTimeDiffInMinutes(time: Long): Long =
@@ -44,17 +40,6 @@ object Utils {
             onGranted = body
             permissionLauncher.launch(permission)
         }
-    }
-
-    class ApiBuilder(baseUrl: String) {
-        private val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(baseUrl)
-            .build()
     }
 
     class OnUnitCheckedListener(

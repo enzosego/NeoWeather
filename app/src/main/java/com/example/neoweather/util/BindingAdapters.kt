@@ -10,7 +10,7 @@ import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.preferences.Preferences
-import com.example.neoweather.remote.geocoding.GeoLocation
+import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
