@@ -1,7 +1,6 @@
 package com.example.neoweather.ui.home.weather
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.databinding.FragmentWeatherBinding
-import com.example.neoweather.ui.home.weather.adapter.DailyForecastAdapter
-import com.example.neoweather.ui.home.weather.adapter.HourlyForecastAdapter
-import com.example.neoweather.util.Utils.TAG
+import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
+import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.util.WeatherCodeMapping
 import com.example.neoweather.util.WeatherUnits
 import com.example.neoweather.viewmodel.NeoWeatherViewModel

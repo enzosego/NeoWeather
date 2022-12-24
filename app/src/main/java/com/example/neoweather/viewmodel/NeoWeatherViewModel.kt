@@ -2,7 +2,10 @@ package com.example.neoweather.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.remote.geocoding.GeoCodingApi
 import com.example.neoweather.remote.geocoding.GeoLocation
@@ -123,17 +126,5 @@ class NeoWeatherViewModel(application: Application)
         viewModelScope.launch {
             neoWeatherRepository.deletePlace(placeId)
         }
-    }
-}
-
-class NeoWeatherViewModelFactory(private val application: Application)
-    : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NeoWeatherViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return NeoWeatherViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

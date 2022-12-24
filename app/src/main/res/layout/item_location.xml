@@ -9,7 +9,7 @@
             type="com.example.neoweather.remote.geocoding.GeoLocation" />
         <variable
             name="clickListener"
-            type="com.example.neoweather.ui.search.LocationListener" />
+            type="com.example.neoweather.ui.search.adapter.LocationListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

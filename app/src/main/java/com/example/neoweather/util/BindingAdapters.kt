@@ -11,10 +11,10 @@ import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.place.Place
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.GeoLocation
-import com.example.neoweather.ui.home.weather.adapter.DailyForecastAdapter
-import com.example.neoweather.ui.home.weather.adapter.HourlyForecastAdapter
-import com.example.neoweather.ui.home.weather.adapter.WeatherTabAdapter
-import com.example.neoweather.ui.search.SearchListAdapter
+import com.example.neoweather.ui.home.adapter.HomeTabAdapter
+import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
+import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
+import com.example.neoweather.ui.search.adapter.SearchListAdapter
 import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 
 @BindingAdapter("apiStatusImage")
@@ -34,7 +34,7 @@ fun bindStatusImage(statusImage: ImageView, status: NeoWeatherApiStatus?) {
 
 @BindingAdapter("placesList")
 fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
-    val adapter = viewPager.adapter as WeatherTabAdapter
+    val adapter = viewPager.adapter as HomeTabAdapter
     adapter.submitList(placesList)
 }
 

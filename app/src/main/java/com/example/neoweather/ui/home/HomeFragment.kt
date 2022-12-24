@@ -7,11 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentHomeBinding
-import com.example.neoweather.ui.home.weather.adapter.WeatherTabAdapter
+import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.util.Utils.TAG
 import com.example.neoweather.viewmodel.NeoWeatherViewModel
 import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
@@ -49,7 +47,7 @@ class HomeFragment : Fragment(){
             post {
                 setCurrentItem(viewModel.currentTabNum.value!!, false)
             }
-            adapter = WeatherTabAdapter(requireActivity())
+            adapter = HomeTabAdapter(requireActivity())
             registerOnPageChangeCallback(updateTabNum)
         }
 

@@ -29,3 +29,6 @@ fun GeoLocation.asDatabaseModel(placeId: Int, isGpsLocation: Boolean): Place =
         timezone = timezone,
         isGpsLocation = isGpsLocation
     )
+
+fun GeoLocation.isGpsLocation(): Boolean =
+    name.isEmpty()
