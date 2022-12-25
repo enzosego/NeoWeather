@@ -18,11 +18,6 @@ class GeoCodingApiImpl(
 
     companion object {
         fun create(): GeoCodingApi =
-            GeoCodingApiImpl(
-                KtorClientBuilder(
-                    isLoggingEnabled = true,
-                    logTag = "geocoding-api"
-                ).client
-            )
+            GeoCodingApiImpl(KtorClientBuilder().client)
     }
 }

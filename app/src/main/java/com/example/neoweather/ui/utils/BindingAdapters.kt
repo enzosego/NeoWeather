@@ -1,4 +1,4 @@
-package com.example.neoweather.util
+package com.example.neoweather.ui.utils
 
 import android.view.View
 import android.widget.ImageView
@@ -15,7 +15,6 @@ import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
-import com.example.neoweather.util.Utils.NeoWeatherApiStatus
 
 @BindingAdapter("apiStatusImage")
 fun bindStatusImage(statusImage: ImageView, status: NeoWeatherApiStatus?) {

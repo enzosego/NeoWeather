@@ -6,13 +6,3 @@ import kotlinx.serialization.Serializable
 data class ReverseGeocodingModel(
     val address: ReverseGeocodingAddress
 )
-
-@Serializable
-data class ReverseGeocodingAddress(
-    val city: String = "",
-    val state: String,
-    val country: String
-)
-
-fun ReverseGeocodingAddress.getName(): String =
-    city.ifEmpty { state }

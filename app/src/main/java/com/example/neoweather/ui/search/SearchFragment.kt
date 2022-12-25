@@ -12,8 +12,8 @@ import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSearchBinding
 import com.example.neoweather.ui.search.adapter.LocationListener
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
-import com.example.neoweather.viewmodel.NeoWeatherViewModel
-import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
 
 class SearchFragment : Fragment() {
 

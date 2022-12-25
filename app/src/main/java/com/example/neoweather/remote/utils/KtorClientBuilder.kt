@@ -10,9 +10,8 @@ import kotlinx.serialization.json.Json
 
 class KtorClientBuilder(
     isLoggingEnabled: Boolean = false,
-    logTag: String = "api"
+    tag: String = "api-call"
 ) {
-
     val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
@@ -22,7 +21,7 @@ class KtorClientBuilder(
                 level = LogLevel.ALL
                 logger = object : Logger {
                     override fun log(message: String) {
-                        Log.d(logTag, message)
+                        Log.d(tag, message)
                     }
                 }
             }

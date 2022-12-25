@@ -3,7 +3,6 @@ package com.example.neoweather.data.converters
 import androidx.room.TypeConverter
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.hour.Hour
-import com.example.neoweather.util.GsonParser
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

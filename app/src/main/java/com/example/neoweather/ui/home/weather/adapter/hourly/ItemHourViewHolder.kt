@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemHourBinding
-import com.example.neoweather.util.WeatherCodeMapping
-import com.example.neoweather.util.WeatherUnits
+import com.example.neoweather.ui.utils.WeatherUnits
+import com.example.neoweather.ui.utils.WeatherCodeMapping
 
 class ItemHourViewHolder(
     private var binding: ItemHourBinding,

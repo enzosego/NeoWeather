@@ -1,4 +1,4 @@
-package com.example.neoweather.util
+package com.example.neoweather.ui.utils
 
 object WeatherCodeMapping {
     val description = mapOf(

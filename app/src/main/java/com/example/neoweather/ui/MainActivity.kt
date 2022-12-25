@@ -15,9 +15,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
 import com.example.neoweather.remote.geocoding.model.GeoLocation
-import com.example.neoweather.util.Utils.PermissionRequester
-import com.example.neoweather.viewmodel.NeoWeatherViewModel
-import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
+import com.example.neoweather.ui.utils.PermissionRequester
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 

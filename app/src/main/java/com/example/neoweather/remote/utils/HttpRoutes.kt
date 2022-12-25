@@ -1,7 +1,5 @@
 package com.example.neoweather.remote.utils
 
-import com.example.neoweather.util.Utils
-
 object HttpRoutes {
 
     //Weather Forecast Route
@@ -28,5 +26,8 @@ object HttpRoutes {
 
     private const val REVERSE_BASE_URL = "https://us1.locationiq.com/v1"
 
-    const val REVERSE_QUERY = "$REVERSE_BASE_URL/reverse?key=${Utils.ACCESS_TOKEN}&format=json"
+    private const val ACCESS_TOKEN: String =
+        "pk.fdd7a17016391ba2f9c3084f67679b44"
+
+    const val REVERSE_QUERY = "$REVERSE_BASE_URL/reverse?key=${ACCESS_TOKEN}&format=json"
 }

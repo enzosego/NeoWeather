@@ -7,8 +7,8 @@ import com.example.neoweather.data.model.current.CurrentWeather
 import com.example.neoweather.data.model.day.DaysEntity
 import com.example.neoweather.data.model.hour.HoursEntity
 import com.example.neoweather.data.model.place.Place
+import com.example.neoweather.data.model.place.canUpdate
 import com.example.neoweather.data.model.place.newLastUpdateTime
-import com.example.neoweather.data.model.place.notUpdateTime
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.remote.geocoding.*
 import com.example.neoweather.remote.geocoding.model.GeoLocation
@@ -40,7 +40,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         database.preferencesDao.getPreferences().asLiveData()
 
     suspend fun refreshPlaceData(id: Int) {
-        if (placesList.value!![id].notUpdateTime(30))
+        if (placesList.value!![id].canUpdate(30))
             return
 
         with(placesList.value!![id]) {

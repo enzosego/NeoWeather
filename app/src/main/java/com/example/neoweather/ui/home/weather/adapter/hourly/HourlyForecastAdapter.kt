@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.data.model.hour.Hour
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemHourBinding
-import com.example.neoweather.ui.home.weather.adapter.hourly.ItemHourViewHolder
 
 class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
     DiffCallback

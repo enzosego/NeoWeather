@@ -14,7 +14,7 @@
             type="String" />
         <variable
             name="weatherCodeMapping"
-            type="com.example.neoweather.util.WeatherCodeMapping" />
+            type="com.example.neoweather.ui.utils.WeatherCodeMapping" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

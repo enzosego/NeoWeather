@@ -1,7 +1,6 @@
 package com.example.neoweather.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
-import com.example.neoweather.util.Utils.TAG
-import com.example.neoweather.viewmodel.NeoWeatherViewModel
-import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
 
 class HomeFragment : Fragment(){
 

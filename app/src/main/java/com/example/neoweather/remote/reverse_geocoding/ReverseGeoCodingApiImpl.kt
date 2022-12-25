@@ -22,11 +22,6 @@ class ReverseGeoCodingApiImpl(
 
     companion object {
         fun create(): ReverseGeoCodingApi =
-            ReverseGeoCodingApiImpl(
-                KtorClientBuilder(
-                    isLoggingEnabled = true,
-                    logTag = "reverse-api"
-                ).client
-            )
+            ReverseGeoCodingApiImpl(KtorClientBuilder().client)
     }
 }

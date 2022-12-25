@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.data.model.day.Day
 import com.example.neoweather.data.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemDayBinding
-import com.example.neoweather.util.WeatherCodeMapping
-import com.example.neoweather.util.WeatherUnits
+import com.example.neoweather.ui.utils.WeatherUnits
+import com.example.neoweather.ui.utils.WeatherCodeMapping
 
 class ItemDayViewHolder(
     private var binding: ItemDayBinding,

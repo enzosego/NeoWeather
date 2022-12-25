@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.neoweather.databinding.FragmentSettingsBinding
-import com.example.neoweather.util.Utils.OnUnitCheckedListener
-import com.example.neoweather.viewmodel.NeoWeatherViewModel
-import com.example.neoweather.viewmodel.NeoWeatherViewModelFactory
+import com.example.neoweather.ui.utils.OnUnitCheckedListener
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
+import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
 
 class SettingsFragment : Fragment() {
 

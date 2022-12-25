@@ -4,16 +4,16 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.neoweather.viewmodel.NeoWeatherViewModel" />
+            type="com.example.neoweather.ui.viewmodels.NeoWeatherViewModel" />
         <variable
             name="position"
             type="int" />
         <variable
             name="weatherCodeMapping"
-            type="com.example.neoweather.util.WeatherCodeMapping" />
+            type="com.example.neoweather.ui.utils.WeatherCodeMapping" />
         <variable
             name="weatherUnits"
-            type="com.example.neoweather.util.WeatherUnits" />
+            type="com.example.neoweather.ui.utils.WeatherUnits" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

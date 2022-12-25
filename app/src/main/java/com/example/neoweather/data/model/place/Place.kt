@@ -1,8 +1,6 @@
 package com.example.neoweather.data.model.place
 
 import androidx.room.*
-import com.example.neoweather.util.Utils.getTimeDiffInMinutes
-import java.time.Instant
 import java.util.*
 
 @Entity(tableName = "place")
@@ -27,8 +25,14 @@ data class Place(
     val isGpsLocation: Boolean = false
 )
 
-fun Place.notUpdateTime(intervalInMinutes: Int): Boolean =
+fun Place.canUpdate(intervalInMinutes: Int): Boolean =
     getTimeDiffInMinutes(lastUpdateTime) < intervalInMinutes
 
 fun Place.newLastUpdateTime(): Long =
-    Date.from(Instant.now()).time
+    getTimeInMilliseconds()
+
+fun getTimeDiffInMinutes(time: Long): Long =
+    ((getTimeInMilliseconds() - time) / 1000) / 60
+
+private fun getTimeInMilliseconds(): Long =
+    Calendar.getInstance().time.time

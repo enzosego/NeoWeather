@@ -1,4 +1,4 @@
-package com.example.neoweather.viewmodel
+package com.example.neoweather.ui.viewmodels
 
 import android.app.Application
 import android.util.Log
@@ -10,8 +10,7 @@ import com.example.neoweather.data.NeoWeatherDatabase
 import com.example.neoweather.remote.geocoding.GeoCodingApiImpl
 import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
-import com.example.neoweather.util.Utils.NeoWeatherApiStatus
-import com.example.neoweather.util.Utils.TAG
+import com.example.neoweather.ui.utils.NeoWeatherApiStatus
 import kotlinx.coroutines.launch
 
 class NeoWeatherViewModel(application: Application)
@@ -65,7 +64,7 @@ class NeoWeatherViewModel(application: Application)
 
                 _status.postValue(NeoWeatherApiStatus.DONE)
             } catch (e: Exception) {
-                Log.d(TAG, "Error: $e")
+                Log.d("DEBUG", "Error: $e")
                 _status.postValue(NeoWeatherApiStatus.ERROR)
             }
         }

@@ -24,11 +24,6 @@ class NeoWeatherApiImpl(
 
     companion object {
         fun create(): NeoWeatherApi =
-            NeoWeatherApiImpl(
-                KtorClientBuilder(
-                    isLoggingEnabled = true,
-                    logTag = "weather-api"
-                ).client
-            )
+            NeoWeatherApiImpl(KtorClientBuilder().client)
     }
 }

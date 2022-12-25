@@ -1,4 +1,4 @@
-package com.example.neoweather.util
+package com.example.neoweather.data.converters
 
 import com.google.gson.Gson
 import java.lang.reflect.Type
