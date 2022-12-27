@@ -13,11 +13,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
 import com.example.neoweather.remote.geocoding.model.GeoLocation
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
+import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.ui.utils.PermissionRequester
+import com.example.neoweather.ui.home.HomeViewModel
+import com.example.neoweather.ui.home.HomeViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -29,8 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var searchIcon: MenuItem
 
-    private val viewModel: NeoWeatherViewModel by viewModels {
-        NeoWeatherViewModelFactory(this.application)
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory(
+            (this.application as NeoWeatherApplication).repository
+        )
     }
 
     private val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION

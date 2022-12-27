@@ -37,6 +37,7 @@ fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
     adapter.submitList(placesList)
 }
 
+/*
 @BindingAdapter(
     value = ["previousPlaceListSize", "list", "syncPreviousSize"],
     requireAll = true)
@@ -58,6 +59,7 @@ fun checkIfPlaceWasAdded(
     }
     syncPreviousSize()
 }
+ */
 
 @BindingAdapter(value = ["hourList", "preferences"])
 fun bindHourList(

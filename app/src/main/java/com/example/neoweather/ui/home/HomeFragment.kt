@@ -6,19 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2
+import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
 
 class HomeFragment : Fragment(){
 
-    private val viewModel: NeoWeatherViewModel by activityViewModels {
+    private val viewModel: HomeViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        NeoWeatherViewModelFactory(activity.application)
+        HomeViewModelFactory(
+            (activity.application as NeoWeatherApplication).repository
+        )
     }
 
     private lateinit var binding: FragmentHomeBinding
@@ -34,19 +35,20 @@ class HomeFragment : Fragment(){
 
         binding.viewModel = viewModel
 
-        val updateTabNum = object : OnPageChangeCallback() {
+        val refreshData = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                viewModel.updateCurrentTabNum(position)
+                //viewModel.updateCurrentTabNum(position)
                 viewModel.refreshPlaceData(position)
-                //Log.d(TAG, "Current position: $position")
             }
         }
         binding.homeViewPager.apply {
+            /*
             post {
                 setCurrentItem(viewModel.currentTabNum.value!!, false)
             }
+             */
+            registerOnPageChangeCallback(refreshData)
             adapter = HomeTabAdapter(requireActivity())
-            registerOnPageChangeCallback(updateTabNum)
         }
 
         binding.currentItemNum = binding.homeViewPager.currentItem

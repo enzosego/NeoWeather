@@ -88,8 +88,10 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         withContext(Dispatchers.IO) {
             val places = database.placeDao.matchGpsLocation()
 
-            if (places.isEmpty())
-                insertNewPlace(location)
+            if (places.isEmpty()) {
+                increaseIds()
+                insertNewPlace(location, id = 0)
+            }
             else
                 savePlaceInDatabase(
                     places.first().copy(
@@ -100,7 +102,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
         }
     }
 
-    private suspend fun insertNewPlace(location: GeoLocation) {
+    private suspend fun insertNewPlace(location: GeoLocation, id: Int? = null) {
         withContext(Dispatchers.IO) {
             val placeName = location.name.ifEmpty {
                 ReverseGeoCodingApiImpl.create()
@@ -112,7 +114,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             }
             val place = GeoCodingApiImpl.create().getLocation(placeName)
                 .results[0]
-                .asDatabaseModel(getNewPlaceId(), location.isGpsLocation())
+                .asDatabaseModel(id ?: getNewPlaceId(), location.isGpsLocation())
 
             savePlaceInDatabase(place)
         }
@@ -131,19 +133,28 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
             database.daysDao.delete(placeId)
             database.currentWeatherDao.delete(placeId)
 
-            updateIds(placeId + 1)
+            decreaseIds(placeId + 1)
         }
     }
 
-    private suspend fun updateIds(placeId: Int) {
-        var i = placeId
+    private suspend fun decreaseIds(placeId: Int) {
         withContext(Dispatchers.IO) {
-            while (i <= placesList.value!!.size) {
+            for (i in placeId..placesList.value!!.size) {
                 database.placeDao.updateId(i, i-1)
                 database.hoursDao.updateId(i, i-1)
                 database.daysDao.updateId(i, i-1)
                 database.currentWeatherDao.updateId(i, i-1)
-                i++
+            }
+        }
+    }
+
+    private suspend fun increaseIds() {
+        withContext(Dispatchers.IO) {
+            for (i in placesList.value!!.size downTo 0) {
+                database.placeDao.updateId(i, i+1)
+                database.hoursDao.updateId(i, i+1)
+                database.daysDao.updateId(i, i+1)
+                database.currentWeatherDao.updateId(i, i+1)
             }
         }
     }

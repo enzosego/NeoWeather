@@ -6,18 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.databinding.FragmentSettingsBinding
 import com.example.neoweather.ui.utils.OnUnitCheckedListener
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModel
-import com.example.neoweather.ui.viewmodels.NeoWeatherViewModelFactory
 
 class SettingsFragment : Fragment() {
 
-    private val viewModel: NeoWeatherViewModel by activityViewModels {
+    private val viewModel: SettingsViewModel by activityViewModels {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        NeoWeatherViewModelFactory(activity.application)
+        SettingsViewModelFactory(
+            (activity.application as NeoWeatherApplication).repository
+        )
     }
 
     private lateinit var binding: FragmentSettingsBinding

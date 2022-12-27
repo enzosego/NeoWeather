@@ -7,17 +7,17 @@ import java.util.*
 data class Place(
     @PrimaryKey
     val id: Int,
-    @ColumnInfo
+    @ColumnInfo(name = "name")
     val name: String,
-    @ColumnInfo
+    @ColumnInfo(name = "latitude")
     val latitude: Double,
-    @ColumnInfo
+    @ColumnInfo(name = "longitude")
     val longitude: Double,
-    @ColumnInfo
+    @ColumnInfo(name = "country")
     val country: String,
     @ColumnInfo(name = "country_code")
     val countryCode: String,
-    @ColumnInfo
+    @ColumnInfo(name = "timezone")
     val timezone: String,
     @ColumnInfo(name = "last_update_time")
     val lastUpdateTime: Long = 0,
