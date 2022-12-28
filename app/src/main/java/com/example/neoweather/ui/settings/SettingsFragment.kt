@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.databinding.FragmentSettingsBinding
 import com.example.neoweather.ui.utils.OnUnitCheckedListener
 
 class SettingsFragment : Fragment() {
 
-    private val viewModel: SettingsViewModel by activityViewModels {
+    private val viewModel: SettingsViewModel by viewModels {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }

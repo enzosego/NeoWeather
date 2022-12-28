@@ -39,7 +39,7 @@ class NeoWeatherRepository(private val database: NeoWeatherDatabase) {
     val preferences: LiveData<Preferences> =
         database.preferencesDao.getPreferences().asLiveData()
 
-    suspend fun refreshPlaceData(id: Int) {
+    suspend fun refreshPlaceWeather(id: Int) {
         if (placesList.value!![id].canUpdate(30))
             return
 

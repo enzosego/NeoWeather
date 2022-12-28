@@ -98,7 +98,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <ImageView
-            android:id="@+id/status_image"
+            android:id="@+id/weather_status_image"
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:contentDescription="@string/status_image_description"

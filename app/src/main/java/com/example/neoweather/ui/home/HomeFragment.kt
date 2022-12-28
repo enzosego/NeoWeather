@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -35,20 +36,25 @@ class HomeFragment : Fragment(){
 
         binding.viewModel = viewModel
 
-        val refreshData = object : ViewPager2.OnPageChangeCallback() {
+        val refreshDataAndSetTabNum = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                //viewModel.updateCurrentTabNum(position)
-                viewModel.refreshPlaceData(position)
+                viewModel.setCurrentTabNum(position)
+                viewModel.refreshPlaceWeather(position)
             }
         }
         binding.homeViewPager.apply {
-            /*
-            post {
-                setCurrentItem(viewModel.currentTabNum.value!!, false)
+            doOnPreDraw {
+                visibility = View.GONE
+                setCurrentItem(viewModel.currentTabNum.value ?: 0, false)
             }
-             */
-            registerOnPageChangeCallback(refreshData)
+            postDelayed({visibility = View.VISIBLE}, 100)
+
+            registerOnPageChangeCallback(refreshDataAndSetTabNum)
             adapter = HomeTabAdapter(requireActivity())
+        }
+        viewModel.currentListSize.observe(viewLifecycleOwner) { size ->
+            if (size != null && viewModel.previousListSize.value == null)
+                viewModel.syncPreviousSize()
         }
 
         binding.currentItemNum = binding.homeViewPager.currentItem

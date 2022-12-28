@@ -17,13 +17,13 @@ import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapt
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
 
 @BindingAdapter("apiStatusImage")
-fun bindStatusImage(statusImage: ImageView, status: NeoWeatherApiStatus?) {
+fun bindStatusImage(statusImage: ImageView, status: ApiStatus?) {
     when(status) {
-        NeoWeatherApiStatus.LOADING -> {
+        ApiStatus.LOADING -> {
             statusImage.setImageResource(R.drawable.loading_animation)
             statusImage.visibility = View.VISIBLE
         }
-        NeoWeatherApiStatus.ERROR -> {
+        ApiStatus.ERROR -> {
             statusImage.setImageResource(R.drawable.ic_connection_error)
             statusImage.visibility = View.VISIBLE
         }
@@ -37,29 +37,21 @@ fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
     adapter.submitList(placesList)
 }
 
-/*
 @BindingAdapter(
-    value = ["previousPlaceListSize", "list", "syncPreviousSize"],
+    value = ["previousListSize", "currentListSize", "syncPreviousSize"],
     requireAll = true)
 fun checkIfPlaceWasAdded(
     viewPager: ViewPager2,
-    previousPlaceListSize: Int?,
-    list: List<Place>?,
+    previousListSize: Int,
+    currentListSize: Int?,
     syncPreviousSize: () -> Unit
 ) {
-    if (list == null || previousPlaceListSize == null)
-        return
-    if (previousPlaceListSize == list.size)
+    if (currentListSize == null || previousListSize == currentListSize)
         return
 
-    viewPager.apply {
-        post {
-            setCurrentItem(list.size, true)
-        }
-    }
+    viewPager.setCurrentItem(currentListSize, true)
     syncPreviousSize()
 }
- */
 
 @BindingAdapter(value = ["hourList", "preferences"])
 fun bindHourList(
