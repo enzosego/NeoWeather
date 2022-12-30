@@ -16,6 +16,9 @@ object HttpRoutes {
     const val FORECAST =
         "$FORECAST_BASE_URL/forecast?$CURRENT_WEATHER&$HOURLY_FORECAST&$DAILY_FORECAST"
 
+    const val FORECAST_CURRENT =
+        "$FORECAST_BASE_URL/forecast?$CURRENT_WEATHER"
+
     //GeoCoding Route
 
     private const val GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1"

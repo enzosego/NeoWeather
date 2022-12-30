@@ -1,6 +1,7 @@
 package com.example.neoweather.ui
 
 import android.Manifest
+import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
 import com.example.neoweather.remote.geocoding.model.GeoLocation
-import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.ui.utils.PermissionRequester
 import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.home.HomeViewModelFactory
@@ -80,17 +80,28 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.insertOrUpdatePlace(
-                GeoLocation(
-                    name = "",
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    country = "",
-                    countryCode = "",
-                    timezone = ""
-                )
-            )
+            viewModel.insertOrUpdatePlace(location.toGeoLocation())
+            enqueueWeatherNotification(location)
         }
+    }
+
+    private fun Location.toGeoLocation() =
+        GeoLocation(
+            name = "",
+            latitude = latitude,
+            longitude = longitude,
+            country = "",
+            countryCode = "",
+            timezone = ""
+        )
+
+
+    private fun enqueueWeatherNotification(location: Location) {
+        viewModel.enqueueWeatherNotification(
+            applicationContext,
+            location.latitude,
+            location.longitude
+        )
     }
 
     private fun isGpsEnabled(): Boolean {
