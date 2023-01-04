@@ -15,10 +15,10 @@ class SearchListAdapter(private val clickListener: LocationListener)
     private object DiffCallback : DiffUtil.ItemCallback<GeoLocation>() {
 
         override fun areItemsTheSame(oldItem: GeoLocation, newItem: GeoLocation): Boolean =
-            oldItem.name == newItem.name
+            oldItem.name == newItem.name && oldItem.country == newItem.country
 
         override fun areContentsTheSame(oldItem: GeoLocation, newItem: GeoLocation): Boolean =
-            oldItem.latitude == newItem.latitude && oldItem.longitude == newItem.longitude
+            oldItem == newItem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemLocationViewHolder {
@@ -33,8 +33,10 @@ class SearchListAdapter(private val clickListener: LocationListener)
         holder.bind(location, clickListener)
     }
 
+    /*
     override fun getItemCount(): Int =
         if (currentList.isNotEmpty())
             listSizeLimit
         else 0
+     */
 }
