@@ -33,9 +33,14 @@ class SearchViewModel(
                 _status.value = ApiStatus.DONE
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR
-                Log.d("DEBUG", "${e.message}")
+                _locationList.value = emptyList()
+                Log.d("SearchViewModel", e.cause.toString())
             }
         }
+    }
+
+    fun cleanApiStatus() {
+        _status.value = ApiStatus.DONE
     }
 
     fun onLocationClicked(location: GeoLocation) {
