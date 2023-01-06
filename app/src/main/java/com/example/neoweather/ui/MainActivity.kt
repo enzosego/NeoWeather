@@ -1,11 +1,16 @@
 package com.example.neoweather.ui
 
 import android.Manifest
-import android.location.Location
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -22,7 +27,9 @@ import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.home.HomeViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+@SuppressLint("MissingPermission")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
@@ -33,11 +40,13 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
-            (this.application as NeoWeatherApplication).repository
+            (application as NeoWeatherApplication).repository
         )
     }
 
     private val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
+
+    private val backgroundLocationPermission = Manifest.permission.ACCESS_BACKGROUND_LOCATION
 
     private lateinit var locationPermissionRequester: PermissionRequester
 
@@ -60,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             .getFusedLocationProviderClient(this)
 
         locationPermissionRequester = PermissionRequester(
-            this,
+            activity = this,
             coarseLocation,
         )
         requestLocationPermission()
@@ -69,46 +78,45 @@ class MainActivity : AppCompatActivity() {
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             locationPermissionRequester.request {
-                refreshData()
+                if (isBackgroundLocationPermissionEnabled())
+                    askForBackgroundLocationPermission { openAppSettings() }
+                getLocation()
+                viewModel.enqueueWorkers(this)
             }
     }
 
-    private fun refreshData() {
-        if (!isGpsEnabled()) {
+    private fun getLocation() {
+        if (!isGpsEnabled(this))
             return
-        }
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.insertOrUpdatePlace(location.toGeoLocation())
-            enqueueWeatherNotification(location)
+            viewModel.insertOrUpdatePlace(
+                GeoLocation(
+                    name = "",
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    country = "",
+                    countryCode = "",
+                    timezone = ""
+                )
+            )
         }
     }
 
-    private fun Location.toGeoLocation() =
-        GeoLocation(
-            name = "",
-            latitude = latitude,
-            longitude = longitude,
-            country = "",
-            countryCode = "",
-            timezone = ""
-        )
+    private fun isBackgroundLocationPermissionEnabled(): Boolean =
+        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            checkSelfPermission(backgroundLocationPermission)
+            != PackageManager.PERMISSION_GRANTED)
 
-
-    private fun enqueueWeatherNotification(location: Location) {
-        viewModel.enqueueWeatherNotification(
-            applicationContext,
-            location.latitude,
-            location.longitude
-        )
-    }
-
-    private fun isGpsEnabled(): Boolean {
-        val locationManager = this
-            .getSystemService(LOCATION_SERVICE) as LocationManager
-
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    private fun Context.askForBackgroundLocationPermission(action: () -> Unit) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(resources.getString(R.string.permanent_location_dialog_title))
+            .setMessage(resources.getString(R.string.permanent_location_dialog_message))
+            .setNeutralButton(resources.getString(R.string.permanent_location_dialog_button)) { _, _ ->
+                action()
+            }
+            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -144,4 +152,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean =
         navController.navigateUp() || super.onSupportNavigateUp()
+}
+
+fun Context.openAppSettings() {
+    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        addCategory(Intent.CATEGORY_DEFAULT)
+        data = Uri.parse("package:$packageName")
+    }.let(::startActivity)
+}
+
+fun isGpsEnabled(context: Context): Boolean {
+    val locationManager = context
+        .getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }

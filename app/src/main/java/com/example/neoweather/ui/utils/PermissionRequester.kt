@@ -15,8 +15,7 @@ class PermissionRequester(
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             when {
                 isGranted -> onGranted()
-                activity.shouldShowRequestPermissionRationale(permission) ->
-                    onRationale()
+                activity.shouldShowRequestPermissionRationale(permission) -> onRationale()
                 else -> onDenied()
             }
         }

@@ -14,4 +14,11 @@
     <string name="rain_unit">Rain Unit</string>
     <string name="millimeters">mm</string>
     <string name="inches">in</string>
+    <!-- MaterialAlertDialog -->
+    <string name="permanent_location_dialog_title">Permanent location permission</string>
+    <string name="permanent_location_dialog_message">
+        For a better experience, /n
+        we suggest enabling location tracking in the background
+    </string>
+    <string name="permanent_location_dialog_button">Go to settings</string>
 </resources>

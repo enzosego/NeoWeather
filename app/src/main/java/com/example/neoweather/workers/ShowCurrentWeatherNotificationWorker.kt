@@ -20,10 +20,11 @@ class ShowCurrentWeatherNotificationWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        return try {
-            val latitude = workerParams.inputData.getDouble(LATITUDE_PARAM, 0.0)
-            val longitude = workerParams.inputData.getDouble(LONGITUDE_PARAM, 0.0)
 
+        val latitude = workerParams.inputData.getDouble(LATITUDE_PARAM, 0.0)
+        val longitude = workerParams.inputData.getDouble(LONGITUDE_PARAM, 0.0)
+
+        return try {
             val weatherResponse = NeoWeatherApiImpl.create()
                 .getCurrentWeather(latitude, longitude)
                 .currentWeather

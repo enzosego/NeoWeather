@@ -7,14 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.repository.NeoWeatherRepository
 import com.example.neoweather.ui.utils.ApiStatus
-import com.example.neoweather.workers.NotificationUtils.LATITUDE_PARAM
-import com.example.neoweather.workers.NotificationUtils.LONGITUDE_PARAM
-import com.example.neoweather.workers.NotificationUtils.NOTIFICATION_WORK_NAME
-import com.example.neoweather.workers.ShowCurrentWeatherNotificationWorker
+import com.example.neoweather.workers.GetCurrentLocationWorker
+import com.example.neoweather.workers.NotificationUtils
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -86,32 +86,19 @@ class HomeViewModel(
         previousListSize.value = currentListSize.value!!
     }
 
-    fun enqueueWeatherNotification(context: Context, lat: Double, lon: Double) {
-        val workManager = WorkManager.getInstance(context)
+    fun enqueueWorkers(context: Context) {
+        val getCurrentLocationWorker =
+            PeriodicWorkRequestBuilder<GetCurrentLocationWorker>(
+                repeatInterval = 15,
+                TimeUnit.MINUTES
+            ).build()
 
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val weatherNotificationRequest =
-            PeriodicWorkRequestBuilder<ShowCurrentWeatherNotificationWorker>(
-                repeatInterval = 1,
-                TimeUnit.HOURS
+        WorkManager
+            .getInstance(context)
+            .enqueueUniquePeriodicWork(
+                NotificationUtils.GET_CURRENT_LOCATION_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                getCurrentLocationWorker
             )
-                .setConstraints(constraints)
-                .setInputData(createInputData(lat, lon))
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            NOTIFICATION_WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            weatherNotificationRequest
-        )
-    }
-
-    private fun createInputData(lat: Double, lon: Double): Data {
-        val builder = Data.Builder()
-        builder.putDouble(LATITUDE_PARAM, lat)
-        builder.putDouble(LONGITUDE_PARAM, lon)
-        return builder.build()
     }
 }
