@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.example.neoweather.NeoWeatherApplication
+import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSettingsBinding
 import com.example.neoweather.ui.utils.OnUnitCheckedListener
 
@@ -35,9 +40,14 @@ class SettingsFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        bindTempUnitToggle()
-        bindSpeedUnitToggle()
-        bindRainUnitToggle()
+        viewModel.preferences.observeOnce(viewLifecycleOwner) { preferences ->
+            if (preferences != null) {
+                bindTempUnitToggle()
+                bindSpeedUnitToggle()
+                bindRainUnitToggle()
+            }
+        }
+        setIntervalMenu()
 
         return binding.root
     }
@@ -98,4 +108,29 @@ class SettingsFragment : Fragment() {
             )
         )
     }
+
+    private fun setIntervalMenu() {
+        val items = resources.getStringArray(R.array.interval_options)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.menu_list_item,
+            items
+        )
+        with(binding.intervalMenu) {
+            setAdapter(adapter)
+            onItemClickListener = OnItemClickListener { parent, _, position, _ ->
+                val item = parent?.getItemAtPosition(position).toString()
+                viewModel.updateNotificationsInterval(item)
+            }
+        }
+    }
+}
+
+private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
 }

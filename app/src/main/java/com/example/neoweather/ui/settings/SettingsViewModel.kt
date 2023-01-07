@@ -33,6 +33,19 @@ class SettingsViewModel(
         updatePreferences(newPreferences)
     }
 
+    fun updateNotificationsInterval(selected: String) {
+        val newValue = when(selected) {
+            "One hour" -> 1L
+            "Three hours" -> 3L
+            "Six hours" -> 6L
+            else -> 12L
+        }
+        val newPreferences = preferences.value!!.copy(
+            notificationsInterval = newValue
+        )
+        updatePreferences(newPreferences)
+    }
+
     private fun updatePreferences(newValue: Preferences) {
         viewModelScope.launch {
             repository.updatePreferences(newValue)

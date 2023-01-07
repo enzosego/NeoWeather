@@ -53,7 +53,7 @@ fun checkIfPlaceWasAdded(
     syncPreviousSize()
 }
 
-@BindingAdapter(value = ["hourList", "preferences"])
+@BindingAdapter(value = ["hourList", "preferences"], requireAll = true)
 fun bindHourList(
     recyclerView: RecyclerView,
     hourList: List<Hour>?,
@@ -64,13 +64,8 @@ fun bindHourList(
     adapter.submitPreferences(preferences)
 }
 
-@BindingAdapter(
-    value = ["dayList", "preferences"],
-    requireAll = true)
-fun bindDayList(
-    recyclerView: RecyclerView,
-    dayList: List<Day>?,
-    preferences: Preferences?
+@BindingAdapter(value = ["dayList", "preferences"], requireAll = true)
+fun bindDayList(recyclerView: RecyclerView, dayList: List<Day>?, preferences: Preferences?
 ) {
     val adapter = recyclerView.adapter as DailyForecastAdapter
     adapter.submitList(dayList)

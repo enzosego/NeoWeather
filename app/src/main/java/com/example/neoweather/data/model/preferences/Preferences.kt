@@ -14,4 +14,6 @@ data class Preferences(
     val isInchesEnabled: Boolean,
     @ColumnInfo(name = "is_miles_enabled")
     val isMilesEnabled: Boolean,
+    @ColumnInfo(name = "notifications_interval")
+    val notificationsInterval: Long
 )

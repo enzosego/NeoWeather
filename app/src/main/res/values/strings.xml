@@ -14,6 +14,16 @@
     <string name="rain_unit">Rain Unit</string>
     <string name="millimeters">mm</string>
     <string name="inches">in</string>
+    <!-- Notifications -->
+    <string name="notifications_settings_title">Notifications</string>
+    <string name="notifications_interval">Interval</string>
+    <string name="interval_menu_text">Select</string>
+    <string-array name="interval_options">
+        <item>One hour</item>
+        <item>Three hours</item>
+        <item>Six hours</item>
+        <item>Twelve hours</item>
+    </string-array>
     <!-- MaterialAlertDialog -->
     <string name="permanent_location_dialog_title">Permanent location permission</string>
     <string name="permanent_location_dialog_message">

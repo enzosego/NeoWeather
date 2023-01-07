@@ -89,8 +89,8 @@ class HomeViewModel(
     fun enqueueWorkers(context: Context) {
         val getCurrentLocationWorker =
             PeriodicWorkRequestBuilder<GetCurrentLocationWorker>(
-                repeatInterval = 15,
-                TimeUnit.MINUTES
+                preferences.value!!.notificationsInterval,
+                TimeUnit.HOURS
             ).build()
 
         WorkManager
