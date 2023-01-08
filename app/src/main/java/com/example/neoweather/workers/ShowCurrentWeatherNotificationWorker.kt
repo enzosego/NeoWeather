@@ -2,6 +2,7 @@ package com.example.neoweather.workers
 
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -40,7 +41,8 @@ class ShowCurrentWeatherNotificationWorker(
 
             Result.success()
         } catch (e: Exception) {
-            Result.failure()
+            Log.d("notification_worker", "${e.printStackTrace()}")
+            Result.retry()
         }
     }
 

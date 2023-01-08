@@ -91,7 +91,9 @@ class HomeViewModel(
             PeriodicWorkRequestBuilder<GetCurrentLocationWorker>(
                 preferences.value!!.notificationsInterval,
                 TimeUnit.HOURS
-            ).build()
+            )
+                .addTag(NotificationUtils.GET_CURRENT_LOCATION_WORK_TAG)
+                .build()
 
         WorkManager
             .getInstance(context)

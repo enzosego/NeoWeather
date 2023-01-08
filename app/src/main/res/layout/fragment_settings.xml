@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -10,7 +10,6 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,108 +34,96 @@
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toTopOf="@+id/temp_unit_toggle"
-                app:layout_constraintBottom_toBottomOf="@+id/temp_unit_toggle"
+                app:layout_constraintTop_toTopOf="@+id/temp_unit_menu_holder"
+                app:layout_constraintBottom_toBottomOf="@+id/temp_unit_menu_holder"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/temp_unit_toggle_text"/>
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/temp_unit_toggle"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/temp_unit_menu_holder"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:padding="4dp"
-                app:singleSelection="true"
+                android:layout_marginEnd="8dp"
+                tools:hint="Celsius"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:startIconDrawable="@drawable/ic_interval_icon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" >
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <Button
-                    android:id="@+id/celsius_button"
-                    android:layout_width="wrap_content"
+                <AutoCompleteTextView
+                    android:id="@+id/temp_unit_menu"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/celsius"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:inputType="none"
+                    android:textSize="14sp"
+                    tools:ignore="LabelFor" />
 
-                <Button
-                    android:id="@+id/fahrenheit_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fahrenheit"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toTopOf="@+id/speed_unit_toggle"
-                app:layout_constraintBottom_toBottomOf="@+id/speed_unit_toggle"
+                app:layout_constraintTop_toTopOf="@+id/speed_unit_menu_holder"
+                app:layout_constraintBottom_toBottomOf="@+id/speed_unit_menu_holder"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/speed_unit_toggle_text"/>
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/speed_unit_toggle"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/speed_unit_menu_holder"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:padding="4dp"
-                app:singleSelection="true"
-                app:layout_constraintTop_toBottomOf="@id/temp_unit_toggle"
-                app:layout_constraintEnd_toEndOf="parent" >
+                android:layout_marginEnd="8dp"
+                tools:hint="Kph"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:startIconDrawable="@drawable/ic_interval_icon"
+                app:layout_constraintTop_toBottomOf="@id/temp_unit_menu_holder"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <Button
-                    android:id="@+id/kilometers_button"
-                    android:layout_width="wrap_content"
+                <AutoCompleteTextView
+                    android:id="@+id/speed_unit_menu"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/kph"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:inputType="none"
+                    android:textSize="14sp"
+                    tools:ignore="LabelFor" />
 
-                <Button
-                    android:id="@+id/miles_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mph"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toTopOf="@+id/rain_unit_toggle"
-                app:layout_constraintBottom_toBottomOf="@+id/rain_unit_toggle"
+                app:layout_constraintTop_toTopOf="@+id/rain_unit_menu_holder"
+                app:layout_constraintBottom_toBottomOf="@+id/rain_unit_menu_holder"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/rain_unit"/>
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/rain_unit_toggle"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/rain_unit_menu_holder"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:padding="4dp"
-                app:singleSelection="true"
-                app:layout_constraintTop_toBottomOf="@id/speed_unit_toggle"
-                app:layout_constraintEnd_toEndOf="parent" >
+                android:layout_marginEnd="8dp"
+                tools:hint="Inches"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                app:startIconDrawable="@drawable/ic_interval_icon"
+                app:layout_constraintTop_toBottomOf="@id/speed_unit_menu_holder"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <Button
-                    android:id="@+id/millimeters_button"
-                    android:layout_width="wrap_content"
+                <AutoCompleteTextView
+                    android:id="@+id/rain_unit_menu"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/millimeters"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:inputType="none"
+                    android:textSize="14sp"
+                    tools:ignore="LabelFor" />
 
-                <Button
-                    android:id="@+id/inches_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/inches"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -166,6 +153,24 @@
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/notifications_switch"
+                app:layout_constraintBottom_toBottomOf="@+id/notifications_switch"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/notifications_enable"/>
+            
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/notifications_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:padding="4dp"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintTop_toTopOf="@+id/interval_menu_holder"
                 app:layout_constraintBottom_toBottomOf="@+id/interval_menu_holder"
                 app:layout_constraintStart_toStartOf="parent"
@@ -175,17 +180,21 @@
                 android:id="@+id/interval_menu_holder"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                app:startIconDrawable="@drawable/ic_interval_icon"
+                android:padding="4dp"
+                android:layout_marginEnd="8dp"
+                tools:hint="Twelve hours"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_interval_icon"
+                app:layout_constraintTop_toBottomOf="@id/notifications_switch"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <AutoCompleteTextView
                     android:id="@+id/interval_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/interval_menu_text"
-                    android:inputType="none"/>
+                    android:inputType="none"
+                    android:textSize="14sp"
+                    tools:ignore="LabelFor" />
                 
             </com.google.android.material.textfield.TextInputLayout>
 

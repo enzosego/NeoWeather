@@ -11,8 +11,10 @@ import com.example.neoweather.ui.MainActivity
 object NotificationUtils {
     const val LATITUDE_PARAM = "latitude"
     const val LONGITUDE_PARAM = "longitude"
-    const val GET_CURRENT_LOCATION_WORK_NAME = "current_location_work"
     const val NOTIFICATION_WORK_NAME = "current_weather_notification_work"
+
+    const val GET_CURRENT_LOCATION_WORK_NAME = "current_location_work"
+    const val GET_CURRENT_LOCATION_WORK_TAG = "current_location_worker"
 
     const val WEATHER_CHANNEL_NAME = "Current Weather Update"
     const val WEATHER_CHANNEL_ID = "current_weather"

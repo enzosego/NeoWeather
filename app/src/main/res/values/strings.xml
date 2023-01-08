@@ -16,13 +16,26 @@
     <string name="inches">in</string>
     <!-- Notifications -->
     <string name="notifications_settings_title">Notifications</string>
+    <string name="notifications_enable">Enable notifications</string>
     <string name="notifications_interval">Interval</string>
-    <string name="interval_menu_text">Select</string>
+    <!-- <string name="interval_menu_text">Select</string> -->
     <string-array name="interval_options">
         <item>One hour</item>
         <item>Three hours</item>
         <item>Six hours</item>
         <item>Twelve hours</item>
+    </string-array>
+    <string-array name="temp_unit_options">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="speed_unit_options">
+        <item>Kph</item>
+        <item>Mph</item>
+    </string-array>
+    <string-array name="rain_unit_options">
+        <item>Millimeters</item>
+        <item>Inches</item>
     </string-array>
     <!-- MaterialAlertDialog -->
     <string name="permanent_location_dialog_title">Permanent location permission</string>

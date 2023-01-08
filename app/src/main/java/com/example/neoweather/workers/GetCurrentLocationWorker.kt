@@ -2,7 +2,10 @@ package com.example.neoweather.workers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.work.*
 import com.example.neoweather.ui.isGpsEnabled
 import com.example.neoweather.workers.NotificationUtils.LATITUDE_PARAM
@@ -23,8 +26,14 @@ class GetCurrentLocationWorker(
     @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result = withContext(Dispatchers.Main) {
 
-        if (!isGpsEnabled(context))
-            Result.failure()
+        val isLocationPermissionDenied =
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission
+                .ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED
+        if (!isGpsEnabled(context) && isLocationPermissionDenied) {
+            Log.d("location_worker", "Location services are disabled")
+            return@withContext Result.failure()
+        }
+        Log.d("location_worker", "GOT HERE")
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -36,12 +45,16 @@ class GetCurrentLocationWorker(
         )
         val currentLocation: Location = task.await(cancellationTokenSource)
 
+
         if (task.isComplete) {
+            Log.d("location_worker", "${currentLocation.latitude} - ${currentLocation.longitude}")
             val inputData = createInputData(currentLocation)
             enqueueWorkers(inputData)
             return@withContext Result.success()
-        } else
+        } else {
+            Log.d("location_worker", "Could not get your current location")
             return@withContext Result.retry()
+        }
     }
 
     private fun enqueueWorkers(inputData: Data) {

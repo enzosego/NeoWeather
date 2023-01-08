@@ -25,6 +25,7 @@ import com.example.neoweather.remote.geocoding.model.GeoLocation
 import com.example.neoweather.ui.utils.PermissionRequester
 import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.home.HomeViewModelFactory
+import com.example.neoweather.ui.settings.observeOnce
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
 
+    @SuppressLint("InlinedApi")
     private val backgroundLocationPermission = Manifest.permission.ACCESS_BACKGROUND_LOCATION
 
     private lateinit var locationPermissionRequester: PermissionRequester
@@ -81,7 +83,10 @@ class MainActivity : AppCompatActivity() {
                 if (isBackgroundLocationPermissionEnabled())
                     askForBackgroundLocationPermission { openAppSettings() }
                 getLocation()
-                viewModel.enqueueWorkers(this)
+                viewModel.preferences.observeOnce(this) { preferences ->
+                    if (preferences != null)
+                        viewModel.enqueueWorkers(this)
+                }
             }
     }
 

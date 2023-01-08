@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
@@ -14,7 +15,6 @@ import androidx.lifecycle.Observer
 import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSettingsBinding
-import com.example.neoweather.ui.utils.OnUnitCheckedListener
 
 class SettingsFragment : Fragment() {
 
@@ -42,91 +42,96 @@ class SettingsFragment : Fragment() {
 
         viewModel.preferences.observeOnce(viewLifecycleOwner) { preferences ->
             if (preferences != null) {
-                bindTempUnitToggle()
-                bindSpeedUnitToggle()
-                bindRainUnitToggle()
+                setSpeedUnitMenu(
+                    newHint = when (preferences.isMilesEnabled) {
+                        true -> "Mph"
+                        false -> "Kph"
+                    }
+                )
+                setRainUnitMenu(
+                    newHint = when (preferences.isInchesEnabled) {
+                        true -> "Inches"
+                        false -> "Millimeters"
+                    }
+                )
+                setTempUnitMenu(
+                    newHint = when (preferences.isFahrenheitEnabled) {
+                        true -> "Fahrenheit"
+                        false -> "Celsius"
+                    }
+                )
+                setIntervalMenu(
+                    newHint = when(preferences.notificationsInterval) {
+                        1L -> "One hour"
+                        3L -> "Three hours"
+                        6L -> "Six hours"
+                        else -> "Twelve hours"
+                    }
+                )
             }
         }
-        setIntervalMenu()
+        viewModel.currentInterval.observe(viewLifecycleOwner) { interval ->
+            if (interval != null && viewModel.hasUserChangedInterval.value == true)
+                viewModel.startPeriodicWork(requireContext())
+        }
+        viewModel.areNotificationsEnabled.observeOnce(viewLifecycleOwner) {
+            if (it != null) {
+                binding.notificationsSwitch.isChecked = it
 
+                binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    viewModel.toggleNotifications(isChecked, requireContext())
+                }
+            }
+        }
         return binding.root
     }
 
-    private fun bindTempUnitToggle() {
-        val selectedButtonId =
-            when(viewModel.preferences.value!!.isFahrenheitEnabled) {
-                false -> binding.celsiusButton.id
-                else -> binding.fahrenheitButton.id
-            }
-        binding.tempUnitToggle.check(selectedButtonId)
-
-        binding.tempUnitToggle.addOnButtonCheckedListener(
-            OnUnitCheckedListener(
-                action = { newValue -> viewModel.updateTempUnit(newValue) },
-                preferenceState = viewModel.preferences.value!!.isFahrenheitEnabled,
-                selectedButtonId = selectedButtonId,
-                firstOptionId = binding.celsiusButton.id,
-                secondOptionId = binding.fahrenheitButton.id
-            )
-        )
+    private fun setTempUnitMenu(newHint: String) {
+        binding.tempUnitMenu.applyToMenu(newHint, R.array.temp_unit_options) { item ->
+            viewModel.updateTempUnit(item)
+        }
     }
 
-    private fun bindSpeedUnitToggle() {
-        val selectedButtonId =
-            when(viewModel.preferences.value!!.isMilesEnabled) {
-                false -> binding.kilometersButton.id
-                else -> binding.milesButton.id
-            }
-        binding.speedUnitToggle.check(selectedButtonId)
-
-        binding.speedUnitToggle.addOnButtonCheckedListener(
-            OnUnitCheckedListener(
-                action = { newValue -> viewModel.updateSpeedUnit(newValue) },
-                preferenceState = viewModel.preferences.value!!.isMilesEnabled,
-                selectedButtonId = selectedButtonId,
-                firstOptionId = binding.kilometersButton.id,
-                secondOptionId = binding.milesButton.id
-            )
-        )
+    private fun setSpeedUnitMenu(newHint: String) {
+        binding.speedUnitMenu.applyToMenu(newHint, R.array.speed_unit_options) { item ->
+            viewModel.updateSpeedUnit(item)
+        }
     }
 
-    private fun bindRainUnitToggle() {
-        val selectedButtonId =
-            when(viewModel.preferences.value!!.isInchesEnabled) {
-                false -> binding.millimetersButton.id
-                else -> binding.inchesButton.id
-            }
-        binding.rainUnitToggle.check(selectedButtonId)
-
-        binding.rainUnitToggle.addOnButtonCheckedListener(
-            OnUnitCheckedListener(
-                action = { newValue -> viewModel.updateRainUnit(newValue) },
-                preferenceState = viewModel.preferences.value!!.isInchesEnabled,
-                selectedButtonId = selectedButtonId,
-                firstOptionId = binding.millimetersButton.id,
-                secondOptionId = binding.inchesButton.id
-            )
-        )
+    private fun setRainUnitMenu(newHint: String) {
+        binding.rainUnitMenu.applyToMenu(newHint, R.array.rain_unit_options) { item ->
+            viewModel.updateRainUnit(item)
+        }
     }
 
-    private fun setIntervalMenu() {
-        val items = resources.getStringArray(R.array.interval_options)
-        val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.menu_list_item,
-            items
+    private fun setIntervalMenu(newHint: String) {
+        binding.intervalMenu.applyToMenu(newHint, R.array.interval_options) { item ->
+            viewModel.updateNotificationsInterval(item)
+        }
+    }
+
+    private fun AutoCompleteTextView.applyToMenu(
+        newHint: String,
+        arrayResource: Int,
+        then: (item: String) -> Unit = {})
+    {
+        hint = newHint
+        val itemArray = resources.getStringArray(arrayResource)
+        setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                R.layout.menu_list_item,
+                itemArray
+            )
         )
-        with(binding.intervalMenu) {
-            setAdapter(adapter)
-            onItemClickListener = OnItemClickListener { parent, _, position, _ ->
-                val item = parent?.getItemAtPosition(position).toString()
-                viewModel.updateNotificationsInterval(item)
-            }
+        onItemClickListener = OnItemClickListener { parent, _, position, _ ->
+            val item = parent?.getItemAtPosition(position).toString()
+            then(item)
         }
     }
 }
 
-private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
     observe(lifecycleOwner, object : Observer<T> {
         override fun onChanged(t: T) {
             observer.onChanged(t)

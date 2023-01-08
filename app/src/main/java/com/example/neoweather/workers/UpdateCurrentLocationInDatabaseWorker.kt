@@ -1,6 +1,7 @@
 package com.example.neoweather.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -19,8 +20,10 @@ class UpdateCurrentLocationInDatabaseWorker(
 
         val latitude = workerParams.inputData.getDouble(LATITUDE_PARAM, 0.0)
         val longitude = workerParams.inputData.getDouble(LONGITUDE_PARAM, 0.0)
-        if (latitude == 0.0 && longitude == 0.0)
+        if (latitude == 0.0 && longitude == 0.0) {
+            Log.d("update_database_worker", "Wrong inputs")
             return Result.failure()
+        }
 
         val database = NeoWeatherDatabase.getDatabase(context)
         val repository = NeoWeatherRepository(database)
