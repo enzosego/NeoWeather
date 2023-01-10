@@ -2,11 +2,7 @@ package com.example.neoweather.ui.home
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -28,20 +24,23 @@ class HomeViewModel(
     private val _currentTabNum = MutableLiveData(0)
     val currentTabNum: LiveData<Int> = _currentTabNum
 
+    val placesList = repository.placesList
+
     val dailyData = repository.dailyDataList
 
     val hourlyData = repository.hourlyDataList
 
     val currentWeather = repository.currentWeatherList
 
-    val preferences = repository.preferences
-
-    val placesList = repository.placesList
-
     val currentListSize: LiveData<Int> = Transformations.map(placesList) { it.size }
 
     val previousListSize = MutableLiveData<Int>()
 
+    val preferences = repository.preferences
+
+    val areNotificationsEnabled: LiveData<Boolean> = Transformations.map(preferences) { pref ->
+        pref.areNotificationsEnabled
+    }
 
     fun insertOrUpdatePlace(location: GeoLocation) {
         viewModelScope.launch {
@@ -102,5 +101,12 @@ class HomeViewModel(
                 ExistingPeriodicWorkPolicy.KEEP,
                 getCurrentLocationWorker
             )
+    }
+
+    fun setBackgroundPermissionDenied() {
+        val newPreferences = preferences.value!!.copy(
+            backgroundPermissionDenied = true
+        )
+        viewModelScope.launch { repository.updatePreferences(newPreferences) }
     }
 }

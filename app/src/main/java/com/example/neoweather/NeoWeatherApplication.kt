@@ -13,10 +13,7 @@ class NeoWeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        createNotificationChannel(
-            NotificationUtils.WEATHER_CHANNEL_ID,
-            NotificationUtils.WEATHER_CHANNEL_NAME
-        )
+        createNotificationChannel()
     }
 
     private val database: NeoWeatherDatabase by lazy { NeoWeatherDatabase.getDatabase(this) }
@@ -24,11 +21,11 @@ class NeoWeatherApplication : Application() {
     val repository: NeoWeatherRepository
         get() = ServiceLocator.provideRepository(database)
 
-    private fun createNotificationChannel(channelId: String, channelName: String) {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
-                channelName,
+                NotificationUtils.WEATHER_CHANNEL_ID,
+                NotificationUtils.WEATHER_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.description = "Weather update!"

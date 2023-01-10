@@ -11,10 +11,12 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -47,9 +49,6 @@ class MainActivity : AppCompatActivity() {
 
     private val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
 
-    @SuppressLint("InlinedApi")
-    private val backgroundLocationPermission = Manifest.permission.ACCESS_BACKGROUND_LOCATION
-
     private lateinit var locationPermissionRequester: PermissionRequester
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -75,17 +74,25 @@ class MainActivity : AppCompatActivity() {
             coarseLocation,
         )
         requestLocationPermission()
+
+        viewModel.areNotificationsEnabled.observeOnce(this) { notifications ->
+            if (notifications == true && isBackgroundPermissionGranted(this)) {
+                Log.d("MainActivity", "GOT HERE")
+                viewModel.enqueueWorkers(this)
+            }
+        }
     }
 
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             locationPermissionRequester.request {
-                if (isBackgroundLocationPermissionEnabled())
-                    askForBackgroundLocationPermission { openAppSettings() }
                 getLocation()
-                viewModel.preferences.observeOnce(this) { preferences ->
-                    if (preferences != null)
-                        viewModel.enqueueWorkers(this)
+                viewModel.preferences.observeOnce(this) { pref ->
+                    if (pref.areNotificationsEnabled && !pref.backgroundPermissionDenied)
+                        askForBackgroundLocationPermission(
+                            { viewModel.setBackgroundPermissionDenied() },
+                            { openAppSettings() }
+                        )
                 }
             }
     }
@@ -107,21 +114,6 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-    }
-
-    private fun isBackgroundLocationPermissionEnabled(): Boolean =
-        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            checkSelfPermission(backgroundLocationPermission)
-            != PackageManager.PERMISSION_GRANTED)
-
-    private fun Context.askForBackgroundLocationPermission(action: () -> Unit) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(resources.getString(R.string.permanent_location_dialog_title))
-            .setMessage(resources.getString(R.string.permanent_location_dialog_message))
-            .setNeutralButton(resources.getString(R.string.permanent_location_dialog_button)) { _, _ ->
-                action()
-            }
-            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -158,6 +150,26 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean =
         navController.navigateUp() || super.onSupportNavigateUp()
 }
+
+fun Context.askForBackgroundLocationPermission(
+    setBackgroundPermissionDenied: () -> Unit = {},
+    goToSettings: () -> Unit
+) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(resources.getString(R.string.permanent_location_dialog_title))
+        .setMessage(resources.getString(R.string.permanent_location_dialog_message))
+        .setNeutralButton(resources.getString(R.string.permanent_location_dialog_button)) { _, _ ->
+            goToSettings() }
+        .setNegativeButton(resources.getString(R.string.deny_background)) { _, _ ->
+            setBackgroundPermissionDenied()
+        }
+        .show()
+}
+
+fun isBackgroundPermissionGranted(context: Context): Boolean =
+    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            == PackageManager.PERMISSION_GRANTED)
 
 fun Context.openAppSettings() {
     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

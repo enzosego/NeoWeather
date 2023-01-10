@@ -44,4 +44,5 @@
         we suggest enabling location tracking in the background
     </string>
     <string name="permanent_location_dialog_button">Go to settings</string>
+    <string name="deny_background">Not now</string>
 </resources>

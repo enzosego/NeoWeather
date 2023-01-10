@@ -17,5 +17,7 @@ data class Preferences(
     @ColumnInfo(name = "are_notifications_enabled")
     val areNotificationsEnabled: Boolean,
     @ColumnInfo(name = "notifications_interval")
-    val notificationsInterval: Long
+    val notificationsInterval: Long,
+    @ColumnInfo(name = "background_permission_denied")
+    val backgroundPermissionDenied: Boolean
 )

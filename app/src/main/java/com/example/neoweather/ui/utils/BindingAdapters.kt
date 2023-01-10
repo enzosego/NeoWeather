@@ -2,6 +2,8 @@ package com.example.neoweather.ui.utils
 
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -15,6 +17,7 @@ import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
+import com.google.android.material.textfield.TextInputLayout
 
 @BindingAdapter("apiStatusImage")
 fun bindStatusImage(statusImage: ImageView, status: ApiStatus?) {
@@ -76,4 +79,16 @@ fun bindDayList(recyclerView: RecyclerView, dayList: List<Day>?, preferences: Pr
 fun bindSearchList(recyclerView: RecyclerView, dayList: List<GeoLocation>?) {
     val adapter = recyclerView.adapter as SearchListAdapter
     adapter.submitList(dayList)
+}
+
+@BindingAdapter("areNotificationsEnabled")
+fun displayIntervalMenuConditionally(
+    menuHolder: ConstraintLayout,
+    notifications: Boolean?
+) {
+    when (notifications) {
+        true -> menuHolder.visibility = View.VISIBLE
+        false -> menuHolder.visibility = View.GONE
+        else -> menuHolder.visibility = View.GONE
+    }
 }
