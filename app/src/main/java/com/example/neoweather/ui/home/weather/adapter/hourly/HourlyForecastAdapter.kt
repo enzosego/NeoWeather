@@ -4,14 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.neoweather.data.model.hour.Hour
-import com.example.neoweather.data.model.preferences.Preferences
+import com.example.neoweather.data.local.model.hour.Hour
+import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemHourBinding
 
 class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
     DiffCallback
 ) {
-
     private val listSizeLimit = 24
 
     private var preferences: Preferences? = null

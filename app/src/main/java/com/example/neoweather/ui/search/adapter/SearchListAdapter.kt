@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.databinding.ItemLocationBinding
-import com.example.neoweather.remote.geocoding.model.GeoLocation
+import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 
 class SearchListAdapter(private val clickListener: LocationListener)
     : ListAdapter<GeoLocation, ItemLocationViewHolder>(DiffCallback) {
 
-    private val listSizeLimit = 6
+    //private val listSizeLimit = 6
 
     private object DiffCallback : DiffUtil.ItemCallback<GeoLocation>() {
 

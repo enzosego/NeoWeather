@@ -8,29 +8,21 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
-import com.example.neoweather.data.model.preferences.Preferences
+import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.databinding.FragmentSettingsBinding
 import com.example.neoweather.ui.askForBackgroundLocationPermission
 import com.example.neoweather.ui.isBackgroundPermissionGranted
 import com.example.neoweather.ui.openAppSettings
 import com.google.android.material.materialswitch.MaterialSwitch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
-    private val viewModel: SettingsViewModel by viewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        SettingsViewModelFactory(
-            (activity.application as NeoWeatherApplication).repository
-        )
-    }
+    private val viewModel: SettingsViewModel by viewModel()
 
     private lateinit var binding: FragmentSettingsBinding
 
@@ -55,7 +47,7 @@ class SettingsFragment : Fragment() {
         }
         viewModel.currentInterval.observe(viewLifecycleOwner) {
             if (viewModel.hasUserChangedInterval.value == true)
-                viewModel.startPeriodicWork(requireContext())
+                viewModel.startPeriodicWork()
         }
         viewModel.areNotificationsEnabled.observeOnce(viewLifecycleOwner) {
             if (it != null) {

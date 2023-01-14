@@ -4,22 +4,24 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import com.example.neoweather.data.NeoWeatherDatabase
-import com.example.neoweather.repository.NeoWeatherRepository
-import com.example.neoweather.workers.NotificationUtils
+import android.util.Log
+import androidx.work.Configuration
+import com.example.neoweather.data.workers.NotificationUtils
+import com.example.neoweather.di.appModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-class NeoWeatherApplication : Application() {
+class NeoWeatherApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
 
+        startKoin {
+            androidContext(this@NeoWeatherApplication)
+            modules(appModule)
+        }
         createNotificationChannel()
     }
-
-    private val database: NeoWeatherDatabase by lazy { NeoWeatherDatabase.getDatabase(this) }
-
-    val repository: NeoWeatherRepository
-        get() = ServiceLocator.provideRepository(database)
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -37,4 +39,9 @@ class NeoWeatherApplication : Application() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder()
+            .setMinimumLoggingLevel(Log.INFO)
+            .build()
 }

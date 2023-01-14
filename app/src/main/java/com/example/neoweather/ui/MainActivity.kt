@@ -11,26 +11,23 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
-import com.example.neoweather.remote.geocoding.model.GeoLocation
+import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.ui.utils.PermissionRequester
 import com.example.neoweather.ui.home.HomeViewModel
-import com.example.neoweather.ui.home.HomeViewModelFactory
 import com.example.neoweather.ui.settings.observeOnce
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("MissingPermission")
 class MainActivity : AppCompatActivity() {
@@ -41,11 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var searchIcon: MenuItem
 
-    private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(
-            (application as NeoWeatherApplication).repository
-        )
-    }
+    private val viewModel: HomeViewModel by viewModel()
 
     private val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
 
@@ -76,10 +69,8 @@ class MainActivity : AppCompatActivity() {
         requestLocationPermission()
 
         viewModel.areNotificationsEnabled.observeOnce(this) { notifications ->
-            if (notifications == true && isBackgroundPermissionGranted(this)) {
-                Log.d("MainActivity", "GOT HERE")
-                viewModel.enqueueWorkers(this)
-            }
+            if (notifications == true && isBackgroundPermissionGranted(this))
+                viewModel.enqueueWorkers()
         }
     }
 

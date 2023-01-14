@@ -6,7 +6,7 @@
     <data>
         <variable
             name="location"
-            type="com.example.neoweather.remote.geocoding.model.GeoLocation" />
+            type="com.example.neoweather.data.remote.geocoding.model.GeoLocation" />
         <variable
             name="clickListener"
             type="com.example.neoweather.ui.search.adapter.LocationListener" />

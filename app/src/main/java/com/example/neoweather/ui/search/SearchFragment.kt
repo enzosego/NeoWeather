@@ -6,27 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSearchBinding
 import com.example.neoweather.ui.search.adapter.LocationListener
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
 import com.example.neoweather.ui.utils.ApiStatus
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by activityViewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        SearchViewModelFactory(
-            (activity.application as NeoWeatherApplication).repository
-        )
-    }
+    private val viewModel: SearchViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

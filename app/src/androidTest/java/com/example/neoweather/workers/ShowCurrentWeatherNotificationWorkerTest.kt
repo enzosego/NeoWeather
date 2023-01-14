@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
+import com.example.neoweather.data.workers.NotificationUtils
+import com.example.neoweather.data.workers.ShowCurrentWeatherNotificationWorker
 import io.kotest.matchers.shouldBe
 import io.ktor.http.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -2,22 +2,20 @@ package com.example.neoweather.ui.utils
 
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.neoweather.R
-import com.example.neoweather.data.model.day.Day
-import com.example.neoweather.data.model.hour.Hour
-import com.example.neoweather.data.model.place.Place
-import com.example.neoweather.data.model.preferences.Preferences
-import com.example.neoweather.remote.geocoding.model.GeoLocation
+import com.example.neoweather.data.local.model.day.Day
+import com.example.neoweather.data.local.model.hour.Hour
+import com.example.neoweather.data.local.model.place.Place
+import com.example.neoweather.data.local.model.preferences.Preferences
+import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
-import com.google.android.material.textfield.TextInputLayout
 
 @BindingAdapter("apiStatusImage")
 fun bindStatusImage(statusImage: ImageView, status: ApiStatus?) {

@@ -5,27 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.databinding.FragmentWeatherBinding
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.utils.WeatherUnits
 import com.example.neoweather.ui.utils.WeatherCodeMapping
 import com.example.neoweather.ui.home.HomeViewModel
-import com.example.neoweather.ui.home.HomeViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class WeatherTabFragment(private val position: Int) : Fragment() {
 
-    private val viewModel: HomeViewModel by activityViewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        HomeViewModelFactory(
-            (activity.application as NeoWeatherApplication).repository
-        )
-    }
+    private val viewModel: HomeViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

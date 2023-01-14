@@ -7,20 +7,19 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.neoweather.data.model.preferences.Preferences
-import com.example.neoweather.repository.NeoWeatherRepository
-import com.example.neoweather.workers.GetCurrentLocationWorker
-import com.example.neoweather.workers.NotificationUtils
+import com.example.neoweather.data.local.model.preferences.Preferences
+import com.example.neoweather.data.repository.PreferencesRepository
+import com.example.neoweather.data.workers.NotificationUtils
+import com.example.neoweather.domain.use_case.EnqueueWorkersUseCase
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 class SettingsViewModel(
-    private val repository: NeoWeatherRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val enqueueWorkersUseCase: EnqueueWorkersUseCase
 ) : ViewModel() {
 
-    val preferences = repository.preferences
+    val preferences = preferencesRepository.preferences
 
     val areNotificationsEnabled: LiveData<Boolean> = Transformations.map(preferences) { preferences ->
         preferences.areNotificationsEnabled
@@ -68,7 +67,7 @@ class SettingsViewModel(
 
     private fun updatePreferences(newValue: Preferences) {
         viewModelScope.launch {
-            repository.updatePreferences(newValue)
+            preferencesRepository.updatePreferences(newValue)
         }
     }
 
@@ -79,7 +78,7 @@ class SettingsViewModel(
         updatePreferences(newPreferences)
 
         when (newValue) {
-            true -> startPeriodicWork(context)
+            true -> startPeriodicWork()
             false -> cancelPeriodicWork(context)
         }
     }
@@ -100,23 +99,12 @@ class SettingsViewModel(
             _hasUserChangedInterval.value = true
     }
 
-    fun startPeriodicWork(context: Context) {
-        val getCurrentLocationWorker =
-            PeriodicWorkRequestBuilder<GetCurrentLocationWorker>(
-                repeatInterval = currentInterval.value ?: 1L,
-                TimeUnit.HOURS
-            )
-                .addTag(NotificationUtils.GET_CURRENT_LOCATION_WORK_TAG)
-                .setInitialDelay(currentInterval.value ?: 1L, TimeUnit.HOURS)
-                .build()
-
-        WorkManager
-            .getInstance(context)
-            .enqueueUniquePeriodicWork(
-                NotificationUtils.GET_CURRENT_LOCATION_WORK_NAME,
-                ExistingPeriodicWorkPolicy.REPLACE,
-                getCurrentLocationWorker
-            )
+    fun startPeriodicWork() {
+        enqueueWorkersUseCase(
+            interval = currentInterval.value ?: 1L,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            delay = 1L
+        )
     }
 
     private fun cancelPeriodicWork(context: Context) {

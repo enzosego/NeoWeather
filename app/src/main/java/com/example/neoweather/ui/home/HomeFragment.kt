@@ -6,22 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
-import com.example.neoweather.NeoWeatherApplication
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeFragment : Fragment(){
 
-    private val viewModel: HomeViewModel by activityViewModels {
-        val activity = requireNotNull(this.activity) {
-            "You can only access the viewModel after onActivityCreated()"
-        }
-        HomeViewModelFactory(
-            (activity.application as NeoWeatherApplication).repository
-        )
-    }
+    private val viewModel: HomeViewModel by activityViewModel()
 
     private lateinit var binding: FragmentHomeBinding
 
