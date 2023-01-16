@@ -9,16 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentSearchBinding
 import com.example.neoweather.ui.search.adapter.LocationListener
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
 import com.example.neoweather.ui.utils.ApiStatus
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by activityViewModel()
+    private val viewModel: SearchViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +32,12 @@ class SearchFragment : Fragment() {
 
         val searchListAdapter =
             SearchListAdapter(LocationListener { location ->
-                viewModel.onLocationClicked(location)
-                findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+                val action = SearchFragmentDirections.searchToHome(
+                    location.placeName,
+                    location.latitude,
+                    location.longitude
+                )
+                findNavController().navigate(action)
             })
         searchListAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onChanged() {
@@ -45,19 +48,13 @@ class SearchFragment : Fragment() {
 
         binding.searchListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        /*
-        binding.confirmSearchButton.setOnClickListener {
-            if (!binding.searchInputField.text.isNullOrEmpty())
-                viewModel.updateLocationList(binding.searchInputField.text.toString())
-        }
-         */
         binding.searchInputField.addTextChangedListener {
             if (!binding.searchInputField.text.isNullOrEmpty())
                 viewModel.updateLocationList(binding.searchInputField.text.toString())
         }
         viewModel.status.observe(viewLifecycleOwner) { status ->
             if (status == ApiStatus.ERROR && binding.searchInputField.text.isNullOrEmpty())
-                viewModel.cleanApiStatus()
+                viewModel.overrideApiStatus()
         }
         return binding.root
     }

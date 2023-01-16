@@ -5,19 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.data.local.model.hour.Hour
-import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemHourBinding
 
-class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
-    DiffCallback
-) {
+class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(DiffCallback) {
+
     private val listSizeLimit = 24
-
-    private var preferences: Preferences? = null
-
-    fun submitPreferences(newPreferences: Preferences?) {
-        preferences = newPreferences
-    }
 
     private object DiffCallback : DiffUtil.ItemCallback<Hour>() {
         override fun areItemsTheSame(oldItem: Hour, newItem: Hour):
@@ -25,15 +17,14 @@ class HourlyForecastAdapter : ListAdapter<Hour, ItemHourViewHolder>(
 
         override fun areContentsTheSame(oldItem: Hour, newItem: Hour):
                 Boolean = oldItem.temp == newItem.temp
-                && oldItem.weatherCode == newItem.weatherCode
+                && oldItem.weatherDescription == newItem.weatherDescription
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHourViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return ItemHourViewHolder(
-            ItemHourBinding.inflate(layoutInflater, parent, false),
-            preferences
+            ItemHourBinding.inflate(layoutInflater, parent, false)
         )
     }
 

@@ -18,14 +18,15 @@ import com.example.neoweather.data.remote.reverse_geocoding.model.getName
 import com.example.neoweather.data.remote.weather.NeoWeatherApi
 import com.example.neoweather.data.remote.weather.model.NeoWeatherModel
 import com.example.neoweather.data.remote.weather.model.asDatabaseModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class WeatherDataRepository(
     private val database: NeoWeatherDatabase,
     private val weatherSource: NeoWeatherApi,
     private val geoCodingSource: GeoCodingApi,
-    private val reverseGeoCodingSource: ReverseGeoCodingApi
+    private val reverseGeoCodingSource: ReverseGeoCodingApi,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
 
     val placesList: LiveData<List<Place>> =
@@ -65,7 +66,7 @@ class WeatherDataRepository(
         timezone: String,
         id: Int
     ) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             database.daysDao.insert(
                 weather.dailyForecast.asDatabaseModel(id)
             )
@@ -86,7 +87,7 @@ class WeatherDataRepository(
     }
 
     private suspend fun getPlaceFromGps(location: GeoLocation) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val places = database.placeDao.matchGpsLocation()
 
             if (places.isEmpty()) {
@@ -104,7 +105,7 @@ class WeatherDataRepository(
     }
 
     private suspend fun insertNewPlace(location: GeoLocation, id: Int? = null) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val placeName = location.name.ifEmpty {
                 reverseGeoCodingSource
                     .getLocationName(
@@ -122,13 +123,13 @@ class WeatherDataRepository(
     }
 
     private suspend fun savePlaceInDatabase(place: Place) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             database.placeDao.insert(place)
         }
     }
 
     suspend fun deletePlace(placeId: Int) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             database.placeDao.delete(placeId)
             database.hoursDao.delete(placeId)
             database.daysDao.delete(placeId)
@@ -139,7 +140,7 @@ class WeatherDataRepository(
     }
 
     private suspend fun decreaseIds(placeId: Int) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             for (i in placeId..placesList.value!!.size) {
                 database.placeDao.updateId(i, i-1)
                 database.hoursDao.updateId(i, i-1)
@@ -150,7 +151,7 @@ class WeatherDataRepository(
     }
 
     private suspend fun increaseIds() {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             for (i in placesList.value!!.size downTo 0) {
                 database.placeDao.updateId(i, i+1)
                 database.hoursDao.updateId(i, i+1)

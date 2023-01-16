@@ -5,18 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.data.local.model.day.Day
-import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemDayBinding
 
-class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
-    DiffCallback
-) {
-
-    private var preferences: Preferences? = null
-
-    fun submitPreferences(newPreferences: Preferences?) {
-        preferences = newPreferences
-    }
+class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(DiffCallback) {
 
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {
         override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean =
@@ -29,8 +20,7 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDayViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return ItemDayViewHolder(
-            ItemDayBinding.inflate(layoutInflater, parent, false),
-            preferences
+            ItemDayBinding.inflate(layoutInflater, parent, false)
         )
     }
 

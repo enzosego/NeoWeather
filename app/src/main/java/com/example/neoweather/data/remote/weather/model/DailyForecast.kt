@@ -2,6 +2,7 @@ package com.example.neoweather.data.remote.weather.model
 
 import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.day.DaysEntity
+import com.example.neoweather.data.local.model.WeatherCodeMapping
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,13 +28,13 @@ fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
 
     for (i in time.indices) {
         val newDay = Day(
-            time = time[i],
+            time = getDayFromTime(time[i]),
             maxTemp = maxTemp[i],
             minTemp = minTemp[i],
             precipitationSum = precipitationSum.getOrNull(i) ?: 0.0,
             windDirectionDominant = windDirectionDominant.getOrNull(i) ?: 0.0,
             windSpeedMax = windSpeedMax.getOrNull(i) ?: 0.0,
-            weatherCode = weatherCode[i]
+            weatherDescription = WeatherCodeMapping.getDescription(weatherCode[i])
         )
         dayList.add(newDay)
     }
@@ -42,3 +43,6 @@ fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
         dayList = dayList
     )
 }
+
+private fun getDayFromTime(time: String): String =
+    time.subSequence(5, 7).toString()

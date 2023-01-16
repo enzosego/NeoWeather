@@ -8,12 +8,6 @@
         <variable
             name="position"
             type="int" />
-        <variable
-            name="weatherCodeMapping"
-            type="com.example.neoweather.ui.utils.WeatherCodeMapping" />
-        <variable
-            name="weatherUnits"
-            type="com.example.neoweather.ui.utils.WeatherUnits" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,8 +39,8 @@
                         android:textSize="32sp"
                         android:padding="10dp"
                         android:layout_marginTop="80dp"
-                        android:text="@{weatherCodeMapping.description[viewModel.currentWeather[position].weatherCode]}"
                         android:onClick="@{() -> viewModel.deletePlace(position)}"
+                        android:text="@{viewModel.currentWeather[position].weatherDescription}"
                         tools:text="Cloudy"/>
 
                     <TextView
@@ -55,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="26sp"
                         android:padding="10dp"
-                        android:text="@{weatherUnits.getTempUnit(viewModel.currentWeather[position].temperature, viewModel.preferences.isFahrenheitEnabled)}"
+                        android:text="@{viewModel.formatTemp(viewModel.currentWeather[position].temperature)}"
                         tools:text="26°"/>
 
                     <TextView
@@ -64,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="22sp"
                         android:padding="10dp"
-                        android:text="@{viewModel.placesList[position].name}"
+                        android:text="@{viewModel.placesList[position].placeName}"
                         tools:text="London"/>
                 </LinearLayout>
 
@@ -80,7 +74,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:padding="8dp"
-                        app:preferences="@{viewModel.preferences}"
                         app:hourList="@{viewModel.hourlyData[position].hourList}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -89,7 +82,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:padding="8dp"
-                        app:preferences="@{viewModel.preferences}"
                         app:dayList="@{viewModel.dailyData[position].dayList}"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

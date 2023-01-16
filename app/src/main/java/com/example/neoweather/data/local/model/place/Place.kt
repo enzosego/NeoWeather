@@ -1,6 +1,7 @@
 package com.example.neoweather.data.local.model.place
 
 import androidx.room.*
+import com.example.neoweather.domain.model.PlaceModel
 import java.util.*
 
 @Entity(tableName = "place")
@@ -36,3 +37,10 @@ fun getTimeDiffInMinutes(time: Long): Long =
 
 private fun getTimeInMilliseconds(): Long =
     Calendar.getInstance().time.time
+
+fun Place.asDomainModel() =
+    PlaceModel(
+        id = id,
+        placeName = name,
+        country = country
+    )

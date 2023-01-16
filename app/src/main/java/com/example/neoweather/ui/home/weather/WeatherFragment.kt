@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.databinding.FragmentWeatherBinding
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
-import com.example.neoweather.ui.utils.WeatherUnits
-import com.example.neoweather.ui.utils.WeatherCodeMapping
 import com.example.neoweather.ui.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -39,8 +37,6 @@ class WeatherTabFragment(private val position: Int) : Fragment() {
 
         binding.viewModel = viewModel
         binding.position = position
-        binding.weatherCodeMapping = WeatherCodeMapping
-        binding.weatherUnits = WeatherUnits
 
         return binding.root
     }

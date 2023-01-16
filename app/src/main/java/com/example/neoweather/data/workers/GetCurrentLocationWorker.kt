@@ -14,14 +14,11 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class GetCurrentLocationWorker(
     private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
-
-    //private val workManager: WorkManager by inject()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @SuppressLint("MissingPermission")

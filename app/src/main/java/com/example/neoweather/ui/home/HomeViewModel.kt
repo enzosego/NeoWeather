@@ -3,18 +3,20 @@ package com.example.neoweather.ui.home
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.ExistingPeriodicWorkPolicy
+import com.example.neoweather.data.local.model.place.asDomainModel
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.data.repository.WeatherDataRepository
 import com.example.neoweather.data.repository.PreferencesRepository
+import com.example.neoweather.domain.model.PlaceModel
 import com.example.neoweather.ui.utils.ApiStatus
-import com.example.neoweather.domain.use_case.EnqueueWorkersUseCase
+import com.example.neoweather.domain.use_case.home.HomeUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val weatherDataRepository: WeatherDataRepository,
-    private val preferencesRepository: PreferencesRepository,
-    private val enqueueWorkersUseCase: EnqueueWorkersUseCase
+    weatherDataRepository: WeatherDataRepository,
+    preferencesRepository: PreferencesRepository,
+    private val homeUseCases: HomeUseCases
 ) : ViewModel() {
 
     private val _status = MutableLiveData<ApiStatus>()
@@ -23,13 +25,16 @@ class HomeViewModel(
     private val _currentTabNum = MutableLiveData(0)
     val currentTabNum: LiveData<Int> = _currentTabNum
 
-    val placesList = weatherDataRepository.placesList
+    val placesList: LiveData<List<PlaceModel>> =
+        Transformations.map(weatherDataRepository.placesList) { list ->
+            list.map { it.asDomainModel() }
+        }
+
+    val currentWeather = weatherDataRepository.currentWeatherList
 
     val dailyData = weatherDataRepository.dailyDataList
 
     val hourlyData = weatherDataRepository.hourlyDataList
-
-    val currentWeather = weatherDataRepository.currentWeatherList
 
     val currentListSize: LiveData<Int> = Transformations.map(placesList) { it.size }
 
@@ -50,34 +55,37 @@ class HomeViewModel(
                 try {
                     _status.postValue(ApiStatus.LOADING)
 
-                    weatherDataRepository.refreshPlaceWeather(id)
+                    homeUseCases.refreshPlaceWeather(id)
 
                     _status.postValue(ApiStatus.DONE)
                 } catch (e: Exception) {
-                    Log.d("DEBUG", "Error: $e")
+                    Log.d("HomeViewModel", "Error: $e")
                     _status.postValue(ApiStatus.ERROR)
                 }
             }
     }
 
-    fun insertOrUpdatePlace(location: GeoLocation) {
+    private fun insertOrUpdatePlace(location: GeoLocation) {
         viewModelScope.launch {
             try {
                 _status.postValue(ApiStatus.LOADING)
 
-                weatherDataRepository.updateOrInsertPlace(location)
+                homeUseCases.insertOrUpdatePlace(location)
 
                 _status.postValue(ApiStatus.DONE)
             } catch (e: Exception) {
+                Log.d("HomeViewModel", "Error: $e")
                 _status.postValue(ApiStatus.ERROR)
             }
         }
     }
 
-    fun deletePlace(placeId: Int) {
-        viewModelScope.launch {
-            weatherDataRepository.deletePlace(placeId)
-        }
+    fun insertPlace(lat: Double, lon: Double, placeName: String? = null) {
+        insertOrUpdatePlace(homeUseCases.makeGeoLocationInstance(lat, lon, placeName))
+    }
+
+    fun deletePlace(id: Int) {
+        homeUseCases.deletePlace(id)
     }
 
     fun setCurrentTabNum(newValue: Int) {
@@ -89,7 +97,7 @@ class HomeViewModel(
     }
 
     fun enqueueWorkers() {
-        enqueueWorkersUseCase(
+        homeUseCases.enqueueWorkers(
             interval = preferences.value?.notificationsInterval ?: 1L,
             ExistingPeriodicWorkPolicy.KEEP
         )
@@ -99,6 +107,9 @@ class HomeViewModel(
         val newPreferences = preferences.value!!.copy(
             backgroundPermissionDenied = true
         )
-        viewModelScope.launch { preferencesRepository.updatePreferences(newPreferences) }
+        homeUseCases.updatePreferences(newPreferences)
     }
+
+    fun formatTemp(temp: Double): String =
+        homeUseCases.formatTempUnit(temp)
 }

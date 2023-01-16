@@ -9,16 +9,20 @@ import androidx.work.WorkerParameters
 import com.example.neoweather.data.remote.reverse_geocoding.ReverseGeoCodingApiImpl
 import com.example.neoweather.data.remote.reverse_geocoding.model.getName
 import com.example.neoweather.data.remote.weather.NeoWeatherApiImpl
-import com.example.neoweather.ui.utils.WeatherUnits.getTempUnit
 import com.example.neoweather.data.workers.NotificationUtils.LATITUDE_PARAM
 import com.example.neoweather.data.workers.NotificationUtils.LONGITUDE_PARAM
 import com.example.neoweather.data.workers.NotificationUtils.cancelNotifications
 import com.example.neoweather.data.workers.NotificationUtils.sendNotification
+import com.example.neoweather.domain.use_case.FormatTempUnitUseCase
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ShowCurrentWeatherNotificationWorker(
     private val context: Context,
     private val workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+) : CoroutineWorker(context, workerParams), KoinComponent {
+
+    private val formatTempUnit: FormatTempUnitUseCase by inject()
 
     override suspend fun doWork(): Result {
 
@@ -56,7 +60,7 @@ class ShowCurrentWeatherNotificationWorker(
 
         notificationManager.sendNotification(
             addressName,
-            getTempUnit(temperature, isFahrenheitEnabled = false),
+            formatTempUnit(temperature),
             context
         )
     }

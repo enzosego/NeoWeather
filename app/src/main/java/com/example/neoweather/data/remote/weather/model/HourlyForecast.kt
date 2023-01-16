@@ -2,6 +2,7 @@ package com.example.neoweather.data.remote.weather.model
 
 import com.example.neoweather.data.local.model.hour.Hour
 import com.example.neoweather.data.local.model.hour.HoursEntity
+import com.example.neoweather.data.local.model.WeatherCodeMapping
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -31,9 +32,9 @@ fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
             arePastHoursDiscarded = true
 
         val newHour = Hour(
-            time = time[i],
+            time = getHour(time[i]).toString(),
             temp = temp.getOrNull(i) ?: 0.0,
-            weatherCode = weatherCode.getOrNull(i) ?: 0
+            WeatherCodeMapping.getDescription(weatherCode[i])
         )
         hourList.add(newHour)
     }

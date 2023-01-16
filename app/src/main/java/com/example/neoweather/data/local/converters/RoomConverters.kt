@@ -6,7 +6,6 @@ import com.example.neoweather.data.local.model.hour.Hour
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-//@ProvidedTypeConverter
 object RoomConverters {
 
     private val jsonParser = GsonParser(Gson())

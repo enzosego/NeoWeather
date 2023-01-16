@@ -2,39 +2,32 @@ package com.example.neoweather.ui.home.weather.adapter.daily
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.data.local.model.day.Day
-import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.databinding.ItemDayBinding
-import com.example.neoweather.ui.utils.WeatherUnits
-import com.example.neoweather.ui.utils.WeatherCodeMapping
+import com.example.neoweather.domain.use_case.FormatPrecipitationSumUseCase
+import com.example.neoweather.domain.use_case.FormatSpeedUnitUseCase
+import com.example.neoweather.domain.use_case.FormatTempUnitUseCase
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ItemDayViewHolder(
-    private var binding: ItemDayBinding,
-    private val preferences: Preferences?
-) : RecyclerView.ViewHolder(binding.root) {
+    private var binding: ItemDayBinding
+) : RecyclerView.ViewHolder(binding.root), KoinComponent {
+
+    private val formatTemp: FormatTempUnitUseCase by inject()
+    private val formatPrecipitation: FormatPrecipitationSumUseCase by inject()
+    private val formatSpeed: FormatSpeedUnitUseCase by inject()
+
     fun bind(dayData: Day) {
-        binding.time =
-            WeatherUnits.getDayFromTime(dayData.time)
 
-        binding.maxTemp =
-            WeatherUnits.getTempUnit(
-                dayData.maxTemp,
-                isFahrenheitEnabled = preferences?.isFahrenheitEnabled ?: false
-            )
+        binding.time.text = dayData.time
 
-        binding.weatherDescription =
-            WeatherCodeMapping.description[dayData.weatherCode]
+        binding.temp.text = formatTemp(dayData.maxTemp)
 
-        binding.precipitation =
-            WeatherUnits.formatPrecipitationSum(
-                dayData.precipitationSum,
-                preferences?.isInchesEnabled ?: false
-            )
+        binding.weatherDescription.text = dayData.weatherDescription
 
-        binding.windSpeed =
-            WeatherUnits.formatSpeedUnit(
-                dayData.windSpeedMax,
-                preferences?.isMilesEnabled ?: false
-            )
+        binding.precipitation.text = formatPrecipitation(dayData.precipitationSum)
+
+        binding.windSpeed.text = formatSpeed(dayData.windSpeedMax)
 
         binding.executePendingBindings()
     }

@@ -3,5 +3,5 @@ package com.example.neoweather.data.local.model.hour
 data class Hour(
     val time: String,
     val temp: Double,
-    val weatherCode: Int,
+    val weatherDescription: String
 )

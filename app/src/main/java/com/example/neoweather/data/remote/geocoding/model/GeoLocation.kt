@@ -1,6 +1,7 @@
 package com.example.neoweather.data.remote.geocoding.model
 
 import com.example.neoweather.data.local.model.place.Place
+import com.example.neoweather.domain.model.SearchScreenLocation
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -25,6 +26,14 @@ fun GeoLocation.asDatabaseModel(placeId: Int, isGpsLocation: Boolean): Place =
         countryCode = countryCode,
         timezone = timezone,
         isGpsLocation = isGpsLocation
+    )
+
+fun GeoLocation.asDomainModel(): SearchScreenLocation =
+    SearchScreenLocation(
+        placeName = name,
+        country = country,
+        latitude = latitude.toLong(),
+        longitude = longitude.toLong()
     )
 
 fun GeoLocation.isGpsLocation(): Boolean =

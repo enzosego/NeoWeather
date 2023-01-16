@@ -20,7 +20,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.neoweather.R
-import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.ui.utils.PermissionRequester
 import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.settings.observeOnce
@@ -94,16 +93,7 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = fusedLocationClient.lastLocation
 
         currentLocation.addOnSuccessListener { location ->
-            viewModel.insertOrUpdatePlace(
-                GeoLocation(
-                    name = "",
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    country = "",
-                    countryCode = "",
-                    timezone = ""
-                )
-            )
+            viewModel.insertPlace(location.latitude, location.longitude)
         }
     }
 

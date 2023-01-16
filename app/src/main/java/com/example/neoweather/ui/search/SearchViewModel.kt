@@ -5,34 +5,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.neoweather.data.remote.geocoding.GeoCodingApiImpl
-import com.example.neoweather.data.remote.geocoding.model.GeoLocation
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.domain.model.SearchScreenLocation
+import com.example.neoweather.domain.use_case.search.CallGeoLocationApiUseCase
 import com.example.neoweather.ui.utils.ApiStatus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val repository: WeatherDataRepository
+    private val callGeoLocationApi: CallGeoLocationApiUseCase
 ) : ViewModel() {
 
-    private val _locationList = MutableLiveData<List<GeoLocation>>()
-    val locationList: LiveData<List<GeoLocation>> = _locationList
+    private val _locationList = MutableLiveData<List<SearchScreenLocation>>()
+    val locationList: LiveData<List<SearchScreenLocation>> = _locationList
 
     private val _status = MutableLiveData<ApiStatus>()
     val status: LiveData<ApiStatus> = _status
 
     private var currentJob: Job? = null
 
-    fun updateLocationList(cityName: String) {
+    fun updateLocationList(placeName: String) {
         currentJob?.cancel()
         currentJob =
             viewModelScope.launch {
                 try {
                     _status.value = ApiStatus.LOADING
 
-                    val newList = GeoCodingApiImpl.create().getLocation(cityName)
-                        .results
+                    val newList = callGeoLocationApi(placeName)
                     _locationList.postValue(newList)
 
                     _status.value = ApiStatus.DONE
@@ -44,21 +42,7 @@ class SearchViewModel(
             }
     }
 
-    fun cleanApiStatus() {
+    fun overrideApiStatus() {
         _status.value = ApiStatus.DONE
     }
-
-    fun onLocationClicked(location: GeoLocation) {
-        _locationList.postValue(listOf())
-        insertPlace(location)
-    }
-
-    private fun insertPlace(location: GeoLocation) =
-        viewModelScope.launch {
-            try {
-                repository.updateOrInsertPlace(location)
-            } catch (e: Exception) {
-                Log.d("DEBUG", "${e.message}")
-            }
-        }
 }

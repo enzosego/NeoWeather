@@ -9,9 +9,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.neoweather.R
 import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.hour.Hour
-import com.example.neoweather.data.local.model.place.Place
-import com.example.neoweather.data.local.model.preferences.Preferences
-import com.example.neoweather.data.remote.geocoding.model.GeoLocation
+import com.example.neoweather.domain.model.PlaceModel
+import com.example.neoweather.domain.model.SearchScreenLocation
 import com.example.neoweather.ui.home.adapter.HomeTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
@@ -33,7 +32,7 @@ fun bindStatusImage(statusImage: ImageView, status: ApiStatus?) {
 }
 
 @BindingAdapter("placesList")
-fun bindPlacesList(viewPager: ViewPager2, placesList: List<Place>?) {
+fun bindPlacesList(viewPager: ViewPager2, placesList: List<PlaceModel>?) {
     val adapter = viewPager.adapter as HomeTabAdapter
     adapter.submitList(placesList)
 }
@@ -54,27 +53,20 @@ fun checkIfPlaceWasAdded(
     syncPreviousSize()
 }
 
-@BindingAdapter(value = ["hourList", "preferences"], requireAll = true)
-fun bindHourList(
-    recyclerView: RecyclerView,
-    hourList: List<Hour>?,
-    preferences: Preferences?
-) {
+@BindingAdapter("hourList")
+fun bindHourList(recyclerView: RecyclerView, hourList: List<Hour>?) {
     val adapter = recyclerView.adapter as HourlyForecastAdapter
     adapter.submitList(hourList)
-    adapter.submitPreferences(preferences)
 }
 
-@BindingAdapter(value = ["dayList", "preferences"], requireAll = true)
-fun bindDayList(recyclerView: RecyclerView, dayList: List<Day>?, preferences: Preferences?
-) {
+@BindingAdapter("dayList")
+fun bindDayList(recyclerView: RecyclerView, dayList: List<Day>?) {
     val adapter = recyclerView.adapter as DailyForecastAdapter
     adapter.submitList(dayList)
-    adapter.submitPreferences(preferences)
 }
 
 @BindingAdapter("searchList")
-fun bindSearchList(recyclerView: RecyclerView, dayList: List<GeoLocation>?) {
+fun bindSearchList(recyclerView: RecyclerView, dayList: List<SearchScreenLocation>?) {
     val adapter = recyclerView.adapter as SearchListAdapter
     adapter.submitList(dayList)
 }

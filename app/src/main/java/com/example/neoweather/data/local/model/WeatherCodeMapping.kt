@@ -1,7 +1,10 @@
-package com.example.neoweather.ui.utils
+package com.example.neoweather.data.local.model
 
 object WeatherCodeMapping {
-    val description = mapOf(
+
+    fun getDescription(i: Int): String = description[i]!!
+
+    private val description = mapOf(
         0 to "Clear Sky",
         1 to "Mainly Clear",
         2 to "Partly Cloudy",

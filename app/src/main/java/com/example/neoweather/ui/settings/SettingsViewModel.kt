@@ -5,18 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.example.neoweather.data.local.model.preferences.Preferences
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.workers.NotificationUtils
-import com.example.neoweather.domain.use_case.EnqueueWorkersUseCase
-import kotlinx.coroutines.launch
+import com.example.neoweather.domain.use_case.settings.SettingsUseCases
 
 class SettingsViewModel(
-    private val preferencesRepository: PreferencesRepository,
-    private val enqueueWorkersUseCase: EnqueueWorkersUseCase
+    preferencesRepository: PreferencesRepository,
+    private val settingsUseCases: SettingsUseCases
 ) : ViewModel() {
 
     val preferences = preferencesRepository.preferences
@@ -40,7 +37,7 @@ class SettingsViewModel(
         val newPreferences = preferences.value!!.copy(
             isFahrenheitEnabled = newValue
         )
-        updatePreferences(newPreferences)
+        settingsUseCases.updatePreferences(newPreferences)
     }
 
     fun updateSpeedUnit(selected: String) {
@@ -51,7 +48,7 @@ class SettingsViewModel(
         val newPreferences = preferences.value!!.copy(
             isMilesEnabled = newValue
         )
-        updatePreferences(newPreferences)
+        settingsUseCases.updatePreferences(newPreferences)
     }
 
     fun updateRainUnit(selected: String) {
@@ -62,20 +59,14 @@ class SettingsViewModel(
         val newPreferences = preferences.value!!.copy(
             isInchesEnabled = newValue
         )
-        updatePreferences(newPreferences)
-    }
-
-    private fun updatePreferences(newValue: Preferences) {
-        viewModelScope.launch {
-            preferencesRepository.updatePreferences(newValue)
-        }
+        settingsUseCases.updatePreferences(newPreferences)
     }
 
     fun toggleNotifications(newValue: Boolean, context: Context) {
         val newPreferences = preferences.value!!.copy(
             areNotificationsEnabled = newValue
         )
-        updatePreferences(newPreferences)
+        settingsUseCases.updatePreferences(newPreferences)
 
         when (newValue) {
             true -> startPeriodicWork()
@@ -93,14 +84,14 @@ class SettingsViewModel(
         val newPreferences = preferences.value!!.copy(
             notificationsInterval = newValue
         )
-        updatePreferences(newPreferences)
+        settingsUseCases.updatePreferences(newPreferences)
 
         if (_hasUserChangedInterval.value == false)
             _hasUserChangedInterval.value = true
     }
 
     fun startPeriodicWork() {
-        enqueueWorkersUseCase(
+        settingsUseCases.enqueueWorkers(
             interval = currentInterval.value ?: 1L,
             ExistingPeriodicWorkPolicy.REPLACE,
             delay = 1L

@@ -6,18 +6,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.databinding.ItemLocationBinding
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
+import com.example.neoweather.domain.model.SearchScreenLocation
 
 class SearchListAdapter(private val clickListener: LocationListener)
-    : ListAdapter<GeoLocation, ItemLocationViewHolder>(DiffCallback) {
+    : ListAdapter<SearchScreenLocation, ItemLocationViewHolder>(DiffCallback) {
 
-    //private val listSizeLimit = 6
+    private object DiffCallback : DiffUtil.ItemCallback<SearchScreenLocation>() {
 
-    private object DiffCallback : DiffUtil.ItemCallback<GeoLocation>() {
+        override fun areItemsTheSame(
+            oldItem: SearchScreenLocation, newItem: SearchScreenLocation): Boolean =
+            oldItem.placeName == newItem.placeName && oldItem.country == newItem.country
 
-        override fun areItemsTheSame(oldItem: GeoLocation, newItem: GeoLocation): Boolean =
-            oldItem.name == newItem.name && oldItem.country == newItem.country
-
-        override fun areContentsTheSame(oldItem: GeoLocation, newItem: GeoLocation): Boolean =
+        override fun areContentsTheSame(
+            oldItem: SearchScreenLocation, newItem: SearchScreenLocation): Boolean =
             oldItem == newItem
     }
 
@@ -32,11 +33,4 @@ class SearchListAdapter(private val clickListener: LocationListener)
         val location = getItem(position)
         holder.bind(location, clickListener)
     }
-
-    /*
-    override fun getItemCount(): Int =
-        if (currentList.isNotEmpty())
-            listSizeLimit
-        else 0
-     */
 }

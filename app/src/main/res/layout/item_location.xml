@@ -6,7 +6,7 @@
     <data>
         <variable
             name="location"
-            type="com.example.neoweather.data.remote.geocoding.model.GeoLocation" />
+            type="com.example.neoweather.domain.model.SearchScreenLocation" />
         <variable
             name="clickListener"
             type="com.example.neoweather.ui.search.adapter.LocationListener" />
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="32sp"
-                android:text="@{location.name}"
+                android:text="@{location.placeName}"
                 android:layout_marginStart="8dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
