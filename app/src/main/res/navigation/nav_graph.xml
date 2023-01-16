@@ -26,6 +26,16 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_dayDetailFragment"
+            app:destination="@id/dayDetailFragment" >
+            <argument
+                android:name="day_num"
+                app:argType="integer" />
+            <argument
+                android:name="position"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -50,5 +60,16 @@
                 android:name="longitude"
                 app:argType="long"/>
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/dayDetailFragment"
+        android:name="com.example.neoweather.ui.day_detail.DayDetailFragment"
+        android:label="DayDetailFragment" >
+        <argument
+            android:name="day_num"
+            app:argType="integer" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
 </navigation>

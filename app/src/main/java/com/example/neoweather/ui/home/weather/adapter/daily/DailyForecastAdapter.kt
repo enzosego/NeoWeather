@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.databinding.ItemDayBinding
 
-class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(DiffCallback) {
+class DailyForecastAdapter(
+    private val clickListener: DayListener
+) : ListAdapter<Day, ItemDayViewHolder>(DiffCallback) {
 
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {
         override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean =
@@ -26,6 +28,6 @@ class DailyForecastAdapter : ListAdapter<Day, ItemDayViewHolder>(DiffCallback) {
 
     override fun onBindViewHolder(holder: ItemDayViewHolder, position: Int) {
         val dayData = getItem(position)
-        holder.bind(dayData)
+        holder.bind(dayData, clickListener)
     }
 }

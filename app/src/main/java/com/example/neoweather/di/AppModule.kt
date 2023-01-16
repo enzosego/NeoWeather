@@ -10,9 +10,11 @@ import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.repository.WeatherDataRepository
 import com.example.neoweather.data.workers.UpdateCurrentLocationInDatabaseWorker
 import com.example.neoweather.domain.use_case.*
+import com.example.neoweather.domain.use_case.day_detail.GetDayDetailUseCase
 import com.example.neoweather.domain.use_case.search.CallGeoLocationApiUseCase
 import com.example.neoweather.domain.use_case.home.*
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
+import com.example.neoweather.ui.day_detail.DayDetailViewModel
 import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.search.SearchViewModel
 import com.example.neoweather.ui.settings.SettingsViewModel
@@ -57,10 +59,13 @@ val appModule = module {
 
     factoryOf(::CallGeoLocationApiUseCase)
 
+    factoryOf(::GetDayDetailUseCase)
+
     // ViewModels
     viewModelOf(::HomeViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::SearchViewModel)
+    viewModelOf(::DayDetailViewModel)
 }
 
 private fun createDatabase(context: Context): NeoWeatherDatabase =

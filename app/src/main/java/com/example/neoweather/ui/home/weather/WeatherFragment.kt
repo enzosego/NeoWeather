@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.databinding.FragmentWeatherBinding
+import com.example.neoweather.ui.home.HomeFragmentDirections
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.home.HomeViewModel
+import com.example.neoweather.ui.home.weather.adapter.daily.DayListener
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.util.Calendar
 
 class WeatherTabFragment(private val position: Int) : Fragment() {
 
@@ -30,7 +34,16 @@ class WeatherTabFragment(private val position: Int) : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.hourlyForecastRecyclerView.isNestedScrollingEnabled = false
 
-        binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter()
+        binding.dailyForecastRecyclerView.adapter = DailyForecastAdapter( DayListener { day ->
+            val calendar = Calendar.getInstance()
+            calendar.time = day.time
+
+            val action = HomeFragmentDirections.actionHomeFragmentToDayDetailFragment(
+                calendar.get(Calendar.DAY_OF_MONTH),
+                position
+            )
+            findNavController().navigate(action)
+        })
         binding.dailyForecastRecyclerView.layoutManager =
             LinearLayoutManager(requireContext())
         binding.dailyForecastRecyclerView.isNestedScrollingEnabled = false

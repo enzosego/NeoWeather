@@ -1,10 +1,13 @@
 package com.example.neoweather.data.remote.weather.model
 
+import android.annotation.SuppressLint
 import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.day.DaysEntity
 import com.example.neoweather.data.local.model.WeatherCodeMapping
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Serializable
 data class DailyForecast(
@@ -28,7 +31,7 @@ fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
 
     for (i in time.indices) {
         val newDay = Day(
-            time = getDayFromTime(time[i]),
+            time = makeDayTimeInstance(time[i]),
             maxTemp = maxTemp[i],
             minTemp = minTemp[i],
             precipitationSum = precipitationSum.getOrNull(i) ?: 0.0,
@@ -44,5 +47,7 @@ fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
     )
 }
 
-private fun getDayFromTime(time: String): String =
-    time.subSequence(5, 7).toString()
+@SuppressLint("SimpleDateFormat")
+private fun makeDayTimeInstance(time: String): Date =
+    SimpleDateFormat("yyyy-MM-dd")
+        .parse(time)!!

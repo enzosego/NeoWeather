@@ -32,7 +32,7 @@ fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
             arePastHoursDiscarded = true
 
         val newHour = Hour(
-            time = getHour(time[i]).toString(),
+            time = makeHourTimeInstance(time[i]),
             temp = temp.getOrNull(i) ?: 0.0,
             WeatherCodeMapping.getDescription(weatherCode[i])
         )
@@ -43,9 +43,3 @@ fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
         hourList = hourList
     )
 }
-
-private fun getHour(time: String): Int =
-    time.subSequence(11, 13).toString().toInt()
-
-private fun getDay(time: String): Int =
-    time.subSequence(8, 10).toString().toInt()
