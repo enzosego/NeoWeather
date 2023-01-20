@@ -8,6 +8,9 @@
         <variable
             name="position"
             type="int" />
+        <variable
+            name="findCurrentHourIndex"
+            type="com.example.neoweather.domain.use_case.FindCurrentHourIndexUseCase" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -74,7 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:padding="8dp"
-                        app:hourList="@{viewModel.hourlyData[position].hourList}"/>
+                        app:hourList="@{viewModel.hourlyData[position].hourList}"
+                        app:findIndex="@{findCurrentHourIndex}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/daily_forecast_recycler_view"

@@ -54,7 +54,6 @@ class WeatherDataRepository(
                 )
             insertWeatherData(
                 weather,
-                timezone,
                 id
             )
             savePlaceInDatabase(copy(lastUpdateTime = newLastUpdateTime()))
@@ -63,7 +62,6 @@ class WeatherDataRepository(
 
     private suspend fun insertWeatherData(
         weather: NeoWeatherModel,
-        timezone: String,
         id: Int
     ) {
         withContext(ioDispatcher) {
@@ -71,7 +69,7 @@ class WeatherDataRepository(
                 weather.dailyForecast.asDatabaseModel(id)
             )
             database.hoursDao.insert(
-                weather.hourlyForecast.asDatabaseModel(id, timezone)
+                weather.hourlyForecast.asDatabaseModel(id)
             )
             database.currentWeatherDao.insert(
                 weather.currentWeather.asDatabaseModel(id)

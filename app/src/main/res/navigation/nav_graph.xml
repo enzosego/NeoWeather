@@ -27,14 +27,15 @@
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_dayDetailFragment"
-            app:destination="@id/dayDetailFragment" >
+            android:id="@+id/action_homeFragment_to_daysFragment"
+            app:destination="@id/daysFragment" >
             <argument
-                android:name="day_num"
+                android:name="place_id"
                 app:argType="integer" />
             <argument
                 android:name="position"
                 app:argType="integer" />
+
         </action>
     </fragment>
     <fragment
@@ -62,11 +63,11 @@
         </action>
     </fragment>
     <fragment
-        android:id="@+id/dayDetailFragment"
-        android:name="com.example.neoweather.ui.day_detail.DayDetailFragment"
-        android:label="DayDetailFragment" >
+        android:id="@+id/daysFragment"
+        android:name="com.example.neoweather.ui.days.DaysFragment"
+        android:label="DaysFragment" >
         <argument
-            android:name="day_num"
+            android:name="place_id"
             app:argType="integer" />
         <argument
             android:name="position"

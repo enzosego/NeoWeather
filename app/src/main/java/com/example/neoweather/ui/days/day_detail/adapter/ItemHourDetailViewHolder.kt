@@ -1,4 +1,4 @@
-package com.example.neoweather.ui.day_detail.adapter
+package com.example.neoweather.ui.days.day_detail.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.neoweather.data.local.model.hour.Hour
@@ -19,7 +19,7 @@ class ItemHourDetailViewHolder(
         val calendar = Calendar.getInstance()
         calendar.time = hourData.time
 
-        binding.time.text = calendar.get(Calendar.HOUR).toString()
+        binding.time.text = calendar.get(Calendar.HOUR_OF_DAY).toString()
 
         binding.temp.text = formatTemp(hourData.temp)
 

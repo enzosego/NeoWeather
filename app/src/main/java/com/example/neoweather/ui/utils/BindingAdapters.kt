@@ -11,7 +11,8 @@ import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.hour.Hour
 import com.example.neoweather.domain.model.PlaceModel
 import com.example.neoweather.domain.model.SearchScreenLocation
-import com.example.neoweather.ui.home.adapter.HomeTabAdapter
+import com.example.neoweather.domain.use_case.FindCurrentHourIndexUseCase
+import com.example.neoweather.ui.home.adapter.WeatherTabAdapter
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.search.adapter.SearchListAdapter
@@ -33,7 +34,7 @@ fun bindStatusImage(statusImage: ImageView, status: ApiStatus?) {
 
 @BindingAdapter("placesList")
 fun bindPlacesList(viewPager: ViewPager2, placesList: List<PlaceModel>?) {
-    val adapter = viewPager.adapter as HomeTabAdapter
+    val adapter = viewPager.adapter as WeatherTabAdapter
     adapter.submitList(placesList)
 }
 
@@ -53,10 +54,13 @@ fun checkIfPlaceWasAdded(
     syncPreviousSize()
 }
 
-@BindingAdapter("hourList")
-fun bindHourList(recyclerView: RecyclerView, hourList: List<Hour>?) {
+@BindingAdapter(value = ["hourList", "findIndex"], requireAll = true)
+fun bindHourList(
+    recyclerView: RecyclerView, hourList: List<Hour>?, findIndex: FindCurrentHourIndexUseCase
+) {
     val adapter = recyclerView.adapter as HourlyForecastAdapter
-    adapter.submitList(hourList)
+    val currentHourIndex = findIndex(hourList)
+    adapter.submitList(hourList?.drop(currentHourIndex))
 }
 
 @BindingAdapter("dayList")

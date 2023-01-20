@@ -8,17 +8,13 @@
         <variable
             name="day"
             type="com.example.neoweather.data.local.model.day.Day" />
-        <variable
-            name="listener"
-            type="com.example.neoweather.ui.home.weather.adapter.daily.DayListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card"
+        android:id="@+id/hour_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:onClick="@{() -> listener.onClick(day)}"
         app:cardElevation="4dp"
         app:cardCornerRadius="4dp">
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -10,11 +10,12 @@ import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.repository.WeatherDataRepository
 import com.example.neoweather.data.workers.UpdateCurrentLocationInDatabaseWorker
 import com.example.neoweather.domain.use_case.*
-import com.example.neoweather.domain.use_case.day_detail.GetDayDetailUseCase
+import com.example.neoweather.domain.use_case.day_detail.DayDetailUseCases
+import com.example.neoweather.domain.use_case.day_detail.GetDaysByHoursUseCase
 import com.example.neoweather.domain.use_case.search.CallGeoLocationApiUseCase
 import com.example.neoweather.domain.use_case.home.*
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
-import com.example.neoweather.ui.day_detail.DayDetailViewModel
+import com.example.neoweather.ui.days.day_detail.DayDetailViewModel
 import com.example.neoweather.ui.home.HomeViewModel
 import com.example.neoweather.ui.search.SearchViewModel
 import com.example.neoweather.ui.settings.SettingsViewModel
@@ -28,9 +29,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val appModule = module {
-    single { createDatabase(androidContext()) }
 
     // DataSources
+    single { createDatabase(androidContext()) }
+
     factory { NeoWeatherApiImpl.create() }
     factory { GeoCodingApiImpl.create() }
     factory { ReverseGeoCodingApiImpl.create() }
@@ -40,9 +42,10 @@ val appModule = module {
     singleOf(::WeatherDataRepository)
     singleOf(::PreferencesRepository)
 
+    // WorKManager
     workerOf(::UpdateCurrentLocationInDatabaseWorker)
 
-    // UseCases
+    // Domain
     factory { CoroutineScope(Dispatchers.Main) }
     factoryOf(::HomeUseCases)
     factoryOf(::MakeGeoLocationInstanceUseCase)
@@ -54,12 +57,14 @@ val appModule = module {
     factoryOf(::FormatSpeedUnitUseCase)
     factoryOf(::FormatPrecipitationSumUseCase)
 
+    factoryOf(::DayDetailUseCases)
+    factoryOf(::GetDaysByHoursUseCase)
+    factoryOf(::FindCurrentHourIndexUseCase)
+
     factoryOf(::SettingsUseCases)
     factoryOf(::UpdatePreferencesUseCase)
 
     factoryOf(::CallGeoLocationApiUseCase)
-
-    factoryOf(::GetDayDetailUseCase)
 
     // ViewModels
     viewModelOf(::HomeViewModel)

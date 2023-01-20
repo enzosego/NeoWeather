@@ -18,7 +18,10 @@ class ItemDayViewHolder(
     private val formatPrecipitation: FormatPrecipitationSumUseCase by inject()
     private val formatSpeed: FormatSpeedUnitUseCase by inject()
 
-    fun bind(dayData: Day, clickListener: DayListener) {
+    fun bind(
+        dayData: Day,
+        clickListener: (dayPosition: Int) -> Unit
+    ) {
 
         val calendar = Calendar.getInstance()
         calendar.time = dayData.time
@@ -35,7 +38,7 @@ class ItemDayViewHolder(
 
         binding.day = dayData
 
-        binding.listener = clickListener
+        binding.hourCard.setOnClickListener { clickListener(adapterPosition) }
 
         binding.executePendingBindings()
     }

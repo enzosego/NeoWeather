@@ -26,7 +26,7 @@ class SearchFragment : Fragment() {
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.viewModel = viewModel
 

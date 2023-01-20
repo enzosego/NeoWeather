@@ -1,4 +1,4 @@
-package com.example.neoweather.ui.day_detail.adapter
+package com.example.neoweather.ui.days.day_detail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

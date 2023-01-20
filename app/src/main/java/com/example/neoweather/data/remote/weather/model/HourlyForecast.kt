@@ -1,10 +1,12 @@
 package com.example.neoweather.data.remote.weather.model
 
+import android.annotation.SuppressLint
 import com.example.neoweather.data.local.model.hour.Hour
 import com.example.neoweather.data.local.model.hour.HoursEntity
 import com.example.neoweather.data.local.model.WeatherCodeMapping
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Serializable
@@ -16,20 +18,10 @@ data class HourlyForecast(
     val weatherCode: List<Int>
 )
 
-fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
+fun HourlyForecast.asDatabaseModel(newId: Int): HoursEntity {
     val hourList = mutableListOf<Hour>()
-    val currentHour = Calendar.getInstance(TimeZone.getTimeZone(timezone))
-        .get(Calendar.HOUR_OF_DAY)
-    val currentDay  = Calendar.getInstance()
-        .get(Calendar.DAY_OF_MONTH)
-    var arePastHoursDiscarded = false
 
     for (i in weatherCode.indices) {
-        if ((getHour(time[i]) < currentHour || getDay(time[i]) < currentDay)
-            && !arePastHoursDiscarded)
-            continue
-        else if (!arePastHoursDiscarded)
-            arePastHoursDiscarded = true
 
         val newHour = Hour(
             time = makeHourTimeInstance(time[i]),
@@ -43,3 +35,8 @@ fun HourlyForecast.asDatabaseModel(newId: Int, timezone: String): HoursEntity {
         hourList = hourList
     )
 }
+
+@SuppressLint("SimpleDateFormat")
+private fun makeHourTimeInstance(time: String): Date =
+    SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
+        .parse(time)!!

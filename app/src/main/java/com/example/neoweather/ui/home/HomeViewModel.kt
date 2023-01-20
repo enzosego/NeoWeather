@@ -3,7 +3,6 @@ package com.example.neoweather.ui.home
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.ExistingPeriodicWorkPolicy
-import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.place.asDomainModel
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.data.repository.WeatherDataRepository

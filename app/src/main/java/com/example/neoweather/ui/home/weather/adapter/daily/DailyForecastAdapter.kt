@@ -8,7 +8,7 @@ import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.databinding.ItemDayBinding
 
 class DailyForecastAdapter(
-    private val clickListener: DayListener
+    private val clickListener: (dayPosition: Int) -> Unit
 ) : ListAdapter<Day, ItemDayViewHolder>(DiffCallback) {
 
     private object DiffCallback : DiffUtil.ItemCallback<Day>() {

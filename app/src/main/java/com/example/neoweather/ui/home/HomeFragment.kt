@@ -9,14 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.neoweather.databinding.FragmentHomeBinding
-import com.example.neoweather.ui.home.adapter.HomeTabAdapter
+import com.example.neoweather.ui.home.adapter.WeatherTabAdapter
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeFragment : Fragment(){
 
     private val viewModel: HomeViewModel by activityViewModel()
-
-    private lateinit var binding: FragmentHomeBinding
 
     private val args: HomeFragmentArgs by navArgs()
 
@@ -25,9 +23,9 @@ class HomeFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        val binding = FragmentHomeBinding.inflate(layoutInflater)
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.viewModel = viewModel
 
@@ -45,14 +43,12 @@ class HomeFragment : Fragment(){
             postDelayed({visibility = View.VISIBLE}, 100)
 
             registerOnPageChangeCallback(refreshDataAndSetTabNum)
-            adapter = HomeTabAdapter(requireActivity())
+            adapter = WeatherTabAdapter(requireActivity())
         }
         viewModel.currentListSize.observe(viewLifecycleOwner) { size ->
             if (size != null && viewModel.previousListSize.value == null)
                 viewModel.syncPreviousSize()
         }
-
-        binding.currentItemNum = binding.homeViewPager.currentItem
 
         return binding.root
     }

@@ -19,7 +19,7 @@ class ItemHourViewHolder(
         val calendar = Calendar.getInstance()
         calendar.time = hourData.time
 
-        binding.time.text = calendar.get(Calendar.HOUR).toString()
+        binding.time.text = calendar.get(Calendar.HOUR_OF_DAY).toString()
 
         binding.temp.text = formatTemp(hourData.temp)
 
