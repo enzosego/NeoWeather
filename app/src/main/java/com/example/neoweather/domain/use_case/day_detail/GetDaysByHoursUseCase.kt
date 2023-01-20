@@ -42,13 +42,13 @@ class GetDaysByHoursUseCase(private val weatherDataRepository: WeatherDataReposi
         return dayList
     }
 
-    private fun getDayOfWeek(hourTime: Date): Int {
-        calendar.time = hourTime
+    private fun getDayOfWeek(time: Date): Int {
+        calendar.time = time
         return calendar.get(Calendar.DAY_OF_WEEK)
     }
 
-    private fun getDayOfMonth(hourTime: Date): String {
-        calendar.time = hourTime
+    private fun getDayOfMonth(time: Date): String {
+        calendar.time = time
         return calendar.get(Calendar.DAY_OF_MONTH).toString()
     }
 

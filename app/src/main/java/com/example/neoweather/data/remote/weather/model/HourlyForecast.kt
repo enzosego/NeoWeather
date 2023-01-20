@@ -24,7 +24,7 @@ fun HourlyForecast.asDatabaseModel(newId: Int): HoursEntity {
     for (i in weatherCode.indices) {
 
         val newHour = Hour(
-            time = makeHourTimeInstance(time[i]),
+            time = makeDateInstance(time[i]),
             temp = temp.getOrNull(i) ?: 0.0,
             WeatherCodeMapping.getDescription(weatherCode[i])
         )
@@ -37,6 +37,6 @@ fun HourlyForecast.asDatabaseModel(newId: Int): HoursEntity {
 }
 
 @SuppressLint("SimpleDateFormat")
-private fun makeHourTimeInstance(time: String): Date =
+internal fun makeDateInstance(time: String): Date =
     SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
         .parse(time)!!

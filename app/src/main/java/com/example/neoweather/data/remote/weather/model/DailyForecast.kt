@@ -23,7 +23,11 @@ data class DailyForecast(
     @SerialName("winddirection_10m_dominant")
     val windDirectionDominant: List<Double>,
     @SerialName("windspeed_10m_max")
-    val windSpeedMax: List<Double>
+    val windSpeedMax: List<Double>,
+    @SerialName("sunrise")
+    val sunrise: List<String>,
+    @SerialName("sunset")
+    val sunset: List<String>
 )
 
 fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
@@ -37,7 +41,9 @@ fun DailyForecast.asDatabaseModel(newId: Int): DaysEntity {
             precipitationSum = precipitationSum.getOrNull(i) ?: 0.0,
             windDirectionDominant = windDirectionDominant.getOrNull(i) ?: 0.0,
             windSpeedMax = windSpeedMax.getOrNull(i) ?: 0.0,
-            weatherDescription = WeatherCodeMapping.getDescription(weatherCode[i])
+            weatherDescription = WeatherCodeMapping.getDescription(weatherCode[i]),
+            sunrise = makeDateInstance(sunrise[i]),
+            sunset = makeDateInstance(sunset[i])
         )
         dayList.add(newDay)
     }

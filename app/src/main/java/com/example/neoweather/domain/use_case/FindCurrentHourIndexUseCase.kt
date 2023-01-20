@@ -11,7 +11,7 @@ class FindCurrentHourIndexUseCase {
 
     operator fun invoke(hourList: List<Hour>?): Int {
         if (hourList.isNullOrEmpty())
-            return -1
+            return 0
         var currentHourIndex = 0
         for ((i, hour) in hourList.withIndex()) {
             if (isItPastHour(hour.time))

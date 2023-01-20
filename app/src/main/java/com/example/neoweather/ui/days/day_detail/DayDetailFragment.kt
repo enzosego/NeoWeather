@@ -8,16 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentDayDetailBinding
+import com.example.neoweather.domain.use_case.day_detail.GetSunTimingUseCase
 import com.example.neoweather.ui.days.day_detail.adapter.DayDetailHourListAdapter
-import com.example.neoweather.ui.settings.observeOnce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class DayDetailFragment(
     private val position: Int,
     private val placeId: Int
-) : Fragment() {
+) : Fragment(), KoinComponent {
 
     private val viewModel: DayDetailViewModel by activityViewModel()
+
+    private val getSunTiming: GetSunTimingUseCase by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,19 +30,24 @@ class DayDetailFragment(
     ): View {
         val binding = FragmentDayDetailBinding.inflate(inflater)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        viewModel.getDays(placeId)
-
-        viewModel.days.observeOnce(viewLifecycleOwner) { list ->
-            with(list[position]) {
-                binding.dayOfTheWeek.text = getDayOfWeekString(dayOfWeek)
-                binding.date.text = getDateInfoString(dayOfMonth, monthNum)
-                binding.hourListRecyclerview.adapter = DayDetailHourListAdapter(hourList)
-            }
+        with(viewModel.days.value!![position]) {
+            binding.dayOfTheWeek.text = getDayOfWeekString(dayOfWeek)
+            binding.date.text = getDateInfoString(dayOfMonth, monthNum)
+            binding.hourListRecyclerview.adapter = DayDetailHourListAdapter(
+                hourList,
+                getSunriseTime = { hour ->
+                    getSunTiming(hour, placeId) { day -> day.sunrise }
+                },
+                getSunsetTime = { hour ->
+                    getSunTiming(hour, placeId) { day -> day.sunset }
+                }
+            )
         }
-        binding.hourListRecyclerview.layoutManager =
-            LinearLayoutManager(requireContext())
+        binding.hourListRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        if (position == 0)
+            binding.hourListRecyclerview
+                .scrollToPosition(viewModel.getCurrentHourIndex(position))
 
         return binding.root
     }
@@ -63,8 +72,8 @@ class DayDetailFragment(
     }
 
     companion object {
-        private var PLACE_ID_ARG = "place_id_arg"
         private var POSITION_ARG = "position_arg"
+        private var PLACE_ID_ARG = "place_id_arg"
         @JvmStatic
         fun newInstance(position: Int, placeId: Int) =
             DayDetailFragment(position, placeId).apply {

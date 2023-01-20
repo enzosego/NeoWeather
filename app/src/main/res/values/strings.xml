@@ -70,4 +70,6 @@
     </string-array>
     <!-- Date Info String -->
     <string name="date_info">%1$s of %2$s</string>
+    <!-- Sunrise/Sunset -->
+    <string name="sun_timing">%1$s: %2$d:%3$d</string>
 </resources>

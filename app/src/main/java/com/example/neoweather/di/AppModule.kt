@@ -12,6 +12,7 @@ import com.example.neoweather.data.workers.UpdateCurrentLocationInDatabaseWorker
 import com.example.neoweather.domain.use_case.*
 import com.example.neoweather.domain.use_case.day_detail.DayDetailUseCases
 import com.example.neoweather.domain.use_case.day_detail.GetDaysByHoursUseCase
+import com.example.neoweather.domain.use_case.day_detail.GetSunTimingUseCase
 import com.example.neoweather.domain.use_case.search.CallGeoLocationApiUseCase
 import com.example.neoweather.domain.use_case.home.*
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
@@ -60,6 +61,7 @@ val appModule = module {
     factoryOf(::DayDetailUseCases)
     factoryOf(::GetDaysByHoursUseCase)
     factoryOf(::FindCurrentHourIndexUseCase)
+    factoryOf(::GetSunTimingUseCase)
 
     factoryOf(::SettingsUseCases)
     factoryOf(::UpdatePreferencesUseCase)

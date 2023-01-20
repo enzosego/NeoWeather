@@ -16,4 +16,8 @@ class DayDetailViewModel(
     fun getDays(placeId: Int) {
         _days.value = dayDetailUseCases.getDaysByHours(placeId)
     }
+
+    fun getCurrentHourIndex(position: Int): Int {
+        return dayDetailUseCases.findCurrentHourIndex(_days.value!![position].hourList)
+    }
 }

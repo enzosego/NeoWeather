@@ -11,7 +11,8 @@ object HttpRoutes {
     private const val HOURLY_FORECAST = "hourly=temperature_2m,weathercode"
 
     private const val DAILY_FORECAST = "daily=temperature_2m_max,temperature_2m_min," +
-            "precipitation_sum,weathercode,winddirection_10m_dominant,windspeed_10m_max"
+            "precipitation_sum,weathercode,winddirection_10m_dominant,windspeed_10m_max," +
+            "sunrise,sunset"
 
     const val FORECAST =
         "$FORECAST_BASE_URL/forecast?$CURRENT_WEATHER&$HOURLY_FORECAST&$DAILY_FORECAST"

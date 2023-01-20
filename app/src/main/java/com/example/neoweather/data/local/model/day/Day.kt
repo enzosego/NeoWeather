@@ -10,4 +10,6 @@ data class Day(
     val windDirectionDominant: Double,
     val windSpeedMax: Double,
     val weatherDescription: String,
+    val sunrise: Date,
+    val sunset: Date
 )
