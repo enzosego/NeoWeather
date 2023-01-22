@@ -2,7 +2,6 @@ package com.example.neoweather.ui.home
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.work.ExistingPeriodicWorkPolicy
 import com.example.neoweather.data.local.model.place.asDomainModel
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.data.repository.WeatherDataRepository
@@ -40,11 +39,9 @@ class HomeViewModel(
 
     val previousListSize = MutableLiveData<Int>()
 
-    val preferences = preferencesRepository.preferences
+    val unitsPreferences = preferencesRepository.unitsPreferences
 
-    val areNotificationsEnabled: LiveData<Boolean> = Transformations.map(preferences) {
-        it.areNotificationsEnabled
-    }
+    val dataPreferences = preferencesRepository.dataPreferences
 
     private var currentJob: Job? = null
 
@@ -96,18 +93,11 @@ class HomeViewModel(
         previousListSize.value = currentListSize.value!!
     }
 
-    fun enqueueWorkers() {
-        homeUseCases.enqueueWorkers(
-            interval = preferences.value?.notificationsInterval ?: 1L,
-            ExistingPeriodicWorkPolicy.KEEP
-        )
-    }
-
     fun setBackgroundPermissionDenied() {
-        val newPreferences = preferences.value!!.copy(
+        val newPreferences = dataPreferences.value!!.copy(
             backgroundPermissionDenied = true
         )
-        homeUseCases.updatePreferences(newPreferences)
+        homeUseCases.updateDataPreferences(newPreferences)
     }
 
     fun formatTemp(temp: Double): String =

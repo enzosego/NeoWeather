@@ -1,9 +1,9 @@
 package com.example.neoweather.domain.use_case.settings
 
-import com.example.neoweather.domain.use_case.EnqueueWorkersUseCase
-import com.example.neoweather.domain.use_case.UpdatePreferencesUseCase
+import com.example.neoweather.domain.use_case.UpdateDataPreferencesUseCase
+import com.example.neoweather.domain.use_case.UpdateUnitsPreferencesUseCase
 
 data class SettingsUseCases(
-    val enqueueWorkers: EnqueueWorkersUseCase,
-    val updatePreferences: UpdatePreferencesUseCase
+    val updateUnitsPreferences: UpdateUnitsPreferencesUseCase,
+    val updateDataPreferences: UpdateDataPreferencesUseCase
 )

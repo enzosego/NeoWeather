@@ -6,7 +6,7 @@ import kotlin.math.roundToInt
 class FormatTempUnitUseCase(private val preferencesRepository: PreferencesRepository) {
 
     operator fun invoke(temp: Double): String =
-        if (preferencesRepository.preferences.value?.isFahrenheitEnabled == true)
+        if (preferencesRepository.unitsPreferences.value?.isFahrenheitEnabled == true)
             "${celsiusToFahrenheit(temp)}°"
         else
             "${temp.roundToInt()}°"

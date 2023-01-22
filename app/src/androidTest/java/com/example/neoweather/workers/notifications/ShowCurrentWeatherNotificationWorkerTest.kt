@@ -1,4 +1,4 @@
-package com.example.neoweather.workers
+package com.example.neoweather.workers.notifications
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -7,7 +7,7 @@ import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.example.neoweather.data.workers.NotificationUtils
-import com.example.neoweather.data.workers.ShowCurrentWeatherNotificationWorker
+import com.example.neoweather.data.workers.notifications.ShowCurrentWeatherNotificationWorker
 import io.kotest.matchers.shouldBe
 import io.ktor.http.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

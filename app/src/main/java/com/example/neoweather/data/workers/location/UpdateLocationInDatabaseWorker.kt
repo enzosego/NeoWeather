@@ -1,41 +1,44 @@
-package com.example.neoweather.data.workers
+package com.example.neoweather.data.workers.location
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
 import com.example.neoweather.data.repository.WeatherDataRepository
-import com.example.neoweather.data.workers.NotificationUtils.LATITUDE_PARAM
-import com.example.neoweather.data.workers.NotificationUtils.LONGITUDE_PARAM
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class UpdateCurrentLocationInDatabaseWorker(
+const val UPDATE_LOCATION_WORK_NAME = "update_location_work_name"
+
+class UpdateLocationInDatabaseWorker(
     context: Context,
-    private val workerParams: WorkerParameters,
+    workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val weatherDataRepository: WeatherDataRepository by inject()
 
     override suspend fun doWork(): Result {
 
-        val latitude = workerParams.inputData.getDouble(LATITUDE_PARAM, 0.0)
-        val longitude = workerParams.inputData.getDouble(LONGITUDE_PARAM, 0.0)
-        if (latitude == 0.0 && longitude == 0.0) {
-            Log.d("update_database_worker", "Wrong inputs")
+        /*
+        val latitude = inputData.getDouble(LATITUDE_PARAM, 0.0)
+        val longitude = inputData.getDouble(LONGITUDE_PARAM, 0.0)
+         */
+        val locationId = inputData.getInt(LOCATION_ID_PARAM, -1)
+        if (locationId == -1) {
+            Log.d("update_database_worker", "Wrong input")
             return Result.failure()
         }
-        val geoLocation = makeGeoLocationFromInput(latitude, longitude)
+        val location = weatherDataRepository.placesList.value!![locationId]
+        val geoLocation = makeGeoLocationFromInput(location.latitude, location.longitude)
 
         weatherDataRepository.updateOrInsertPlace(geoLocation)
 
+        /*
         val output = workDataOf(
-            LATITUDE_PARAM to latitude,
-            LONGITUDE_PARAM to longitude
+            LOCATION_ID_PARAM to locationId
         )
-        return Result.success(output)
+         */
+        return Result.success(inputData)
     }
 
     private fun makeGeoLocationFromInput(lat: Double, lon: Double): GeoLocation =

@@ -12,15 +12,18 @@ import com.example.neoweather.data.local.model.hour.HoursDao
 import com.example.neoweather.data.local.model.hour.HoursEntity
 import com.example.neoweather.data.local.model.place.Place
 import com.example.neoweather.data.local.model.place.PlaceDao
-import com.example.neoweather.data.local.model.preferences.Preferences
-import com.example.neoweather.data.local.model.preferences.PreferencesDao
+import com.example.neoweather.data.local.model.preferences.units.UnitsPreferences
+import com.example.neoweather.data.local.model.preferences.units.UnitsPreferencesDao
+import com.example.neoweather.data.local.model.preferences.data.DataPreferences
+import com.example.neoweather.data.local.model.preferences.data.DataPreferencesDao
 
 @Database(
     entities = [
         DaysEntity::class,
         HoursEntity::class,
         CurrentWeather::class,
-        Preferences::class,
+        UnitsPreferences::class,
+        DataPreferences::class,
         Place::class
     ],
     version = 1,
@@ -33,5 +36,6 @@ abstract class NeoWeatherDatabase : RoomDatabase() {
     abstract val daysDao: DaysDao
     abstract val hoursDao: HoursDao
     abstract val currentWeatherDao: CurrentWeatherDao
-    abstract val preferencesDao: PreferencesDao
+    abstract val unitsPreferencesDao: UnitsPreferencesDao
+    abstract val dataPreferencesDao: DataPreferencesDao
 }

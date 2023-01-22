@@ -8,7 +8,7 @@ class FormatPrecipitationSumUseCase(private val preferencesRepository: Preferenc
     operator fun invoke(sum: Double): String =
         formatPrecipitationSum(
             sum ,
-            isInches = preferencesRepository.preferences.value?.isInchesEnabled ?: false
+            isInches = preferencesRepository.unitsPreferences.value?.isInchesEnabled ?: false
         )
 
     private fun formatPrecipitationSum(precipitation: Double, isInches: Boolean): String =

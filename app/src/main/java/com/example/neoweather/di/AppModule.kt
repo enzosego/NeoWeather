@@ -8,7 +8,7 @@ import com.example.neoweather.data.remote.reverse_geocoding.ReverseGeoCodingApiI
 import com.example.neoweather.data.remote.weather.NeoWeatherApiImpl
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.repository.WeatherDataRepository
-import com.example.neoweather.data.workers.UpdateCurrentLocationInDatabaseWorker
+import com.example.neoweather.data.workers.location.UpdateLocationInDatabaseWorker
 import com.example.neoweather.domain.use_case.*
 import com.example.neoweather.domain.use_case.day_detail.DayDetailUseCases
 import com.example.neoweather.domain.use_case.day_detail.GetDaysByHoursUseCase
@@ -44,7 +44,7 @@ val appModule = module {
     singleOf(::PreferencesRepository)
 
     // WorKManager
-    workerOf(::UpdateCurrentLocationInDatabaseWorker)
+    workerOf(::UpdateLocationInDatabaseWorker)
 
     // Domain
     factory { CoroutineScope(Dispatchers.Main) }
@@ -53,7 +53,6 @@ val appModule = module {
     factoryOf(::RefreshPlaceWeatherUserCase)
     factoryOf(::InsertOrUpdatePlaceUseCase)
     factoryOf(::DeletePlaceUseCase)
-    factoryOf(::EnqueueWorkersUseCase)
     factoryOf(::FormatTempUnitUseCase)
     factoryOf(::FormatSpeedUnitUseCase)
     factoryOf(::FormatPrecipitationSumUseCase)
@@ -64,7 +63,8 @@ val appModule = module {
     factoryOf(::GetSunTimingUseCase)
 
     factoryOf(::SettingsUseCases)
-    factoryOf(::UpdatePreferencesUseCase)
+    factoryOf(::UpdateUnitsPreferencesUseCase)
+    factoryOf(::UpdateDataPreferencesUseCase)
 
     factoryOf(::CallGeoLocationApiUseCase)
 

@@ -12,12 +12,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.neoweather.R
-import com.example.neoweather.data.local.model.preferences.Preferences
+import com.example.neoweather.data.local.model.preferences.data.DataPreferences
+import com.example.neoweather.data.local.model.preferences.units.UnitsPreferences
 import com.example.neoweather.databinding.FragmentSettingsBinding
-import com.example.neoweather.ui.askForBackgroundLocationPermission
-import com.example.neoweather.ui.isBackgroundPermissionGranted
-import com.example.neoweather.ui.openAppSettings
-import com.google.android.material.materialswitch.MaterialSwitch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
@@ -37,84 +34,76 @@ class SettingsFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        viewModel.preferences.observeOnce(viewLifecycleOwner) { preferences ->
+        viewModel.unitsPreferences.observeOnce(viewLifecycleOwner) { preferences ->
             if (preferences != null) {
                 setSpeedUnitMenu(preferences)
                 setRainUnitMenu(preferences)
                 setTempUnitMenu(preferences)
-                setIntervalMenu(preferences)
             }
         }
-        viewModel.currentInterval.observe(viewLifecycleOwner) {
-            if (viewModel.hasUserChangedInterval.value == true)
-                viewModel.startPeriodicWork()
+        viewModel.dataPreferences.observeOnce(viewLifecycleOwner) { preferences ->
+            if (preferences != null) {
+                setIntervalMenu(preferences)
+                binding.updateInBackgroundSwitch.isChecked = preferences.updateInBackground
+                binding.updateInBackgroundSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    viewModel.toggleBackgroundUpdates(isChecked)
+                }
+            }
         }
         viewModel.areNotificationsEnabled.observeOnce(viewLifecycleOwner) {
             if (it != null) {
                 binding.notificationsSwitch.isChecked = it
-                binding.notificationsSwitch.setUp()
+                binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    viewModel.toggleNotifications(isChecked)
+                }
             }
         }
         return binding.root
     }
 
-    private fun MaterialSwitch.setUp() {
-        setOnCheckedChangeListener { _, isChecked ->
-            if (!isBackgroundPermissionGranted(requireContext()) &&
-                    viewModel.preferences.value?.areNotificationsEnabled == false) {
-                this.isChecked = false
-                with(requireContext()) {
-                    askForBackgroundLocationPermission { openAppSettings() }
-                }
-                return@setOnCheckedChangeListener
-            }
-            viewModel.toggleNotifications(isChecked, requireContext())
-        }
-    }
-
-    private fun setTempUnitMenu(preferences: Preferences) {
-        val newHint = when (preferences.isFahrenheitEnabled) {
+    private fun setTempUnitMenu(unitsPreferences: UnitsPreferences) {
+        val newHint = when (unitsPreferences.isFahrenheitEnabled) {
             true -> "Fahrenheit"
             false -> "Celsius"
         }
-        binding.tempUnitMenu.applyToMenu(newHint, R.array.temp_unit_options) { item ->
+        binding.tempUnitMenu.setup(newHint, R.array.temp_unit_options) { item ->
             viewModel.updateTempUnit(item)
         }
     }
 
-    private fun setSpeedUnitMenu(preferences: Preferences) {
-        val newHint = when (preferences.isMilesEnabled) {
+    private fun setSpeedUnitMenu(unitsPreferences: UnitsPreferences) {
+        val newHint = when (unitsPreferences.isMilesEnabled) {
                 true -> "Mph"
                 false -> "Kph"
             }
-        binding.speedUnitMenu.applyToMenu(newHint, R.array.speed_unit_options) { item ->
+        binding.speedUnitMenu.setup(newHint, R.array.speed_unit_options) { item ->
             viewModel.updateSpeedUnit(item)
         }
     }
 
-    private fun setRainUnitMenu(preferences: Preferences) {
-        val newHint = when (preferences.isInchesEnabled) {
+    private fun setRainUnitMenu(unitsPreferences: UnitsPreferences) {
+        val newHint = when (unitsPreferences.isInchesEnabled) {
             true -> "Inches"
             false -> "Millimeters"
         }
-        binding.rainUnitMenu.applyToMenu(newHint, R.array.rain_unit_options) { item ->
+        binding.rainUnitMenu.setup(newHint, R.array.rain_unit_options) { item ->
             viewModel.updateRainUnit(item)
         }
     }
 
-    private fun setIntervalMenu(preferences: Preferences) {
-        val newHint = when(preferences.notificationsInterval) {
+    private fun setIntervalMenu(dataPreferences: DataPreferences) {
+        val newHint = when(dataPreferences.updateInterval) {
             1L -> "One hour"
             3L -> "Three hours"
             6L -> "Six hours"
             else -> "Twelve hours"
         }
-        binding.intervalMenu.applyToMenu(newHint, R.array.interval_options) { item ->
-            viewModel.updateNotificationsInterval(item)
+        binding.intervalMenu.setup(newHint, R.array.interval_options) { item ->
+            viewModel.setDatabaseUpdateInterval(item)
         }
     }
 
-    private fun AutoCompleteTextView.applyToMenu(
+    private fun AutoCompleteTextView.setup(
         newHint: String,
         arrayResource: Int,
         updateDatabase: (item: String) -> Unit = {})

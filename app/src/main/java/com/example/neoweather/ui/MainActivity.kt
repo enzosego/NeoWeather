@@ -66,18 +66,13 @@ class MainActivity : AppCompatActivity() {
             coarseLocation,
         )
         requestLocationPermission()
-
-        viewModel.areNotificationsEnabled.observeOnce(this) { notifications ->
-            if (notifications == true && isBackgroundPermissionGranted(this))
-                viewModel.enqueueWorkers()
-        }
     }
 
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             locationPermissionRequester.request {
                 getLocation()
-                viewModel.preferences.observeOnce(this) { pref ->
+                viewModel.dataPreferences.observeOnce(this) { pref ->
                     if (pref.areNotificationsEnabled && !pref.backgroundPermissionDenied)
                         askForBackgroundLocationPermission(
                             { viewModel.setBackgroundPermissionDenied() },

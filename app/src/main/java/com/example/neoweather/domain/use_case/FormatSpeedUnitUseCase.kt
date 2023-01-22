@@ -8,7 +8,7 @@ class FormatSpeedUnitUseCase(private val preferencesRepository: PreferencesRepos
     operator fun invoke(speed: Double): String =
         formatSpeedUnit(
             speed,
-            isMiles = preferencesRepository.preferences.value?.isMilesEnabled ?: false
+            isMiles = preferencesRepository.unitsPreferences.value?.isMilesEnabled ?: false
         )
 
     private fun formatSpeedUnit(speed: Double, isMiles: Boolean): String =

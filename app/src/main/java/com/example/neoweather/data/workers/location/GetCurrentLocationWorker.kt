@@ -1,13 +1,12 @@
-package com.example.neoweather.data.workers
+package com.example.neoweather.data.workers.location
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import androidx.work.*
 import com.example.neoweather.ui.isGpsEnabled
-import com.example.neoweather.data.workers.NotificationUtils.LATITUDE_PARAM
-import com.example.neoweather.data.workers.NotificationUtils.LONGITUDE_PARAM
-import com.example.neoweather.data.workers.NotificationUtils.NOTIFICATION_WORK_NAME
+import com.example.neoweather.data.workers.notifications.ShowCurrentWeatherNotificationWorker
+import com.example.neoweather.data.workers.weather.UpdateWeatherInDatabaseWorker
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -37,21 +36,25 @@ class GetCurrentLocationWorker(
         )
         val currentLocation: Location = task.await(cancellationTokenSource)
 
-        if (task.isComplete) {
+        return@withContext if (task.isComplete) {
             val inputData = createInputData(currentLocation)
             enqueueWorkers(inputData)
-            return@withContext Result.success()
+            Result.success()
         } else
-            return@withContext Result.retry()
+            Result.retry()
     }
 
     private fun enqueueWorkers(inputData: Data) {
         val networkConstraint = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val updateDatabaseRequest =
-            OneTimeWorkRequestBuilder<UpdateCurrentLocationInDatabaseWorker>()
+        val updateLocationRequest =
+            OneTimeWorkRequestBuilder<UpdateLocationInDatabaseWorker>()
                 .setInputData(inputData)
+                .setConstraints(networkConstraint)
+                .build()
+        val updateWeatherRequest =
+            OneTimeWorkRequestBuilder<UpdateWeatherInDatabaseWorker>()
                 .setConstraints(networkConstraint)
                 .build()
         val showNotificationRequest =
@@ -62,10 +65,11 @@ class GetCurrentLocationWorker(
         WorkManager
             .getInstance(context)
             .beginUniqueWork(
-                NOTIFICATION_WORK_NAME,
+                UPDATE_LOCATION_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
-                updateDatabaseRequest
+                updateLocationRequest
             )
+            .then(updateWeatherRequest)
             .then(showNotificationRequest)
             .enqueue()
     }

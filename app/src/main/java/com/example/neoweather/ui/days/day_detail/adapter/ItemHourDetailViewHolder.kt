@@ -31,9 +31,13 @@ class ItemHourDetailViewHolder(
 
             calendar.time = sunTiming
 
-            val sunTimingTitle = "Sunrise"
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
+            val sunTimingTitle =
+                if (hour < 12)
+                    "Sunrise"
+                else
+                    "Sunset"
 
             binding.sunTimingTitle.text =
                 itemView.context.getString(R.string.sun_timing, sunTimingTitle, hour, minute)

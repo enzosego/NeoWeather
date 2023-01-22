@@ -6,8 +6,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
-import com.example.neoweather.data.workers.NotificationUtils
-import com.example.neoweather.data.workers.UpdateCurrentLocationInDatabaseWorker
+import com.example.neoweather.data.workers.location.UpdateLocationInDatabaseWorker
+import com.example.neoweather.data.workers.location.LATITUDE_PARAM
+import com.example.neoweather.data.workers.location.LONGITUDE_PARAM
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -18,7 +19,7 @@ import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
-class UpdateCurrentLocationInDatabaseWorkerTest {
+class UpdateLocationInDatabaseWorkerTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var inputData: Data.Builder
@@ -26,14 +27,14 @@ class UpdateCurrentLocationInDatabaseWorkerTest {
     @Before
     fun setup() {
         inputData = Data.Builder()
-        inputData.putDouble(NotificationUtils.LATITUDE_PARAM, 12.0)
-        inputData.putDouble(NotificationUtils.LONGITUDE_PARAM, 12.0)
+        inputData.putDouble(LATITUDE_PARAM, 12.0)
+        inputData.putDouble(LONGITUDE_PARAM, 12.0)
         inputData
     }
 
     @Test
     fun databaseUpdateWorker_withInput_returnsSuccess() = runTest {
-        val worker = TestListenableWorkerBuilder<UpdateCurrentLocationInDatabaseWorker>(
+        val worker = TestListenableWorkerBuilder<UpdateLocationInDatabaseWorker>(
             context,
             inputData.build()
         ).build()
@@ -44,7 +45,7 @@ class UpdateCurrentLocationInDatabaseWorkerTest {
 
     @Test
     fun databaseUpdateWorker_noInput_returnsFailure() = runTest {
-        val worker = TestListenableWorkerBuilder<UpdateCurrentLocationInDatabaseWorker>(
+        val worker = TestListenableWorkerBuilder<UpdateLocationInDatabaseWorker>(
             context
         ).build()
 

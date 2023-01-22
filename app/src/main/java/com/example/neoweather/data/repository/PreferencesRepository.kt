@@ -3,7 +3,8 @@ package com.example.neoweather.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.neoweather.data.local.NeoWeatherDatabase
-import com.example.neoweather.data.local.model.preferences.Preferences
+import com.example.neoweather.data.local.model.preferences.data.DataPreferences
+import com.example.neoweather.data.local.model.preferences.units.UnitsPreferences
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -12,12 +13,21 @@ class PreferencesRepository(
     private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    val preferences: LiveData<Preferences> =
-        database.preferencesDao.getPreferences().asLiveData()
+    val unitsPreferences: LiveData<UnitsPreferences> =
+        database.unitsPreferencesDao.getPreferences().asLiveData()
 
-    suspend fun updatePreferences(preferences: Preferences) {
+    val dataPreferences: LiveData<DataPreferences> =
+        database.dataPreferencesDao.getPreferences().asLiveData()
+
+    suspend fun updateUnitPreferences(newValue: UnitsPreferences) {
         withContext(ioDispatcher) {
-            database.preferencesDao.update(preferences)
+            database.unitsPreferencesDao.update(newValue)
+        }
+    }
+
+    suspend fun updateDataPreferences(newValue: DataPreferences) {
+        withContext(ioDispatcher) {
+            database.dataPreferencesDao.update(newValue)
         }
     }
 }
