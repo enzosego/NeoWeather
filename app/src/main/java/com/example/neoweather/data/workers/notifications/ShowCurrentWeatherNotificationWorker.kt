@@ -9,17 +9,14 @@ import androidx.work.WorkerParameters
 import com.example.neoweather.data.repository.WeatherDataRepository
 import com.example.neoweather.data.workers.location.LOCATION_ID_PARAM
 import com.example.neoweather.domain.use_case.FormatTempUnitUseCase
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class ShowCurrentWeatherNotificationWorker(
+    private val weatherDataRepository: WeatherDataRepository,
+    private val formatTempUnit: FormatTempUnitUseCase,
     private val context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams), KoinComponent {
+) : CoroutineWorker(context, workerParams) {
 
-    private val weatherDataRepository: WeatherDataRepository by inject()
-
-    private val formatTempUnit: FormatTempUnitUseCase by inject()
 
     override suspend fun doWork(): Result {
 

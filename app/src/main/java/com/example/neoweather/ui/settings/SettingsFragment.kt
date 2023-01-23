@@ -15,6 +15,9 @@ import com.example.neoweather.R
 import com.example.neoweather.data.local.model.preferences.data.DataPreferences
 import com.example.neoweather.data.local.model.preferences.units.UnitsPreferences
 import com.example.neoweather.databinding.FragmentSettingsBinding
+import com.example.neoweather.ui.askForBackgroundLocationPermission
+import com.example.neoweather.ui.isBackgroundPermissionGranted
+import com.google.android.material.materialswitch.MaterialSwitch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
@@ -53,12 +56,24 @@ class SettingsFragment : Fragment() {
         viewModel.areNotificationsEnabled.observeOnce(viewLifecycleOwner) {
             if (it != null) {
                 binding.notificationsSwitch.isChecked = it
-                binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
-                    viewModel.toggleNotifications(isChecked)
-                }
+                binding.notificationsSwitch.setListener()
             }
         }
         return binding.root
+    }
+
+    private fun MaterialSwitch.setListener() {
+        setOnCheckedChangeListener { _ , isChecked ->
+            if (viewModel.isPreferredLocationGps() && isChecked
+                && !isBackgroundPermissionGranted(requireContext())
+            ) {
+                this.isChecked = false
+                val messageResource = R.string.permanent_location_toggle_message
+                requireContext().askForBackgroundLocationPermission(messageResource)
+                return@setOnCheckedChangeListener
+            }
+            viewModel.toggleNotifications(isChecked)
+        }
     }
 
     private fun setTempUnitMenu(unitsPreferences: UnitsPreferences) {

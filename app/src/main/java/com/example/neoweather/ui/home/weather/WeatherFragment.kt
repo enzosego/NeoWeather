@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.neoweather.R
 import com.example.neoweather.databinding.FragmentWeatherBinding
 import com.example.neoweather.domain.use_case.FindCurrentHourIndexUseCase
+import com.example.neoweather.ui.askForBackgroundLocationPermission
 import com.example.neoweather.ui.home.HomeFragmentDirections
 import com.example.neoweather.ui.home.weather.adapter.daily.DailyForecastAdapter
 import com.example.neoweather.ui.home.weather.adapter.hourly.HourlyForecastAdapter
 import com.example.neoweather.ui.home.HomeViewModel
+import com.example.neoweather.ui.isBackgroundPermissionGranted
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -49,6 +52,17 @@ class WeatherTabFragment(private val position: Int) : Fragment(), KoinComponent 
         binding.viewModel = viewModel
         binding.position = position
         binding.findCurrentHourIndex = findCurrentHourIndex
+
+        binding.placeName.setOnClickListener {
+            if (viewModel.isGpsLocation(position)
+                && !isBackgroundPermissionGranted(requireContext())
+            ) {
+                val messageResource = R.string.permanent_location_toggle_message
+                requireContext().askForBackgroundLocationPermission(messageResource)
+                return@setOnClickListener
+            }
+            viewModel.setPreferredLocation(position)
+        }
 
         return binding.root
     }

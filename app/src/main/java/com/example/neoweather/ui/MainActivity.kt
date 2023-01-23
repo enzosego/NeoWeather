@@ -75,8 +75,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.dataPreferences.observeOnce(this) { pref ->
                     if (pref.areNotificationsEnabled && !pref.backgroundPermissionDenied)
                         askForBackgroundLocationPermission(
-                            { viewModel.setBackgroundPermissionDenied() },
-                            { openAppSettings() }
+                            onDenied = { viewModel.setBackgroundPermissionDenied() }
                         )
                 }
             }
@@ -128,16 +127,16 @@ class MainActivity : AppCompatActivity() {
 }
 
 fun Context.askForBackgroundLocationPermission(
-    setBackgroundPermissionDenied: () -> Unit = {},
-    goToSettings: () -> Unit
+    messageResource: Int = R.string.permanent_location_default_message,
+    onDenied: () -> Unit = {}
 ) {
     MaterialAlertDialogBuilder(this)
         .setTitle(resources.getString(R.string.permanent_location_dialog_title))
-        .setMessage(resources.getString(R.string.permanent_location_dialog_message))
+        .setMessage(getString(messageResource))
         .setNeutralButton(resources.getString(R.string.permanent_location_dialog_button)) { _, _ ->
-            goToSettings() }
+            openAppSettings() }
         .setNegativeButton(resources.getString(R.string.deny_background)) { _, _ ->
-            setBackgroundPermissionDenied()
+            onDenied()
         }
         .show()
 }

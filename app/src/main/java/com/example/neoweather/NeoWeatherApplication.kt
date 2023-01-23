@@ -4,18 +4,12 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.example.neoweather.data.workers.QUEUE_HANDLER_WORK_NAME
-import com.example.neoweather.data.workers.QUEUE_HANDLER_WORK_TAG
-import com.example.neoweather.data.workers.QueueHandlerWorker
 import com.example.neoweather.data.workers.notifications.WEATHER_CHANNEL_ID
 import com.example.neoweather.data.workers.notifications.WEATHER_CHANNEL_NAME
 import com.example.neoweather.di.appModule
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
-import java.util.concurrent.TimeUnit
 
 class NeoWeatherApplication : Application() {
 
@@ -24,10 +18,10 @@ class NeoWeatherApplication : Application() {
 
         startKoin {
             androidContext(this@NeoWeatherApplication)
+            workManagerFactory()
             modules(appModule)
         }
         createNotificationChannel()
-        enqueuePeriodicWork()
     }
 
     private fun createNotificationChannel() {
@@ -45,22 +39,5 @@ class NeoWeatherApplication : Application() {
             ) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-
-    private fun enqueuePeriodicWork() {
-        val queueHandlerWorker =
-            PeriodicWorkRequestBuilder<QueueHandlerWorker>(
-                repeatInterval = 1L,
-                TimeUnit.HOURS
-            )
-                .addTag(QUEUE_HANDLER_WORK_TAG)
-                .build()
-
-        WorkManager.getInstance(applicationContext)
-            .enqueueUniquePeriodicWork(
-                QUEUE_HANDLER_WORK_NAME,
-                ExistingPeriodicWorkPolicy.REPLACE,
-                queueHandlerWorker
-            )
     }
 }

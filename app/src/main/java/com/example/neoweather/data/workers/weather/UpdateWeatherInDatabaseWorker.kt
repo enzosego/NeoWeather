@@ -3,35 +3,43 @@ package com.example.neoweather.data.workers.weather
 import android.content.Context
 import android.util.Log
 import androidx.work.*
+import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.repository.WeatherDataRepository
 import com.example.neoweather.data.workers.location.LOCATION_ID_PARAM
 import com.example.neoweather.data.workers.notifications.NOTIFICATION_WORK_NAME
 import com.example.neoweather.data.workers.notifications.ShowCurrentWeatherNotificationWorker
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import java.io.IOException
+
+const val UPDATE_WEATHER_WORK_NAME = "update_weather_work_name"
 
 class UpdateWeatherInDatabaseWorker(
-    private val context: Context,
+    private val workManager: WorkManager,
+    private val weatherDataRepository: WeatherDataRepository,
+    private val preferencesRepository: PreferencesRepository,
+    context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams), KoinComponent {
 
-    private val weatherDataRepository: WeatherDataRepository by inject()
+) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
 
-        val locationId = inputData.getInt(LOCATION_ID_PARAM, -1)
-        if (locationId == -1) {
-            Log.d("update_database_worker", "Wrong input")
-            return Result.failure()
+        val locationId = preferencesRepository.dataPreferences.value?.preferredLocationId
+            ?: 0
+
+        Log.d("UpdateWeatherWorker", "$locationId")
+        return try {
+            weatherDataRepository.refreshPlaceWeather(locationId)
+
+            val output = workDataOf(
+                LOCATION_ID_PARAM to locationId
+            )
+            enqueueNotificationRequest(output)
+
+            Result.success()
+        } catch (e: IOException) {
+            Log.d("UpdateWeatherWorker", "$e")
+            Result.retry()
         }
-        weatherDataRepository.refreshPlaceWeather(locationId)
-
-        val outputData = workDataOf(
-            LOCATION_ID_PARAM to locationId
-        )
-        enqueueNotificationRequest(outputData)
-
-        return Result.success()
     }
 
     private fun enqueueNotificationRequest(outputData: Data) {
@@ -44,11 +52,10 @@ class UpdateWeatherInDatabaseWorker(
                 .setInputData(outputData)
                 .build()
 
-        WorkManager.getInstance(context)
-            .enqueueUniqueWork(
-                NOTIFICATION_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
-                showNotificationRequest
-            )
+        workManager.enqueueUniqueWork(
+            NOTIFICATION_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            showNotificationRequest
+        )
     }
 }

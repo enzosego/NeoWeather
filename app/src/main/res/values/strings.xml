@@ -43,9 +43,14 @@
     </string-array>
     <!-- MaterialAlertDialog -->
     <string name="permanent_location_dialog_title">Permanent location permission</string>
-    <string name="permanent_location_dialog_message">
+    <string name="permanent_location_default_message">
         For a better experience, /n
         we suggest enabling location tracking in the background
+    </string>
+    <string name="permanent_location_toggle_message">
+        If you want to receive notifications on /n
+        a location provide by GPS services, you should /n
+        enable location permission in the background
     </string>
     <string name="permanent_location_dialog_button">Go to settings</string>
     <string name="deny_background">Not now</string>

@@ -42,5 +42,6 @@ fun Place.asDomainModel() =
     PlaceModel(
         id = id,
         placeName = name,
-        country = country
+        country = country,
+        isGpsLocation = isGpsLocation
     )

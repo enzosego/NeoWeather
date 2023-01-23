@@ -1,6 +1,7 @@
 package com.example.neoweather.domain.use_case.home
 
 import com.example.neoweather.domain.use_case.*
+import com.example.neoweather.domain.use_case.settings.CheckIfLocationIsGpsUseCase
 
 data class HomeUseCases(
     val makeGeoLocationInstance: MakeGeoLocationInstanceUseCase,
@@ -9,5 +10,7 @@ data class HomeUseCases(
     val deletePlace: DeletePlaceUseCase,
     val updateUnitsPreferences: UpdateUnitsPreferencesUseCase,
     val updateDataPreferences: UpdateDataPreferencesUseCase,
-    val formatTempUnit: FormatTempUnitUseCase
+    val formatTempUnit: FormatTempUnitUseCase,
+    val scheduleQueueHandler: ScheduleQueueHandlerUseCase,
+    val checkIfLocationIsGps: CheckIfLocationIsGpsUseCase
 )

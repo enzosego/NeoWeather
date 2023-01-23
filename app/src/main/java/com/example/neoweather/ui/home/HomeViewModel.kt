@@ -102,4 +102,21 @@ class HomeViewModel(
 
     fun formatTemp(temp: Double): String =
         homeUseCases.formatTempUnit(temp)
+
+    fun setPreferredLocation(id: Int) {
+        if (dataPreferences.value?.preferredLocationId == id)
+            return
+        Log.d("HomeViewModel", "GOT HERE!")
+        val newPreferences = dataPreferences.value!!.copy(
+            preferredLocationId = id
+        )
+        homeUseCases.updateDataPreferences(newPreferences)
+    }
+
+    fun scheduleQueueHandler() {
+        homeUseCases.scheduleQueueHandler()
+    }
+
+    fun isGpsLocation(id: Int): Boolean =
+        homeUseCases.checkIfLocationIsGps(id)
 }

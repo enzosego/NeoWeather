@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.ui.home.adapter.WeatherTabAdapter
+import com.example.neoweather.ui.settings.observeOnce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeFragment : Fragment(){
@@ -48,6 +49,10 @@ class HomeFragment : Fragment(){
         viewModel.currentListSize.observe(viewLifecycleOwner) { size ->
             if (size != null && viewModel.previousListSize.value == null)
                 viewModel.syncPreviousSize()
+        }
+        viewModel.dataPreferences.observeOnce(viewLifecycleOwner) { preferences ->
+            if (preferences != null)
+                viewModel.scheduleQueueHandler()
         }
 
         return binding.root

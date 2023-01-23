@@ -2,19 +2,25 @@ package com.example.neoweather.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.example.neoweather.data.local.NeoWeatherDatabase
 import com.example.neoweather.data.remote.geocoding.GeoCodingApiImpl
 import com.example.neoweather.data.remote.reverse_geocoding.ReverseGeoCodingApiImpl
 import com.example.neoweather.data.remote.weather.NeoWeatherApiImpl
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.workers.QueueHandlerWorker
+import com.example.neoweather.data.workers.location.GetCurrentLocationWorker
 import com.example.neoweather.data.workers.location.UpdateLocationInDatabaseWorker
+import com.example.neoweather.data.workers.notifications.ShowCurrentWeatherNotificationWorker
+import com.example.neoweather.data.workers.weather.UpdateWeatherInDatabaseWorker
 import com.example.neoweather.domain.use_case.*
 import com.example.neoweather.domain.use_case.day_detail.DayDetailUseCases
 import com.example.neoweather.domain.use_case.day_detail.GetDaysByHoursUseCase
 import com.example.neoweather.domain.use_case.day_detail.GetSunTimingUseCase
 import com.example.neoweather.domain.use_case.search.CallGeoLocationApiUseCase
 import com.example.neoweather.domain.use_case.home.*
+import com.example.neoweather.domain.use_case.settings.CheckIfLocationIsGpsUseCase
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
 import com.example.neoweather.ui.days.day_detail.DayDetailViewModel
 import com.example.neoweather.ui.home.HomeViewModel
@@ -44,7 +50,12 @@ val appModule = module {
     singleOf(::PreferencesRepository)
 
     // WorKManager
+    factory { WorkManager.getInstance(androidContext()) }
+    workerOf(::QueueHandlerWorker)
+    workerOf(::GetCurrentLocationWorker)
     workerOf(::UpdateLocationInDatabaseWorker)
+    workerOf(::UpdateWeatherInDatabaseWorker)
+    workerOf(::ShowCurrentWeatherNotificationWorker)
 
     // Domain
     factory { CoroutineScope(Dispatchers.Main) }
@@ -56,6 +67,7 @@ val appModule = module {
     factoryOf(::FormatTempUnitUseCase)
     factoryOf(::FormatSpeedUnitUseCase)
     factoryOf(::FormatPrecipitationSumUseCase)
+    factoryOf(::ScheduleQueueHandlerUseCase)
 
     factoryOf(::DayDetailUseCases)
     factoryOf(::GetDaysByHoursUseCase)
@@ -65,6 +77,7 @@ val appModule = module {
     factoryOf(::SettingsUseCases)
     factoryOf(::UpdateUnitsPreferencesUseCase)
     factoryOf(::UpdateDataPreferencesUseCase)
+    factoryOf(::CheckIfLocationIsGpsUseCase)
 
     factoryOf(::CallGeoLocationApiUseCase)
 
