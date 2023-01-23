@@ -1,12 +1,12 @@
 package com.example.neoweather.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.neoweather.databinding.FragmentHomeBinding
 import com.example.neoweather.ui.home.adapter.WeatherTabAdapter
@@ -17,7 +17,7 @@ class HomeFragment : Fragment(){
 
     private val viewModel: HomeViewModel by activityViewModel()
 
-    private val args: HomeFragmentArgs by navArgs()
+    private lateinit var args: HomeFragmentArgs
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,11 +58,13 @@ class HomeFragment : Fragment(){
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        if (didUserClickOnNewLocation())
+    override fun onAttach(context: Context) {
+        args = HomeFragmentArgs.fromBundle(requireArguments())
+        if (didUserClickOnNewLocation()) {
             addNewLocation()
+            args = HomeFragmentArgs("", 999L, 999L)
+        }
+        super.onAttach(context)
     }
 
     private fun addNewLocation() {
