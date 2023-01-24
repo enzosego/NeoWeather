@@ -7,8 +7,9 @@ import com.example.neoweather.data.local.NeoWeatherDatabase
 import com.example.neoweather.data.remote.geocoding.GeoCodingApiImpl
 import com.example.neoweather.data.remote.reverse_geocoding.ReverseGeoCodingApiImpl
 import com.example.neoweather.data.remote.weather.NeoWeatherApiImpl
+import com.example.neoweather.data.repository.PlacesRepository
 import com.example.neoweather.data.repository.PreferencesRepository
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import com.example.neoweather.data.workers.QueueHandlerWorker
 import com.example.neoweather.data.workers.location.GetCurrentLocationWorker
 import com.example.neoweather.data.workers.location.UpdateLocationInDatabaseWorker
@@ -46,11 +47,12 @@ val appModule = module {
 
     // Repositories
     factory { Dispatchers.IO }
-    singleOf(::WeatherDataRepository)
+    singleOf(::PlacesRepository)
+    singleOf(::WeatherRepository)
     singleOf(::PreferencesRepository)
 
     // WorKManager
-    factory { WorkManager.getInstance(androidContext()) }
+    single { WorkManager.getInstance(androidContext()) }
     workerOf(::QueueHandlerWorker)
     workerOf(::GetCurrentLocationWorker)
     workerOf(::UpdateLocationInDatabaseWorker)

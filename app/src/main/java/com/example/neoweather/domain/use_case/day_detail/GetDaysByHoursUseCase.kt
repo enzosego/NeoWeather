@@ -1,12 +1,12 @@
 package com.example.neoweather.domain.use_case.day_detail
 
 import com.example.neoweather.data.local.model.hour.Hour
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import com.example.neoweather.domain.model.DayByHours
 import java.util.Calendar
 import java.util.Date
 
-class GetDaysByHoursUseCase(private val weatherDataRepository: WeatherDataRepository) {
+class GetDaysByHoursUseCase(private val weatherRepository: WeatherRepository) {
 
     private val calendar = Calendar.getInstance()
     private val currentYear = calendar.get(Calendar.YEAR)
@@ -16,7 +16,7 @@ class GetDaysByHoursUseCase(private val weatherDataRepository: WeatherDataReposi
     operator fun invoke(placeId: Int): List<DayByHours> {
         val dayList = mutableListOf<DayByHours>()
 
-        val hourList = weatherDataRepository.hourlyDataList.value?.get(placeId)!!.hourList
+        val hourList = weatherRepository.hourlyDataList[placeId].hourList
             .filter { (time) -> !isItPastDay(time) }
 
         val listOfHourLists = mutableListOf<MutableList<Hour>>()

@@ -2,10 +2,10 @@ package com.example.neoweather.domain.use_case.day_detail
 
 import com.example.neoweather.data.local.model.day.Day
 import com.example.neoweather.data.local.model.hour.Hour
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import java.util.*
 
-class GetSunTimingUseCase(private val weatherDataRepository: WeatherDataRepository) {
+class GetSunTimingUseCase(private val weatherRepository: WeatherRepository) {
 
     operator fun invoke(
         hour: Hour,
@@ -14,7 +14,7 @@ class GetSunTimingUseCase(private val weatherDataRepository: WeatherDataReposito
     ): Date? {
 
         val matchingDay =
-            getMatchingDay(weatherDataRepository.dailyDataList.value!![placeId].dayList, hour)
+            getMatchingDay(weatherRepository.dailyDataList[placeId].dayList, hour)
 
         val sunTiming = getTimingKey(matchingDay)
 

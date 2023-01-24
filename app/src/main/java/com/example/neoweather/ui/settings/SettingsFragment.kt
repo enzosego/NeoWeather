@@ -67,10 +67,8 @@ class SettingsFragment : Fragment() {
             if (viewModel.isPreferredLocationGps() && isChecked
                 && !isBackgroundPermissionGranted(requireContext())
             ) {
-                this.isChecked = false
                 val messageResource = R.string.permanent_location_toggle_message
                 requireContext().askForBackgroundLocationPermission(messageResource)
-                return@setOnCheckedChangeListener
             }
             viewModel.toggleNotifications(isChecked)
         }

@@ -4,17 +4,20 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.neoweather.data.local.model.place.asDomainModel
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.PlacesRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.domain.model.PlaceModel
 import com.example.neoweather.ui.utils.ApiStatus
 import com.example.neoweather.domain.use_case.home.HomeUseCases
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    weatherDataRepository: WeatherDataRepository,
+    weatherRepository: WeatherRepository,
     preferencesRepository: PreferencesRepository,
+    placesRepository: PlacesRepository,
     private val homeUseCases: HomeUseCases
 ) : ViewModel() {
 
@@ -24,24 +27,22 @@ class HomeViewModel(
     private val _currentTabNum = MutableLiveData(0)
     val currentTabNum: LiveData<Int> = _currentTabNum
 
-    val placesList: LiveData<List<PlaceModel>> =
-        Transformations.map(weatherDataRepository.placesList) { list ->
-            list.map { it.asDomainModel() }
-        }
+    val placesList: LiveData<List<PlaceModel>> = placesRepository.placesFlow
+        .map {
+            it.map { place -> place.asDomainModel() }
+        }.asLiveData()
 
-    val currentWeather = weatherDataRepository.currentWeatherList
+    val currentWeather = weatherRepository.currentWeatherFlow.asLiveData()
 
-    val dailyData = weatherDataRepository.dailyDataList
+    val dailyData = weatherRepository.dailyDataFlow.asLiveData()
 
-    val hourlyData = weatherDataRepository.hourlyDataList
+    val hourlyData = weatherRepository.hourlyDataFlow.asLiveData()
 
     val currentListSize: LiveData<Int> = Transformations.map(placesList) { it.size }
 
     val previousListSize = MutableLiveData<Int>()
 
-    val unitsPreferences = preferencesRepository.unitsPreferences
-
-    val dataPreferences = preferencesRepository.dataPreferences
+    val dataPreferences = preferencesRepository.dataPreferencesFlow.asLiveData()
 
     private var currentJob: Job? = null
 
@@ -104,14 +105,14 @@ class HomeViewModel(
         homeUseCases.formatTempUnit(temp)
 
     fun setPreferredLocation(id: Int) {
-        if (dataPreferences.value?.preferredLocationId == id)
-            return
-        Log.d("HomeViewModel", "GOT HERE!")
         val newPreferences = dataPreferences.value!!.copy(
             preferredLocationId = id
         )
         homeUseCases.updateDataPreferences(newPreferences)
     }
+
+    fun isLocationAlreadyPreferred(id: Int): Boolean =
+        dataPreferences.value?.preferredLocationId == id
 
     fun scheduleQueueHandler() {
         homeUseCases.scheduleQueueHandler()

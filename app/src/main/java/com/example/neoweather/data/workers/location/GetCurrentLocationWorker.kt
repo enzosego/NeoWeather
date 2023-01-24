@@ -18,7 +18,6 @@ class GetCurrentLocationWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result = withContext(Dispatchers.Main) {

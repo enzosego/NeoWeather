@@ -6,12 +6,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CurrentWeatherParent(
-    @SerialName("current_weather")
-    val currentWeather: CurrentWeatherData
-)
-
-@Serializable
 data class CurrentWeatherData(
     val temperature: Double,
     @SerialName("windspeed")

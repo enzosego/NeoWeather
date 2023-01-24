@@ -2,7 +2,6 @@ package com.example.neoweather.data.remote.weather
 
 import com.example.neoweather.data.remote.utils.HttpRoutes
 import com.example.neoweather.data.remote.utils.KtorClientBuilder
-import com.example.neoweather.data.remote.weather.model.CurrentWeatherParent
 import com.example.neoweather.data.remote.weather.model.NeoWeatherModel
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -21,15 +20,6 @@ class NeoWeatherApiImpl(
             parameter("latitude", "$lat")
             parameter("longitude", "$lon")
             parameter("timezone", timezone)
-        }.body()
-
-    override suspend fun getCurrentWeather(
-        lat: Double,
-        lon: Double
-    ): CurrentWeatherParent =
-        client.get(HttpRoutes.FORECAST_CURRENT) {
-            parameter("latitude", "$lat")
-            parameter("longitude", "$lon")
         }.body()
 
     companion object {

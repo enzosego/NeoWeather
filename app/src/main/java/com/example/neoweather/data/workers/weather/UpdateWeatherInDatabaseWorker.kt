@@ -4,31 +4,28 @@ import android.content.Context
 import android.util.Log
 import androidx.work.*
 import com.example.neoweather.data.repository.PreferencesRepository
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import com.example.neoweather.data.workers.location.LOCATION_ID_PARAM
 import com.example.neoweather.data.workers.notifications.NOTIFICATION_WORK_NAME
 import com.example.neoweather.data.workers.notifications.ShowCurrentWeatherNotificationWorker
-import java.io.IOException
 
 const val UPDATE_WEATHER_WORK_NAME = "update_weather_work_name"
 
 class UpdateWeatherInDatabaseWorker(
     private val workManager: WorkManager,
-    private val weatherDataRepository: WeatherDataRepository,
+    private val weatherRepository: WeatherRepository,
     private val preferencesRepository: PreferencesRepository,
     context: Context,
     workerParams: WorkerParameters
-
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
 
-        val locationId = preferencesRepository.dataPreferences.value?.preferredLocationId
-            ?: 0
+        val locationId = preferencesRepository.dataPreferences.preferredLocationId
 
         Log.d("UpdateWeatherWorker", "$locationId")
         return try {
-            weatherDataRepository.refreshPlaceWeather(locationId)
+            weatherRepository.refreshWeatherAtLocation(locationId)
 
             val output = workDataOf(
                 LOCATION_ID_PARAM to locationId
@@ -36,7 +33,7 @@ class UpdateWeatherInDatabaseWorker(
             enqueueNotificationRequest(output)
 
             Result.success()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.d("UpdateWeatherWorker", "$e")
             Result.retry()
         }

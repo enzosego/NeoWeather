@@ -26,8 +26,8 @@ data class Place(
     val isGpsLocation: Boolean = false
 )
 
-fun Place.canUpdate(intervalInMinutes: Int): Boolean =
-    getTimeDiffInMinutes(lastUpdateTime) < intervalInMinutes
+fun Place.canUpdate(intervalInMinutes: Int = 30): Boolean =
+    getTimeDiffInMinutes(lastUpdateTime) >= intervalInMinutes
 
 fun Place.newLastUpdateTime(): Long =
     getTimeInMilliseconds()

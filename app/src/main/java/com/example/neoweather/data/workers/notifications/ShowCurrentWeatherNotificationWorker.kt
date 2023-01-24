@@ -4,43 +4,37 @@ import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.core.content.ContextCompat
-import androidx.work.CoroutineWorker
+import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.PlacesRepository
+import com.example.neoweather.data.repository.WeatherRepository
 import com.example.neoweather.data.workers.location.LOCATION_ID_PARAM
 import com.example.neoweather.domain.use_case.FormatTempUnitUseCase
 
 class ShowCurrentWeatherNotificationWorker(
-    private val weatherDataRepository: WeatherDataRepository,
+    private val weatherRepository: WeatherRepository,
+    private val placesRepository: PlacesRepository,
     private val formatTempUnit: FormatTempUnitUseCase,
     private val context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+) : Worker(context, workerParams) {
 
-
-    override suspend fun doWork(): Result {
+    override fun doWork(): Result {
 
         return try {
 
             val locationId = inputData.getInt(LOCATION_ID_PARAM, -1)
-            if (locationId == -1) {
-                Log.d("update_database_worker", "Wrong input")
+            if (locationId == -1)
                 return Result.failure()
-            }
-            val currentWeather = weatherDataRepository.currentWeatherList.value?.get(locationId)
-                ?: return Result.failure()
 
-            val location = weatherDataRepository.placesList.value?.get(locationId)
-                ?: return Result.failure()
-
-            val addressName = location.name
-            val temperature = currentWeather.temperature
+            val addressName = placesRepository.placesList[locationId].name
+            val temperature = weatherRepository.currentWeatherList[locationId].temperature
 
             showNotification(addressName, temperature)
 
             Result.success()
         } catch (e: Exception) {
-            Log.d("notification_worker", "${e.printStackTrace()}")
+            Log.d("ShowNotificationWorker", "$e")
             Result.retry()
         }
     }

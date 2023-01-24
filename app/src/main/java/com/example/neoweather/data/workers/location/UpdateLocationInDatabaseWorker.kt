@@ -3,20 +3,18 @@ package com.example.neoweather.data.workers.location
 import android.content.Context
 import androidx.work.*
 import com.example.neoweather.data.remote.geocoding.model.GeoLocation
-import com.example.neoweather.data.repository.WeatherDataRepository
+import com.example.neoweather.data.repository.PlacesRepository
 
 const val UPDATE_LOCATION_WORK_NAME = "update_location_work_name"
 
 class UpdateLocationInDatabaseWorker(
-    private val weatherDataRepository: WeatherDataRepository,
+    private val placesRepository: PlacesRepository,
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-
     override suspend fun doWork(): Result {
-
-        weatherDataRepository.updateOrInsertPlace(inputData.makeGeoLocation())
+        placesRepository.updateOrInsertPlace(inputData.makeGeoLocation())
 
         return Result.success()
     }

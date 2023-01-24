@@ -1,8 +1,6 @@
 package com.example.neoweather.ui.settings
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
@@ -12,9 +10,9 @@ class SettingsViewModel(
     private val settingsUseCases: SettingsUseCases
 ) : ViewModel() {
 
-    val unitsPreferences = preferencesRepository.unitsPreferences
+    val unitsPreferences = preferencesRepository.unitsPreferencesFlow.asLiveData()
 
-    val dataPreferences = preferencesRepository.dataPreferences
+    val dataPreferences = preferencesRepository.dataPreferencesFlow.asLiveData()
 
     val areNotificationsEnabled: LiveData<Boolean> =
         Transformations.map(dataPreferences) { it.areNotificationsEnabled }
@@ -85,7 +83,7 @@ class SettingsViewModel(
     }
 
     private fun updateQueueHandler() {
-        settingsUseCases.scheduleQueueHandler(ExistingPeriodicWorkPolicy.REPLACE)
+        settingsUseCases.scheduleQueueHandler(ExistingPeriodicWorkPolicy.UPDATE)
     }
 
     fun isPreferredLocationGps(): Boolean =

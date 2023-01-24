@@ -54,12 +54,13 @@ class WeatherTabFragment(private val position: Int) : Fragment(), KoinComponent 
         binding.findCurrentHourIndex = findCurrentHourIndex
 
         binding.placeName.setOnClickListener {
+            if (viewModel.isLocationAlreadyPreferred(position))
+                return@setOnClickListener
             if (viewModel.isGpsLocation(position)
                 && !isBackgroundPermissionGranted(requireContext())
             ) {
                 val messageResource = R.string.permanent_location_toggle_message
                 requireContext().askForBackgroundLocationPermission(messageResource)
-                return@setOnClickListener
             }
             viewModel.setPreferredLocation(position)
         }
