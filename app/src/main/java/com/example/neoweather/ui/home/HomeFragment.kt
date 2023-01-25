@@ -44,7 +44,7 @@ class HomeFragment : Fragment(){
             postDelayed({visibility = View.VISIBLE}, 100)
 
             registerOnPageChangeCallback(refreshDataAndSetTabNum)
-            adapter = WeatherTabAdapter(requireActivity())
+            adapter = WeatherTabAdapter(childFragmentManager, lifecycle)
         }
         viewModel.currentListSize.observe(viewLifecycleOwner) { size ->
             if (size != null && viewModel.previousListSize.value == null)

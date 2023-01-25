@@ -14,10 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class DayDetailFragment(
-    private val position: Int,
-    private val placeId: Int
-) : Fragment(), KoinComponent {
+class DayDetailFragment : Fragment(), KoinComponent {
 
     private val viewModel: DayDetailViewModel by activityViewModel()
 
@@ -29,6 +26,9 @@ class DayDetailFragment(
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentDayDetailBinding.inflate(inflater)
+
+        val position = requireArguments().getInt(POSITION_ARG)
+        val placeId = requireArguments().getInt(PLACE_ID_ARG)
 
         with(viewModel.days.value!![position]) {
             binding.dayOfTheWeek.text = getDayOfWeekString(dayOfWeek)
@@ -76,7 +76,7 @@ class DayDetailFragment(
         private var PLACE_ID_ARG = "place_id_arg"
         @JvmStatic
         fun newInstance(position: Int, placeId: Int) =
-            DayDetailFragment(position, placeId).apply {
+            DayDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(POSITION_ARG, position)
                     putInt(PLACE_ID_ARG, placeId)

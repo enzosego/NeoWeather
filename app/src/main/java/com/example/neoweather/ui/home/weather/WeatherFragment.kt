@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class WeatherTabFragment(private val position: Int) : Fragment(), KoinComponent {
+class WeatherTabFragment : Fragment(), KoinComponent {
 
     private val viewModel: HomeViewModel by activityViewModel()
 
@@ -32,6 +32,8 @@ class WeatherTabFragment(private val position: Int) : Fragment(), KoinComponent 
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentWeatherBinding.inflate(inflater)
+
+        val position = requireArguments().getInt(POSITION_ARG)
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -72,7 +74,7 @@ class WeatherTabFragment(private val position: Int) : Fragment(), KoinComponent 
         private var POSITION_ARG = "position_arg"
         @JvmStatic
         fun newInstance(position: Int) =
-            WeatherTabFragment(position).apply {
+            WeatherTabFragment().apply {
                 arguments = Bundle().apply {
                     putInt(POSITION_ARG, position)
                 }
