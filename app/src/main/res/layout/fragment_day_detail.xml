@@ -8,7 +8,7 @@
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/day_in_hours_layout"
+        android:id="@+id/day_detail_motion_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutDescription="@xml/day_in_hours_scene">
@@ -47,7 +47,9 @@
             android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date_holder" />
+            app:layout_constraintTop_toBottomOf="@id/date_holder"
+            tools:itemCount="24"
+            tools:listitem="@layout/item_hour_detail"/>
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 

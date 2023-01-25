@@ -45,9 +45,11 @@ class DayDetailFragment : Fragment(), KoinComponent {
         }
         binding.hourListRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        if (position == 0)
+        if (position == 0) {
+            binding.dayDetailMotionLayout.transitionToEnd()
             binding.hourListRecyclerview
                 .scrollToPosition(viewModel.getCurrentHourIndex(position))
+        }
 
         return binding.root
     }
