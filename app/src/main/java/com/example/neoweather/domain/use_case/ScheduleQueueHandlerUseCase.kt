@@ -13,20 +13,24 @@ class ScheduleQueueHandlerUseCase(
     private val preferencesRepository: PreferencesRepository
 ) {
 
-    operator fun invoke(policy: ExistingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.KEEP) {
-        val repeatInterval =
-            preferencesRepository.dataPreferences.updateInterval
+    operator fun invoke(update: Boolean = false) {
+
+        val repeatInterval = preferencesRepository.dataPreferences.updateInterval
 
         val queueHandlerWorker =
             PeriodicWorkRequestBuilder<QueueHandlerWorker>(
                 repeatInterval,
-                TimeUnit.MINUTES
-            )
-                .build()
+                TimeUnit.HOURS
+            ).build()
+
+        if (update) {
+            workManager.updateWork(queueHandlerWorker)
+            return
+        }
 
         workManager.enqueueUniquePeriodicWork(
             QUEUE_HANDLER_WORK_NAME,
-            policy,
+            ExistingPeriodicWorkPolicy.KEEP,
             queueHandlerWorker
         )
     }

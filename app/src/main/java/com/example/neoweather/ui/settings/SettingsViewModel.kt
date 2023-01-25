@@ -1,7 +1,6 @@
 package com.example.neoweather.ui.settings
 
 import androidx.lifecycle.*
-import androidx.work.ExistingPeriodicWorkPolicy
 import com.example.neoweather.data.repository.PreferencesRepository
 import com.example.neoweather.domain.use_case.settings.SettingsUseCases
 
@@ -65,7 +64,6 @@ class SettingsViewModel(
             updateInBackground = newValue
         )
         settingsUseCases.updateDataPreferences(newPreferences)
-        updateQueueHandler()
     }
 
     fun setDatabaseUpdateInterval(selected: String) {
@@ -79,11 +77,7 @@ class SettingsViewModel(
             updateInterval = newValue
         )
         settingsUseCases.updateDataPreferences(newPreferences)
-        updateQueueHandler()
-    }
-
-    private fun updateQueueHandler() {
-        settingsUseCases.scheduleQueueHandler(ExistingPeriodicWorkPolicy.UPDATE)
+        settingsUseCases.scheduleQueueHandler(update = true)
     }
 
     fun isPreferredLocationGps(): Boolean =
